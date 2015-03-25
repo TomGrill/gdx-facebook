@@ -79,8 +79,8 @@ public class FacebookSystem {
 			}
 
 			if (activity == null) {
-				throw new RuntimeException("Can't find your gdx activity to instantiate Gdx Social. " + "Looks like you have implemented AndroidApplication without using "
-						+ "Activity or Fragment classes or Activity is not available at the moment");
+				throw new RuntimeException("Can't find your gdx activity to instantiate libGDX Facebook. " + "Looks like you have implemented AndroidApplication without using "
+						+ "Activity or Fragment classes or Activity is not available at the moment.");
 			}
 
 			Object facebook = ClassReflection.getConstructor(facebookClazz, activityClazz, FacebookConfig.class).newInstance(activity, config);
@@ -90,7 +90,7 @@ public class FacebookSystem {
 			Gdx.app.debug(TAG, "FacebookAPI for Android loaded successfully.");
 
 		} catch (ReflectionException e) {
-			Gdx.app.debug(TAG, "Error creating FacebookAPI for Android (are the GdxSocial **.jar files installed?). \n");
+			Gdx.app.debug(TAG, "Error creating FacebookAPI for Android (are the libGDX Facebook **.jar files installed?). \n");
 			e.printStackTrace();
 		}
 
