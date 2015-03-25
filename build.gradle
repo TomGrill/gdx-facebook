@@ -22,7 +22,8 @@ allprojects {
         roboVMVersion = '1.0.0-beta-04'
 
 		jUnitVersion = '4.+'
-	    mockitoVersion = '1.9.+'
+	    mockitoVersion = '1.10.+'
+	    powermockVersion = '1.6.+'
 
 		GROUPID = 'de.tpronold.gdxfacebook'
     	VERSION = '0.1.0-SNAPSHOT'
@@ -46,6 +47,13 @@ project(":android") {
 		project {
 		    name = appName + "-android"
 		}
+	}
+
+	dependencies {
+		
+		compile project(':core')
+		
+		compile fileTree(dir: 'libs', include: '*.jar')
 	}
 }
 
@@ -82,6 +90,24 @@ project(":core-tests") {
 		project {
 		    name = appName + "-core-tests"
 		}
+	}
+	dependencies {
+		
+		compile project(':core')
+		
+		compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+		
+		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+		
+		compile "junit:junit:$jUnitVersion"
+		compile "org.mockito:mockito-all:$mockitoVersion"
+		compile "org.powermock:powermock-mockito-release-full:$powermockVersion"
+
+		
+		/* required to prevent Couldn't load shared library 'libgdx64.so' for target: Linux, 64-bit - ERROR */
+		testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+		
+		compile fileTree(dir: 'libs', include: '*.jar')
 	}
 }
 
