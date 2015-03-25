@@ -67,6 +67,12 @@ project(":core") {
 		    name = appName + "-core"
 		}
 	}
+
+	dependencies {
+		compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+		
+		compile fileTree(dir: 'libs', include: '*.jar')
+	}
 }
 
 project(":core-tests") {
