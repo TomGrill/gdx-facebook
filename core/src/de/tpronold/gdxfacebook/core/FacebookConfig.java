@@ -1,6 +1,10 @@
 package de.tpronold.gdxfacebook.core;
 
-public abstract class FacebookConfig {
+public class FacebookConfig {
 
-	public boolean FACEBOOK_ENABLE = false;
+	public boolean ENABLE_ANDROID = false;
+	public boolean ENABLE_DESKTOP = false;
+	public boolean ENABLE_HTML = false;
+	public boolean ENABLE_IOS = false;
+
 }
