@@ -1,6 +1,7 @@
 
 local.properties
 /build/**
+/bin/**
 
 .classpath
 .project
