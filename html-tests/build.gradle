@@ -1,0 +1,12 @@
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+sourceSets {
+	test {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+uploadArchives.enabled = false
