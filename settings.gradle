@@ -1,1 +1,1 @@
-include 'desktop', 'android', 'ios', 'desktop-tests', 'android-tests', 'ios-tests'
+include 'android', 'android-tests', 'core', 'core-tests',  'desktop', 'desktop-tests', 'html', 'html-tests', 'ios', 'ios-tests'

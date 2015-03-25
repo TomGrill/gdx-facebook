@@ -1,0 +1,146 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'org.robovm:robovm-gradle-plugin:1.0.0-beta-04'
+    }
+}
+
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+
+    version = '1.0'
+    ext {
+        appName = 'libGDX Facebook'
+        gdxVersion = '1.5.5'
+        roboVMVersion = '1.0.0-beta-04'
+
+		jUnitVersion = '4.+'
+	    mockitoVersion = '1.9.+'
+
+		GROUPID = 'de.tpronold.gdxfacebook'
+    	VERSION = '0.1.0-SNAPSHOT'
+
+    }
+
+    repositories {
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
+
+	group = GROUPID
+    version = VERSION
+}
+
+project(":android") {
+    apply plugin : 'java'
+
+	eclipse {
+		project {
+		    name = appName + "-android"
+		}
+	}
+}
+
+project(":android-tests") {
+    apply plugin : 'java'
+
+	eclipse {
+		project {
+		    name = appName + "-android-tests"
+		}
+	}
+}
+
+project(":core") {
+    apply plugin : 'java'
+
+	eclipse {
+		project {
+		    name = appName + "-core"
+		}
+	}
+}
+
+project(":core-tests") {
+    apply plugin : 'java'
+
+	eclipse {
+		project {
+		    name = appName + "-core-tests"
+		}
+	}
+}
+
+
+
+project(":desktop") {
+    apply plugin : 'java'
+
+	eclipse {
+		project {
+		    name = appName + "-desktop"
+		}
+	}
+}
+
+project(":desktop-tests") {
+    apply plugin : 'java'
+
+	eclipse {
+		project {
+		    name = appName + "-desktop-tests"
+		}
+	}
+}
+
+project(":html") {
+    apply plugin : 'java'
+
+	eclipse {
+		project {
+		    name = appName + "-html"
+		}
+	}
+}
+
+project(":html-tests") {
+    apply plugin : 'java'
+
+	eclipse {
+		project {
+		    name = appName + "-html-tests"
+		}
+	}
+}
+
+project(":ios") {
+    apply plugin : 'java'
+
+	eclipse {
+		project {
+		    name = appName + "-ios"
+		}
+	}
+}
+
+project(":ios-tests") {
+    apply plugin : 'java'
+
+	eclipse {
+		project {
+		    name = appName + "-ios-tests"
+		}
+	}
+}
+
+tasks.eclipse.doLast {
+    delete ".project"
+}
