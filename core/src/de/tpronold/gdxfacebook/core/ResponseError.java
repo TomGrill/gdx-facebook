@@ -2,6 +2,8 @@ package de.tpronold.gdxfacebook.core;
 
 public class ResponseError {
 
+	public static final int EC_CANNOT_RESTORE_SESSION = 112;
+
 	// TODO colver all from FacebookRequestError.class
 	private int code = 0;
 	private String message = "No error message set.";

@@ -11,10 +11,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
 import com.badlogic.gdx.utils.reflect.Field;
@@ -54,10 +52,6 @@ public class FacebookSystemUnitTests {
 	@SuppressWarnings("static-access")
 	public void setup() {
 		config = new FacebookConfig();
-
-		HeadlessApplicationConfiguration conf = new HeadlessApplicationConfiguration();
-		new HeadlessApplication(new ApplicationAdapter() {
-		}, conf);
 
 		PowerMockito.mockStatic(ClassReflection.class);
 		classReflectionMock = Mockito.mock(ClassReflection.class);
