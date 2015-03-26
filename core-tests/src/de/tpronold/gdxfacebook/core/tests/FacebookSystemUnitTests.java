@@ -98,6 +98,39 @@ public class FacebookSystemUnitTests {
 
 	@Test
 	@SuppressWarnings("static-access")
+	public void DesktopIsLoaded() {
+		config.ENABLE_DESKTOP = true;
+		Mockito.when(Gdx.app.getType()).thenReturn(ApplicationType.Desktop);
+		try {
+
+			Mockito.when(classReflectionMock.forName("de.tpronold.gdxfacebook.desktop.DesktopFacebookAPI")).thenReturn(facebookAPIStub.getClass());
+			Mockito.when(classReflectionMock.getConstructor(facebookAPIStub.getClass(), FacebookConfig.class)).thenReturn(constructorMock);
+			Mockito.when(constructorMock.newInstance(config)).thenReturn(facebookAPIStub);
+		} catch (ReflectionException e) {
+		}
+
+		fixture = new FacebookSystem(config);
+		assertEquals(facebookAPIStub, fixture.getFacebookAPI());
+	}
+
+	@Test
+	@SuppressWarnings("static-access")
+	public void HTMLIsLoaded() {
+		config.ENABLE_HTML = true;
+		Mockito.when(Gdx.app.getType()).thenReturn(ApplicationType.WebGL);
+		try {
+			Mockito.when(classReflectionMock.forName("de.tpronold.gdxfacebook.html.HTMLFacebookAPI")).thenReturn(facebookAPIStub.getClass());
+			Mockito.when(classReflectionMock.getConstructor(facebookAPIStub.getClass(), FacebookConfig.class)).thenReturn(constructorMock);
+			Mockito.when(constructorMock.newInstance(config)).thenReturn(facebookAPIStub);
+		} catch (ReflectionException e) {
+		}
+
+		fixture = new FacebookSystem(config);
+		assertEquals(facebookAPIStub, fixture.getFacebookAPI());
+	}
+
+	@Test
+	@SuppressWarnings("static-access")
 	public void iOSIsLoaded() {
 		config.ENABLE_IOS = true;
 		try {

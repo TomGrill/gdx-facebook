@@ -26,6 +26,8 @@ public class FacebookSystem {
 
 		tryLoadAndroidFacebookAPI();
 		tryLoadIOSFacebookForAPI();
+		tryLoadDesktopFacebookForAPI();
+		tryLoadHTMLFacebookForAPI();
 	}
 
 	private void loadGdxReflections() {
@@ -68,6 +70,62 @@ public class FacebookSystem {
 
 		} catch (ReflectionException e) {
 			Gdx.app.debug(TAG, "Error creating FacebookAPI for iOS (are the libGDX Facebook **.jar files installed?). \n");
+			e.printStackTrace();
+		}
+
+	}
+
+	private void tryLoadDesktopFacebookForAPI() {
+
+		if (!config.ENABLE_DESKTOP) {
+			Gdx.app.debug(TAG, "Did not load FacebookAPI for Desktop. Disabled in FacebookConfig. \n");
+			return;
+		}
+
+		if (Gdx.app.getType() != ApplicationType.Desktop) {
+			Gdx.app.debug(TAG, "Skip loading FacebookAPI for Desktop. Not running Desktop. \n");
+			return;
+		}
+
+		try {
+
+			final Class<?> facebookClazz = ClassReflection.forName("de.tpronold.gdxfacebook.desktop.DesktopFacebookAPI");
+			Object facebook = ClassReflection.getConstructor(facebookClazz, FacebookConfig.class).newInstance(config);
+
+			facebookAPI = (FacebookAPI) facebook;
+
+			Gdx.app.debug(TAG, "FacebookAPI for Desktop loaded successfully.");
+
+		} catch (ReflectionException e) {
+			Gdx.app.debug(TAG, "Error creating FacebookAPI for Desktop (are the libGDX Facebook **.jar files installed?). \n");
+			e.printStackTrace();
+		}
+
+	}
+
+	private void tryLoadHTMLFacebookForAPI() {
+
+		if (!config.ENABLE_HTML) {
+			Gdx.app.debug(TAG, "Did not load FacebookAPI for HTML. Disabled in FacebookConfig. \n");
+			return;
+		}
+
+		if (Gdx.app.getType() != ApplicationType.WebGL) {
+			Gdx.app.debug(TAG, "Skip loading FacebookAPI for HTML. Not running HTML. \n");
+			return;
+		}
+
+		try {
+
+			final Class<?> facebookClazz = ClassReflection.forName("de.tpronold.gdxfacebook.html.HTMLFacebookAPI");
+			Object facebook = ClassReflection.getConstructor(facebookClazz, FacebookConfig.class).newInstance(config);
+
+			facebookAPI = (FacebookAPI) facebook;
+
+			Gdx.app.debug(TAG, "FacebookAPI for HTML loaded successfully.");
+
+		} catch (ReflectionException e) {
+			Gdx.app.debug(TAG, "Error creating FacebookAPI for HTML (are the libGDX Facebook **.jar files installed?). \n");
 			e.printStackTrace();
 		}
 
