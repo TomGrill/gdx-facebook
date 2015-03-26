@@ -53,6 +53,8 @@ project(":android") {
 		
 		compile project(':core')
 		
+		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+		
 		compile fileTree(dir: 'libs', include: '*.jar')
 	}
 }
@@ -97,7 +99,7 @@ project(":core-tests") {
 		
 		compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
 		
-		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+//		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 		
 		compile "junit:junit:$jUnitVersion"
 		compile "org.mockito:mockito-all:$mockitoVersion"
