@@ -96,6 +96,22 @@ public class FacebookSystemUnitTests {
 
 	}
 
+	@Test
+	@SuppressWarnings("static-access")
+	public void iOSIsLoaded() {
+		config.ENABLE_IOS = true;
+		try {
+			Mockito.when(Gdx.app.getType()).thenReturn(ApplicationType.iOS);
+			Mockito.when(classReflectionMock.forName("de.tpronold.gdxfacebook.ios.IOSFacebookAPI")).thenReturn(facebookAPIStub.getClass());
+			Mockito.when(classReflectionMock.getConstructor(facebookAPIStub.getClass(), FacebookConfig.class)).thenReturn(constructorMock);
+			Mockito.when(constructorMock.newInstance(config)).thenReturn(facebookAPIStub);
+		} catch (ReflectionException e) {
+		}
+
+		fixture = new FacebookSystem(config);
+		assertEquals(facebookAPIStub, fixture.getFacebookAPI());
+	}
+
 	@SuppressWarnings("static-access")
 	private void androidSetup() {
 		config.ENABLE_ANDROID = true;
@@ -104,7 +120,6 @@ public class FacebookSystemUnitTests {
 			Mockito.when(classReflectionMock.forName("android.app.Activity")).thenReturn(activityStub.getClass());
 			Mockito.when(classReflectionMock.forName("de.tpronold.gdxfacebook.android.AndroidFacebookAPI")).thenReturn(facebookAPIStub.getClass());
 			Mockito.when(Gdx.app.getType()).thenReturn(ApplicationType.Android);
-			Mockito.when(constructorMock.newInstance(Mockito.any(HeadlessApplication.class), Mockito.any(FacebookConfig.class))).thenReturn(facebookAPIStub);
 			Mockito.when(classReflectionMock.getConstructor(facebookAPIStub.getClass(), activityStub.getClass(), FacebookConfig.class)).thenReturn(constructorMock);
 
 		} catch (ReflectionException e) {
@@ -115,6 +130,12 @@ public class FacebookSystemUnitTests {
 	@SuppressWarnings("static-access")
 	public void androidIsLoadedWithActivityMode() {
 		androidSetup();
+
+		try {
+			Mockito.when(constructorMock.newInstance(Gdx.app, config)).thenReturn(facebookAPIStub);
+		} catch (ReflectionException e) {
+			e.printStackTrace();
+		}
 
 		Mockito.when(classReflectionMock.isAssignableFrom(activityStub.getClass(), Gdx.app.getClass())).thenReturn(true);
 
@@ -131,7 +152,7 @@ public class FacebookSystemUnitTests {
 		Mockito.when(classReflectionMock.isAssignableFrom(supportFragmentStub.getClass(), Gdx.app.getClass())).thenReturn(true);
 
 		try {
-
+			Mockito.when(constructorMock.newInstance(activityStub, config)).thenReturn(facebookAPIStub);
 			Mockito.when(classReflectionMock.forName("android.support.v4.app.Fragment")).thenReturn(supportFragmentStub.getClass());
 			Mockito.when(classReflectionMock.getMethod(supportFragmentStub.getClass(), "getActivity")).thenReturn(methodMock);
 			Mockito.when(methodMock.invoke(Gdx.app)).thenReturn(activityStub);
@@ -154,6 +175,7 @@ public class FacebookSystemUnitTests {
 		Mockito.when(classReflectionMock.isAssignableFrom(fragmentStub.getClass(), Gdx.app.getClass())).thenReturn(true);
 
 		try {
+			Mockito.when(constructorMock.newInstance(activityStub, config)).thenReturn(facebookAPIStub);
 			Mockito.when(classReflectionMock.forName("android.app.Fragment")).thenReturn(fragmentStub.getClass());
 			Mockito.when(classReflectionMock.getMethod(fragmentStub.getClass(), "getActivity")).thenReturn(methodMock);
 			Mockito.when(methodMock.invoke(Gdx.app)).thenReturn(activityStub);

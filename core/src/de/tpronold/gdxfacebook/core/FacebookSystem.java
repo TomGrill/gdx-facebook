@@ -25,6 +25,7 @@ public class FacebookSystem {
 		loadGdxReflections();
 
 		tryLoadAndroidFacebookAPI();
+		tryLoadIOSFacebookForAPI();
 	}
 
 	private void loadGdxReflections() {
@@ -44,6 +45,34 @@ public class FacebookSystem {
 
 	}
 
+	private void tryLoadIOSFacebookForAPI() {
+
+		if (!config.ENABLE_IOS) {
+			Gdx.app.debug(TAG, "Did not load FacebookAPI for iOS. Disabled in FacebookConfig. \n");
+			return;
+		}
+
+		if (Gdx.app.getType() != ApplicationType.iOS) {
+			Gdx.app.debug(TAG, "Skip loading FacebookAPI for iOS. Not running iOS. \n");
+			return;
+		}
+
+		try {
+
+			final Class<?> facebookClazz = ClassReflection.forName("de.tpronold.gdxfacebook.ios.IOSFacebookAPI");
+			Object facebook = ClassReflection.getConstructor(facebookClazz, FacebookConfig.class).newInstance(config);
+
+			facebookAPI = (FacebookAPI) facebook;
+
+			Gdx.app.debug(TAG, "FacebookAPI for iOS loaded successfully.");
+
+		} catch (ReflectionException e) {
+			Gdx.app.debug(TAG, "Error creating FacebookAPI for iOS (are the libGDX Facebook **.jar files installed?). \n");
+			e.printStackTrace();
+		}
+
+	}
+
 	private void tryLoadAndroidFacebookAPI() {
 		if (!config.ENABLE_ANDROID) {
 			Gdx.app.debug(TAG, "Did not load FacebookAPI for Android. Disabled in FacebookConfig. \n");
@@ -58,7 +87,7 @@ public class FacebookSystem {
 		try {
 
 			Class<?> activityClazz = ClassReflection.forName("android.app.Activity");
-			Class<?> facebookClazz = ClassReflection.forName("de.tpronold.gdxfacebook.android.AndroidFacebookAPI");
+			final Class<?> facebookClazz = ClassReflection.forName("de.tpronold.gdxfacebook.android.AndroidFacebookAPI");
 
 			Object activity = null;
 			if (ClassReflection.isAssignableFrom(activityClazz, gdxAppObject.getClass())) {
