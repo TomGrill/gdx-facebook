@@ -10,3 +10,10 @@ sourceSets {
 }
 
 uploadArchives.enabled = false
+
+
+/* this is to prevent superClassName is empty! error when gradle testing */
+tasks.withType(Test) {
+    scanForTestClasses = false
+    include "**/*Tests.class" // whatever Ant pattern matches your test class files
+}

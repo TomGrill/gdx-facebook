@@ -23,4 +23,16 @@ public class FacebookAPIStub implements FacebookAPI {
 
 	}
 
+	@Override
+	public void signin(boolean silentLogin, ResponseListener responseListener) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void graphUser(ResponseListener responseListener) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
