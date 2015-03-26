@@ -117,6 +117,8 @@ project(":core-tests") {
 		compile "org.mockito:mockito-all:$mockitoVersion"
 		compile "org.powermock:powermock-mockito-release-full:$powermockVersion"
 
+		/** required for running test from eclipse */
+		compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 		
 		/* required to prevent Couldn't load shared library 'libgdx64.so' for target: Linux, 64-bit - ERROR */
 		testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
@@ -135,6 +137,15 @@ project(":desktop") {
 		    name = appName + "-desktop"
 		}
 	}
+
+	dependencies {
+		
+		compile project(':core')
+		
+//		compile "com.badlogicgames.gdx:gdx-backend-desktop:$gdxVersion"
+		
+		compile fileTree(dir: 'libs', include: '*.jar')
+	}
 }
 
 project(":desktop-tests") {
@@ -144,6 +155,26 @@ project(":desktop-tests") {
 		project {
 		    name = appName + "-desktop-tests"
 		}
+	}
+
+	dependencies {
+		
+		compile project(':desktop')
+		
+	//	compile "com.badlogicgames.gdx:gdx-backend-desktop:$gdxVersion"
+		compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+		
+		compile "junit:junit:$jUnitVersion"
+		compile "org.mockito:mockito-all:$mockitoVersion"
+		compile "org.powermock:powermock-mockito-release-full:$powermockVersion"
+		
+		/** required for running test from eclipse */
+		compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+		
+		/* required to prevent Couldn't load shared library 'libgdx64.so' for target: Linux, 64-bit - ERROR */
+		testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+		
+		compile fileTree(dir: 'libs', include: '*.jar')
 	}
 }
 
