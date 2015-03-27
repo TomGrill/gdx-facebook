@@ -22,5 +22,7 @@ public class FacebookConfigUnitTests {
 		assertEquals(false, fixture.ENABLE_DESKTOP);
 		assertEquals(false, fixture.ENABLE_HTML);
 		assertEquals(false, fixture.ENABLE_IOS);
+		assertEquals("libgdx-facebook.pref", fixture.PREF_FILENAME);
+		assertEquals("", fixture.APP_ID);
 	}
 }
