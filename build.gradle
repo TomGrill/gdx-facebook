@@ -1,3 +1,8 @@
+ext {
+	GROUPID = 'de.tpronold.gdxfacebook'
+	VERSION = '0.1.0-SNAPSHOT'
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -25,8 +30,7 @@ allprojects {
 	    mockitoVersion = '1.10.+'
 	    powermockVersion = '1.6.+'
 
-		GROUPID = 'de.tpronold.gdxfacebook'
-    	VERSION = '0.1.0-SNAPSHOT'
+		
 
     }
 
@@ -42,6 +46,13 @@ allprojects {
 
 project(":android") {
     apply plugin : 'java'
+    	
+	apply from : '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+	}  
 
 	eclipse {
 		project {
@@ -62,6 +73,13 @@ project(":android") {
 project(":android-tests") {
     apply plugin : 'java'
 
+	apply from : '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+	}     	
+    	
 	eclipse {
 		project {
 		    name = appName + "-android-tests"
@@ -83,6 +101,13 @@ project(":android-tests") {
 
 project(":core") {
     apply plugin : 'java'
+    	
+	apply from : '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+	} 
 
 	eclipse {
 		project {
@@ -99,6 +124,13 @@ project(":core") {
 
 project(":core-tests") {
     apply plugin : 'java'
+    	
+	apply from : '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+	} 
 
 	eclipse {
 		project {
@@ -131,6 +163,13 @@ project(":core-tests") {
 
 project(":desktop") {
     apply plugin : 'java'
+    	
+	apply from : '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+	} 
 
 	eclipse {
 		project {
@@ -151,6 +190,14 @@ project(":desktop") {
 project(":desktop-tests") {
     apply plugin : 'java'
 
+	apply from : '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+	} 	
+    
+    	
 	eclipse {
 		project {
 		    name = appName + "-desktop-tests"
@@ -180,6 +227,14 @@ project(":desktop-tests") {
 
 project(":html") {
     apply plugin : 'java'
+    	
+    	
+	apply from : '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+	} 
 
 	eclipse {
 		project {
@@ -190,6 +245,13 @@ project(":html") {
 
 project(":html-tests") {
     apply plugin : 'java'
+    	
+	apply from : '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+	} 
 
 	eclipse {
 		project {
@@ -200,16 +262,44 @@ project(":html-tests") {
 
 project(":ios") {
     apply plugin : 'java'
+    apply plugin : 'robovm'
+    	
+    	
+	apply from : '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+	} 
 
 	eclipse {
 		project {
 		    name = appName + "-ios"
 		}
 	}
+
+	dependencies {
+		
+		compile project(':core')
+		
+		compile "org.robovm:robovm-rt:${roboVMVersion}"
+        compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
+//        compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+		
+		compile fileTree(dir: 'libs', include: '*.jar')
+	}
 }
 
 project(":ios-tests") {
     apply plugin : 'java'
+    	
+	apply from : '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+	} 
 
 	eclipse {
 		project {
