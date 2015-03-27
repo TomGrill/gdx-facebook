@@ -102,8 +102,29 @@ public class DesktopFacebookAPI extends FacebookAPI {
 	}
 
 	private void startGUILogin(final ResponseListener responseListener) {
-		responseListener.success(); // TODO implement real browser handling
-									// here.
+
+		JXBrowserDesktopFacebookGUI browser = new JXBrowserDesktopFacebookGUI();
+		browser.setAppId(config.APP_ID);
+		browser.setPermissions(config.PERMISSIONS);
+
+		browser.show(new FacebookLoginListener() {
+
+			@Override
+			public void onSuccess(String accessToken, long expires) {
+				responseListener.success();
+			}
+
+			@Override
+			public void onError(String error, String errorCode, String errorDescription, String errorReason) {
+				ResponseError listenerError = new ResponseError();
+				listenerError.setCode(ResponseError.EC_FAILED);
+				// TODO this error codes may be different... Proof. Not sure
+				// what FB is capeable of returning in ResponderBody
+				listenerError.setMessage("GUI Login failed. \n Error: " + error + "\nError Code;" + errorCode + "\nError Description;" + errorDescription + "\nError Reason;"
+						+ errorReason);
+				responseListener.error(listenerError);
+			}
+		});
 	}
 
 }

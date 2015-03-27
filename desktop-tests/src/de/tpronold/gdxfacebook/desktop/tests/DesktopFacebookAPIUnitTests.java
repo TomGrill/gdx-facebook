@@ -13,12 +13,18 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import javafx.application.Application;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -35,15 +41,26 @@ import de.tpronold.gdxfacebook.core.FacebookConfig;
 import de.tpronold.gdxfacebook.core.ResponseError;
 import de.tpronold.gdxfacebook.core.ResponseListener;
 import de.tpronold.gdxfacebook.desktop.DesktopFacebookAPI;
+import de.tpronold.gdxfacebook.desktop.JXBrowserDesktopFacebookGUI;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ Application.class })
 public class DesktopFacebookAPIUnitTests {
 
 	private DesktopFacebookAPI fixture;
 
 	private FacebookConfig config;
 
+	private JXBrowserDesktopFacebookGUI browserMock;
+
 	@Before
 	public void setup() {
+
+		/* Required to prevent real browser from starting when testig */
+		PowerMockito.mockStatic(Application.class);
+		mock(Application.class);
+
+		browserMock = mock(JXBrowserDesktopFacebookGUI.class);
 
 		config = new FacebookConfig();
 		fixture = new DesktopFacebookAPI(config);
@@ -272,7 +289,7 @@ public class DesktopFacebookAPIUnitTests {
 
 					@Override
 					public HttpStatus getStatus() {
-						return new HttpStatus(200); // Not 200
+						return new HttpStatus(200);
 					}
 
 					@Override
@@ -411,4 +428,5 @@ public class DesktopFacebookAPIUnitTests {
 		verify(listener, times(1)).success();
 
 	}
+
 }
