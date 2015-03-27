@@ -14,46 +14,14 @@ import de.tpronold.gdxfacebook.core.FacebookConfig;
 import de.tpronold.gdxfacebook.core.ResponseError;
 import de.tpronold.gdxfacebook.core.ResponseListener;
 
-public class AndroidFacebookAPI implements FacebookAPI {
+public class AndroidFacebookAPI extends FacebookAPI {
 
 	private final Activity activity;
 	private final FacebookConfig config;
 
-	private boolean isSignedin = false;
-
 	public AndroidFacebookAPI(final Activity activity, final FacebookConfig config) {
 		this.activity = activity;
 		this.config = config;
-	}
-
-	@Override
-	public void signin(final ResponseListener responseListener) {
-		signin(true, responseListener);
-
-	}
-
-	@Override
-	public void signin(boolean allowGUI, final ResponseListener responseListener) {
-
-		isSignedin = false;
-
-		Session.openActiveSession(activity, allowGUI, new Session.StatusCallback() {
-
-			@Override
-			public void call(Session session, SessionState state, Exception exception) {
-
-				if (!session.isOpened() || exception != null || state == null || state.isClosed()) {
-					ResponseError error = new ResponseError();
-					error.setCode(-1);
-					error.setMessage("Could not (re)open Facebook session.");
-					responseListener.error(error);
-				} else {
-					isSignedin = true;
-					responseListener.success();
-				}
-
-			}
-		});
 	}
 
 	@Override
@@ -63,13 +31,14 @@ public class AndroidFacebookAPI implements FacebookAPI {
 
 	@Override
 	public void signout() {
-		isSignedin = false;
+		super.signout();
 		Session.getActiveSession().closeAndClearTokenInformation();
 	}
 
-	@Override
+	// TODO not tested
 	public void graphUser(final ResponseListener responseListener) {
 		if (isSignedin) {
+
 			Request.newMeRequest(Session.getActiveSession(), new Request.GraphUserCallback() {
 
 				@Override
@@ -91,6 +60,7 @@ public class AndroidFacebookAPI implements FacebookAPI {
 					}
 
 				}
+
 			}).executeAsync();
 		} else {
 			ResponseError error = new ResponseError();
@@ -100,4 +70,28 @@ public class AndroidFacebookAPI implements FacebookAPI {
 		}
 	}
 
+	// TODO not tested
+	@Override
+	public void signin(final boolean allowGUI, final ResponseListener responseListener) {
+
+		Session.openActiveSession(activity, allowGUI, new Session.StatusCallback() {
+
+			@Override
+			public void call(Session session, SessionState state, Exception exception) {
+
+				if (!session.isOpened() || exception != null || state == null || state.isClosed()) {
+					ResponseError error = new ResponseError();
+					error.setCode(-1);
+					error.setMessage("Could not (re)open Facebook session.");
+					responseListener.error(error);
+				} else {
+					isSignedin = true;
+					setAccessToken(session.getAccessToken());
+					responseListener.success();
+				}
+
+			}
+		});
+
+	}
 }
