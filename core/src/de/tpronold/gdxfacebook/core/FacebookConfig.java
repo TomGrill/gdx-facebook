@@ -9,6 +9,8 @@ public class FacebookConfig {
 	public boolean ENABLE_HTML = false;
 	public boolean ENABLE_IOS = false;
 
+	public String PERMISSIONS = "email,public_profile,user_friends";
+
 	public String APP_ID = "";
 
 }
