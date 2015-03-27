@@ -1,7 +1,7 @@
 package de.tpronold.gdxfacebook.desktop;
 
-import de.tpronold.gdxfacebook.core.FacebookLoginListener;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -11,6 +11,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import de.tpronold.gdxfacebook.core.FacebookLoginListener;
 
 public class JXBrowserDesktopFacebookGUI extends Application implements DesktopFacebookGUI {
 
@@ -21,6 +22,7 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 	private static String appId;
 	private static String permissions;
 	private static FacebookLoginListener listener;
+	private static boolean applicationIsStartet;
 
 	private String access_token;
 	private long expirationTimeMillis;
@@ -40,24 +42,24 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 		if (permissions == null) {
 			throw new RuntimeException("Permissions is empty. Use setPermissions() before show()");
 		}
-
-		launch(new String());
+		if (!applicationIsStartet) {
+			applicationIsStartet = true;
+			Application.launch(new String());
+		}
 
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		init(primaryStage);
-	}
 
-	private void init(Stage primaryStage) {
+		Platform.setImplicitExit(false);
 
 		url = "https://www.facebook.com/dialog/oauth?" + "client_id=" + appId + "&redirect_uri=https://www.facebook.com/connect/login_success.html" + "&scope=" + permissions
 				+ "&response_type=token";
 
 		this.primaryStage = primaryStage;
-
-		primaryStage.setTitle("Facebook Signin");
+		this.primaryStage.setAlwaysOnTop(true);
+		this.primaryStage.setTitle("Facebook Signin");
 
 		browser = new WebView();
 
@@ -126,7 +128,6 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 				JXBrowserDesktopFacebookGUI.listener.onCancel();
 			}
 		});
-
 	}
 
 	private void passValuesToListener(String accessToken, long expirationTimeMillis) {
@@ -139,20 +140,20 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 
 	@Override
 	public void show(FacebookLoginListener listener) {
-		this.listener = listener;
+		JXBrowserDesktopFacebookGUI.listener = listener;
 
 		open();
 	}
 
 	@Override
 	public void setAppId(String appId) {
-		this.appId = appId;
+		JXBrowserDesktopFacebookGUI.appId = appId;
 
 	}
 
 	@Override
 	public String getAppId() {
-		return this.appId;
+		return JXBrowserDesktopFacebookGUI.appId;
 	}
 
 	@Override
@@ -162,7 +163,7 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 
 	@Override
 	public void setPermissions(String permissions) {
-		this.permissions = permissions;
+		JXBrowserDesktopFacebookGUI.permissions = permissions;
 	}
 
 }

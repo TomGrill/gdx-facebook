@@ -43,7 +43,7 @@ public abstract class FacebookAPI {
 	final public void newGraphRequest(String path, String parameter, final HttpResponseListener listner) {
 		HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
 
-		String uri = path + "?" + parameter;
+		String uri = "https://graph.facebook.com/" + path + "?" + parameter;
 		HttpRequest httpRequest = requestBuilder.newRequest().method(HttpMethods.GET).url(uri).build();
 
 		Gdx.net.sendHttpRequest(httpRequest, listner);

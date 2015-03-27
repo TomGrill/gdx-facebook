@@ -35,6 +35,7 @@ public class DesktopFacebookAPI extends FacebookAPI {
 					@Override
 					public void handleHttpResponse(HttpResponse httpResponse) {
 						if (httpResponse.getStatus().getStatusCode() == 200) {
+							isSignedin = true;
 							responseListener.success();
 						} else {
 							startGUILogin(responseListener);
@@ -75,6 +76,7 @@ public class DesktopFacebookAPI extends FacebookAPI {
 					@Override
 					public void handleHttpResponse(HttpResponse httpResponse) {
 						if (httpResponse.getStatus().getStatusCode() == 200) {
+							isSignedin = true;
 							responseListener.success();
 						} else {
 							ResponseError error = new ResponseError();
@@ -118,6 +120,8 @@ public class DesktopFacebookAPI extends FacebookAPI {
 
 					@Override
 					public void onSuccess(String accessToken, long expires) {
+						isSignedin = true;
+						setAccessToken(accessToken);
 						responseListener.success();
 					}
 
