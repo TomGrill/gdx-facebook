@@ -59,7 +59,6 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 			public void changed(ObservableValue<? extends String> arg0, String oldloc, String newLocation) {
 
 				String token_identifier = "access_token=";
-				System.out.println(newLocation);
 				if (newLocation.contains("https://www.facebook.com/connect/login_success.html#access_token=")) {
 					access_token = newLocation.substring(newLocation.lastIndexOf(token_identifier) + token_identifier.length(), newLocation.lastIndexOf('&'));
 					String expires_in = newLocation.substring(newLocation.lastIndexOf('=') + 1);
@@ -71,7 +70,6 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 				}
 
 				if (newLocation.contains("https://www.facebook.com/connect/login_success.html?error=")) {
-					System.out.println(newLocation);
 
 					// TODO rework this URL parsing
 					String error;
@@ -81,27 +79,19 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 					amperIndex = newLocation.indexOf("&", amperIndex);
 					error = newLocation.substring(newLocation.lastIndexOf(errorIdentifier) + errorIdentifier.length(), amperIndex);
 
-					System.out.println("ERROR: " + error);
-
 					String errorCode;
 					String errorCodeIdentifier = "error_code=";
 					amperIndex = newLocation.indexOf("&", amperIndex + 1);
 					errorCode = newLocation.substring(newLocation.lastIndexOf(errorCodeIdentifier) + errorCodeIdentifier.length(), amperIndex);
-
-					System.out.println("ERROR CODE: " + errorCode);
 
 					String errorDescription;
 					String errorDescriptionIdentifier = "error_description=";
 					amperIndex = newLocation.indexOf("&", amperIndex + 1);
 					errorDescription = newLocation.substring(newLocation.lastIndexOf(errorDescriptionIdentifier) + errorDescriptionIdentifier.length(), amperIndex);
 
-					System.out.println("ERROR DESCRIPTION: " + errorDescription);
-
 					String errorReason;
 					String errorReasonIdentifier = "error_reason=";
 					errorReason = newLocation.substring(newLocation.lastIndexOf(errorReasonIdentifier) + errorReasonIdentifier.length(), newLocation.lastIndexOf('#'));
-
-					System.out.println("ERROR REASON: " + errorReason);
 
 					JXBrowserDesktopFacebookGUI.this.listener.onError(error, errorCode, errorDescription, errorReason);
 
