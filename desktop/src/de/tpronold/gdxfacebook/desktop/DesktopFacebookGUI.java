@@ -1,5 +1,7 @@
 package de.tpronold.gdxfacebook.desktop;
 
+import de.tpronold.gdxfacebook.core.FacebookLoginListener;
+
 public interface DesktopFacebookGUI {
 	public void show(FacebookLoginListener listener);
 

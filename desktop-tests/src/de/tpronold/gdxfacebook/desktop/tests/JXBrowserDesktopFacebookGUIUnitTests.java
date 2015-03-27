@@ -12,7 +12,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import de.tpronold.gdxfacebook.desktop.FacebookLoginListener;
+import de.tpronold.gdxfacebook.core.FacebookLoginListener;
 import de.tpronold.gdxfacebook.desktop.JXBrowserDesktopFacebookGUI;
 
 @RunWith(PowerMockRunner.class)
@@ -66,6 +66,12 @@ public class JXBrowserDesktopFacebookGUIUnitTests {
 			public void onError(String error, String errorCode, String errorDescription, String errorReason) {
 
 			}
+
+			@Override
+			public void onCancel() {
+				// TODO Auto-generated method stub
+
+			}
 		});
 	}
 
@@ -83,6 +89,12 @@ public class JXBrowserDesktopFacebookGUIUnitTests {
 			public void onError(String error, String errorCode, String errorDescription, String errorReason) {
 
 			}
+
+			@Override
+			public void onCancel() {
+				// TODO Auto-generated method stub
+
+			}
 		});
 	}
 
@@ -98,6 +110,12 @@ public class JXBrowserDesktopFacebookGUIUnitTests {
 
 			@Override
 			public void onError(String error, String errorCode, String errorDescription, String errorReason) {
+
+			}
+
+			@Override
+			public void onCancel() {
+				// TODO Auto-generated method stub
 
 			}
 		});

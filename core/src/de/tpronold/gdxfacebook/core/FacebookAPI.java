@@ -20,7 +20,7 @@ public abstract class FacebookAPI {
 	 * Provide a way to login with facebook. The method must make use of
 	 * setAccessToken() after a successfull login.
 	 * 
-	 * @param responseListener
+	 * 
 	 */
 	abstract public void signin(boolean allowGUI, ResponseListener responseListener);
 

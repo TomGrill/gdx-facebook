@@ -5,6 +5,7 @@ import com.badlogic.gdx.Net.HttpResponseListener;
 
 import de.tpronold.gdxfacebook.core.FacebookAPI;
 import de.tpronold.gdxfacebook.core.FacebookConfig;
+import de.tpronold.gdxfacebook.core.FacebookLoginListener;
 import de.tpronold.gdxfacebook.core.ResponseError;
 import de.tpronold.gdxfacebook.core.ResponseListener;
 
@@ -26,6 +27,7 @@ public class DesktopFacebookAPI extends FacebookAPI {
 		signout();
 
 		if (allowGUI) {
+
 			// try silent first
 			if ((accessToken != null && accessToken.length() > 0)) {
 				verifiyAccessToken(accessToken, new HttpResponseListener() {
@@ -55,6 +57,8 @@ public class DesktopFacebookAPI extends FacebookAPI {
 						responseListener.error(error);
 					}
 				});
+			} else {
+				startGUILogin(responseListener);
 			}
 
 		} else {
@@ -103,28 +107,42 @@ public class DesktopFacebookAPI extends FacebookAPI {
 
 	private void startGUILogin(final ResponseListener responseListener) {
 
-		JXBrowserDesktopFacebookGUI browser = new JXBrowserDesktopFacebookGUI();
-		browser.setAppId(config.APP_ID);
-		browser.setPermissions(config.PERMISSIONS);
-
-		browser.show(new FacebookLoginListener() {
+		new Thread(new Runnable() {
 
 			@Override
-			public void onSuccess(String accessToken, long expires) {
-				responseListener.success();
-			}
+			public void run() {
+				JXBrowserDesktopFacebookGUI browser = new JXBrowserDesktopFacebookGUI();
+				browser.setAppId(config.APP_ID);
+				browser.setPermissions(config.PERMISSIONS);
+				browser.show(new FacebookLoginListener() {
 
-			@Override
-			public void onError(String error, String errorCode, String errorDescription, String errorReason) {
-				ResponseError listenerError = new ResponseError();
-				listenerError.setCode(ResponseError.EC_FAILED);
-				// TODO this error codes may be different... Proof. Not sure
-				// what FB is capeable of returning in ResponderBody
-				listenerError.setMessage("GUI Login failed. \n Error: " + error + "\nError Code;" + errorCode + "\nError Description;" + errorDescription + "\nError Reason;"
-						+ errorReason);
-				responseListener.error(listenerError);
+					@Override
+					public void onSuccess(String accessToken, long expires) {
+						responseListener.success();
+					}
+
+					@Override
+					public void onError(String error, String errorCode, String errorDescription, String errorReason) {
+						ResponseError listenerError = new ResponseError();
+						listenerError.setCode(ResponseError.EC_FAILED);
+						// TODO this error codes may be different... Proof. Not
+						// sure
+						// what FB is capeable of returning in ResponderBody
+						listenerError.setMessage("GUI Login failed. \n Error: " + error + "\nError Code;" + errorCode + "\nError Description;" + errorDescription
+								+ "\nError Reason;" + errorReason);
+						responseListener.error(listenerError);
+					}
+
+					@Override
+					public void onCancel() {
+						responseListener.cancel();
+
+					}
+				});
+
 			}
-		});
+		}).start();
+
 	}
 
 }

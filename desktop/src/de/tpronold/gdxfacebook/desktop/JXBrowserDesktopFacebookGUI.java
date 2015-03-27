@@ -1,18 +1,27 @@
 package de.tpronold.gdxfacebook.desktop;
 
+import de.tpronold.gdxfacebook.core.FacebookLoginListener;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class JXBrowserDesktopFacebookGUI extends Application implements DesktopFacebookGUI {
 
-	private String appId;
-	private String permissions;
+	/**
+	 * TODO I really dont like this static variables. But that is doing it for
+	 * now. NEEDS REFACTOR
+	 */
+	private static String appId;
+	private static String permissions;
+	private static FacebookLoginListener listener;
+
 	private String access_token;
 	private long expirationTimeMillis;
 	private String url;
@@ -23,10 +32,7 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 
 	private Stage primaryStage;
 
-	private FacebookLoginListener listener;
-
 	public void open() {
-
 		if (appId == null || appId.length() == 0) {
 			throw new RuntimeException("App ID is empty. Use setAppId() before show()");
 		}
@@ -35,24 +41,29 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 			throw new RuntimeException("Permissions is empty. Use setPermissions() before show()");
 		}
 
-		url = "https://www.facebook.com/dialog/oauth?" + "client_id=" + appId + "&redirect_uri=https://www.facebook.com/connect/login_success.html" + "&scope=" + permissions
-				+ "&response_type=token";
-
-		Application.launch(new String());
+		launch(new String());
 
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		init(primaryStage);
+	}
+
+	private void init(Stage primaryStage) {
+
+		url = "https://www.facebook.com/dialog/oauth?" + "client_id=" + appId + "&redirect_uri=https://www.facebook.com/connect/login_success.html" + "&scope=" + permissions
+				+ "&response_type=token";
 
 		this.primaryStage = primaryStage;
 
 		primaryStage.setTitle("Facebook Signin");
 
 		browser = new WebView();
-		engine = browser.getEngine();
-		engine.load(url);
 
+		engine = browser.getEngine();
+
+		engine.load(url);
 		engine.locationProperty().addListener(new ChangeListener<String>() {
 
 			@Override
@@ -93,7 +104,7 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 					String errorReasonIdentifier = "error_reason=";
 					errorReason = newLocation.substring(newLocation.lastIndexOf(errorReasonIdentifier) + errorReasonIdentifier.length(), newLocation.lastIndexOf('#'));
 
-					JXBrowserDesktopFacebookGUI.this.listener.onError(error, errorCode, errorDescription, errorReason);
+					JXBrowserDesktopFacebookGUI.listener.onError(error, errorCode, errorDescription, errorReason);
 
 					closeBrowser();
 
@@ -110,10 +121,16 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 		this.primaryStage.setScene(root);
 		this.primaryStage.show();
 
+		this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			public void handle(WindowEvent we) {
+				JXBrowserDesktopFacebookGUI.listener.onCancel();
+			}
+		});
+
 	}
 
 	private void passValuesToListener(String accessToken, long expirationTimeMillis) {
-		this.listener.onSuccess(accessToken, expirationTimeMillis);
+		JXBrowserDesktopFacebookGUI.listener.onSuccess(accessToken, expirationTimeMillis);
 	}
 
 	private void closeBrowser() {
