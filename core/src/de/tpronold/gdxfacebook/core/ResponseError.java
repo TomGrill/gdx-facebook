@@ -2,7 +2,12 @@ package de.tpronold.gdxfacebook.core;
 
 public class ResponseError {
 
-	public static final int EC_CANNOT_RESTORE_SESSION = 112;
+	public static final int EC_CANNOT_RESTORE_SESSION = -112;
+	public static final int EC_EMPTY_ACCESS_TOKEN = -110;
+	public static final int EC_CANCELED = -117;
+	public static final int EC_FAILED = -118;
+	public static final int EC_OK = 200;
+	public static final int EC_BAD_REQUEST = 400;
 
 	// TODO colver all from FacebookRequestError.class
 	private int code = 0;
