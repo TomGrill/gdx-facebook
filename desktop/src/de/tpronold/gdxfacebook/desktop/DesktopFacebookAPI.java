@@ -5,15 +5,12 @@ import com.badlogic.gdx.Net.HttpResponseListener;
 
 import de.tpronold.gdxfacebook.core.FacebookAPI;
 import de.tpronold.gdxfacebook.core.FacebookConfig;
-import de.tpronold.gdxfacebook.core.FacebookSession;
 import de.tpronold.gdxfacebook.core.ResponseError;
 import de.tpronold.gdxfacebook.core.ResponseListener;
 
 public class DesktopFacebookAPI extends FacebookAPI {
 
 	private FacebookConfig config;
-
-	private FacebookSession session;
 
 	public DesktopFacebookAPI(FacebookConfig config) {
 		this.config = config;
