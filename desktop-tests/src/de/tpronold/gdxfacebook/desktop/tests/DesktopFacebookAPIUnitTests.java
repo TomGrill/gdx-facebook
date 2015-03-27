@@ -88,7 +88,7 @@ public class DesktopFacebookAPIUnitTests {
 	}
 
 	@Test
-	public void errorCode_EC_CANCELED() {
+	public void errorCode_EC_CANCELED_noGUIAllowed() {
 
 		doAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) {
@@ -100,6 +100,7 @@ public class DesktopFacebookAPIUnitTests {
 		}).when(Gdx.net).sendHttpRequest(any(HttpRequest.class), any(HttpResponseListener.class));
 
 		ResponseListener listener = mock(ResponseListener.class);
+
 		fixture.setAccessToken("fdgsdfgsdgsdf");
 		fixture.signin(false, listener);
 		verify(listener, times(1)).error(argThat(new ArgumentMatcher<ResponseError>() {
@@ -116,7 +117,36 @@ public class DesktopFacebookAPIUnitTests {
 	}
 
 	@Test
-	public void errorCode_EC_FAILED() {
+	public void errorCode_EC_CANCELED_withGUI() {
+
+		doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				HttpResponseListener rListener = (HttpResponseListener) args[1];
+				rListener.cancelled();
+				return null;
+			}
+		}).when(Gdx.net).sendHttpRequest(any(HttpRequest.class), any(HttpResponseListener.class));
+
+		ResponseListener listener = mock(ResponseListener.class);
+
+		fixture.setAccessToken("fdgsdfgsdgsdf");
+		fixture.signin(listener);
+		verify(listener, times(1)).error(argThat(new ArgumentMatcher<ResponseError>() {
+			@Override
+			public boolean matches(Object argument) {
+				ResponseError error = (ResponseError) argument;
+				if (error.getCode() == ResponseError.EC_CANCELED) {
+					return true;
+				}
+				return false;
+			}
+		}));
+
+	}
+
+	@Test
+	public void errorCode_EC_FAILED_noGUIAllowed() {
 
 		doAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) {
@@ -144,7 +174,35 @@ public class DesktopFacebookAPIUnitTests {
 	}
 
 	@Test
-	public void errorCode_EC_BAD_REQUEST() {
+	public void errorCode_EC_FAILED_withGui() {
+
+		doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				HttpResponseListener rListener = (HttpResponseListener) args[1];
+				rListener.failed(new Throwable());
+				return null;
+			}
+		}).when(Gdx.net).sendHttpRequest(any(HttpRequest.class), any(HttpResponseListener.class));
+
+		ResponseListener listener = mock(ResponseListener.class);
+		fixture.setAccessToken("sdfgsdfgsdg");
+		fixture.signin(listener);
+		verify(listener, times(1)).error(argThat(new ArgumentMatcher<ResponseError>() {
+			@Override
+			public boolean matches(Object argument) {
+				ResponseError error = (ResponseError) argument;
+				if (error.getCode() == ResponseError.EC_FAILED) {
+					return true;
+				}
+				return false;
+			}
+		}));
+
+	}
+
+	@Test
+	public void errorCode_EC_BAD_REQUEST_noGUIAllowed() {
 
 		doAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) {
@@ -188,6 +246,7 @@ public class DesktopFacebookAPIUnitTests {
 
 		ResponseListener listener = mock(ResponseListener.class);
 		fixture.setAccessToken("gsdfgsdfgsdf");
+
 		fixture.signin(false, listener);
 		verify(listener, times(1)).error(argThat(new ArgumentMatcher<ResponseError>() {
 			@Override
@@ -203,7 +262,58 @@ public class DesktopFacebookAPIUnitTests {
 	}
 
 	@Test
-	public void errorCode_EC_OK() {
+	public void errorCode_EC_BAD_REQUEST_withGUI_processesToGUILoginWithBrowser_AND_succeeds() {
+
+		doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				HttpResponseListener rListener = (HttpResponseListener) args[1];
+				rListener.handleHttpResponse(new HttpResponse() {
+
+					@Override
+					public HttpStatus getStatus() {
+						return new HttpStatus(200); // Not 200
+					}
+
+					@Override
+					public String getResultAsString() {
+						return null;
+					}
+
+					@Override
+					public InputStream getResultAsStream() {
+						return null;
+					}
+
+					@Override
+					public byte[] getResult() {
+						return null;
+					}
+
+					@Override
+					public Map<String, List<String>> getHeaders() {
+						return null;
+					}
+
+					@Override
+					public String getHeader(String name) {
+						return null;
+					}
+				});
+				return null;
+			}
+		}).when(Gdx.net).sendHttpRequest(any(HttpRequest.class), any(HttpResponseListener.class));
+
+		ResponseListener listener = mock(ResponseListener.class);
+		fixture.setAccessToken("gsdfgsdfgsdf");
+
+		fixture.signin(false, listener);
+		verify(listener, times(1)).success();
+
+	}
+
+	@Test
+	public void errorCode_EC_OK_noGUIAllowed() {
 
 		doAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) {
@@ -246,8 +356,58 @@ public class DesktopFacebookAPIUnitTests {
 		}).when(Gdx.net).sendHttpRequest(any(HttpRequest.class), any(HttpResponseListener.class));
 
 		ResponseListener listener = mock(ResponseListener.class);
-		fixture.setAccessToken("EC_FAILED_TOKEN");
+		fixture.setAccessToken("hgdfdfsd");
 		fixture.signin(false, listener);
+		verify(listener, times(1)).success();
+
+	}
+
+	@Test
+	public void errorCode_EC_OK_withGUI() {
+
+		doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				HttpResponseListener rListener = (HttpResponseListener) args[1];
+				rListener.handleHttpResponse(new HttpResponse() {
+
+					@Override
+					public HttpStatus getStatus() {
+						return new HttpStatus(200);
+					}
+
+					@Override
+					public String getResultAsString() {
+						return null;
+					}
+
+					@Override
+					public InputStream getResultAsStream() {
+						return null;
+					}
+
+					@Override
+					public byte[] getResult() {
+						return null;
+					}
+
+					@Override
+					public Map<String, List<String>> getHeaders() {
+						return null;
+					}
+
+					@Override
+					public String getHeader(String name) {
+						return null;
+					}
+				});
+				return null;
+			}
+		}).when(Gdx.net).sendHttpRequest(any(HttpRequest.class), any(HttpResponseListener.class));
+
+		ResponseListener listener = mock(ResponseListener.class);
+		fixture.setAccessToken("sdfgsdfg");
+		fixture.signin(listener);
 		verify(listener, times(1)).success();
 
 	}
