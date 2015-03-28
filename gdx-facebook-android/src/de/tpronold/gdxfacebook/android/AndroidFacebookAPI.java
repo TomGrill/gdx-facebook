@@ -36,7 +36,7 @@ public class AndroidFacebookAPI extends FacebookAPI {
 
 	@Override
 	public void signin(final boolean allowGUI, final ResponseListener responseListener) {
-
+		signout();
 		OpenRequest openRequest = new OpenRequest(activity).setPermissions(FacebookUtils.permissionSplit(config.PERMISSIONS)).setCallback(new Session.StatusCallback() {
 
 			@Override
