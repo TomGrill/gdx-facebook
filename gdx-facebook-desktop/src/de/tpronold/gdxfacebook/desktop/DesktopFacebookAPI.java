@@ -1,7 +1,9 @@
 package de.tpronold.gdxfacebook.desktop;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
+import com.badlogic.gdx.Preferences;
 
 import de.tpronold.gdxfacebook.core.FacebookAPI;
 import de.tpronold.gdxfacebook.core.FacebookConfig;
@@ -13,8 +15,18 @@ public class DesktopFacebookAPI extends FacebookAPI {
 
 	private FacebookConfig config;
 
+	private Preferences prefs;
+
 	public DesktopFacebookAPI(FacebookConfig config) {
 		this.config = config;
+
+		prefs = Gdx.app.getPreferences("DesktopFacebookAPI.storage.dat");
+
+		String existingToken = prefs.getString("access_token", null);
+
+		if (existingToken != null && existingToken.length() > 0) {
+			setAccessToken(existingToken);
+		}
 	}
 
 	private void verifiyAccessToken(String accessToken, HttpResponseListener listener) {
@@ -147,6 +159,13 @@ public class DesktopFacebookAPI extends FacebookAPI {
 			}
 		}).start();
 
+	}
+
+	@Override
+	public void setAccessToken(String accessToken) {
+		super.setAccessToken(accessToken);
+		prefs.putString("access_token", accessToken);
+		prefs.flush();
 	}
 
 }

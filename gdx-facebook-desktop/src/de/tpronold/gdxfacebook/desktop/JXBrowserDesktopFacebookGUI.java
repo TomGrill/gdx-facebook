@@ -35,11 +35,11 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 	private Stage primaryStage;
 
 	public void open() {
-		if (appId == null || appId.length() == 0) {
+		if (JXBrowserDesktopFacebookGUI.appId == null || JXBrowserDesktopFacebookGUI.appId.length() == 0) {
 			throw new RuntimeException("App ID is empty. Use setAppId() before show()");
 		}
 
-		if (permissions == null) {
+		if (JXBrowserDesktopFacebookGUI.permissions == null) {
 			throw new RuntimeException("Permissions is empty. Use setPermissions() before show()");
 		}
 		if (!applicationIsStartet) {

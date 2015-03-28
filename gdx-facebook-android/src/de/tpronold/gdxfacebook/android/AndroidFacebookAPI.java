@@ -2,15 +2,13 @@ package de.tpronold.gdxfacebook.android;
 
 import android.app.Activity;
 
-import com.facebook.FacebookRequestError;
-import com.facebook.Request;
-import com.facebook.Response;
 import com.facebook.Session;
+import com.facebook.Session.OpenRequest;
 import com.facebook.SessionState;
-import com.facebook.model.GraphUser;
 
 import de.tpronold.gdxfacebook.core.FacebookAPI;
 import de.tpronold.gdxfacebook.core.FacebookConfig;
+import de.tpronold.gdxfacebook.core.FacebookUtils;
 import de.tpronold.gdxfacebook.core.ResponseError;
 import de.tpronold.gdxfacebook.core.ResponseListener;
 
@@ -32,49 +30,14 @@ public class AndroidFacebookAPI extends FacebookAPI {
 	@Override
 	public void signout() {
 		super.signout();
+		isSignedin = false;
 		Session.getActiveSession().closeAndClearTokenInformation();
 	}
 
-	// TODO not tested
-	public void graphUser(final ResponseListener responseListener) {
-		if (isSignedin) {
-
-			Request.newMeRequest(Session.getActiveSession(), new Request.GraphUserCallback() {
-
-				@Override
-				public void onCompleted(GraphUser user, Response response) {
-					FacebookRequestError fberror = response.getError();
-
-					if (fberror == null) {
-						// TODO add code to return GraphUser
-						user.getBirthday();
-					} else {
-						ResponseError error = new ResponseError();
-						error.setCode(fberror.getErrorCode());
-						error.setMessage(fberror.getErrorMessage());
-						error.setType(fberror.getErrorType());
-						error.setUserMessage(fberror.getErrorUserMessage());
-						error.setUserTitle(fberror.getErrorUserTitle());
-						error.setShouldNotifyUser(fberror.shouldNotifyUser());
-						responseListener.error(error);
-					}
-
-				}
-
-			}).executeAsync();
-		} else {
-			ResponseError error = new ResponseError();
-			error.setCode(110);
-			error.setMessage("You are not signed in.");
-			responseListener.error(error);
-		}
-	}
-
-	// TODO not tested
 	@Override
 	public void signin(final boolean allowGUI, final ResponseListener responseListener) {
 
-		Session.openActiveSession(activity, allowGUI, new Session.StatusCallback() {
+		OpenRequest openRequest = new OpenRequest(activity).setPermissions(FacebookUtils.permissionSplit(config.PERMISSIONS)).setCallback(new Session.StatusCallback() {
 
 			@Override
 			public void call(Session session, SessionState state, Exception exception) {
@@ -93,5 +56,30 @@ public class AndroidFacebookAPI extends FacebookAPI {
 			}
 		});
 
+		Session session = new Session.Builder(activity).build();
+		if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState()) || allowGUI) {
+			Session.setActiveSession(session);
+			session.openForRead(openRequest);
+		}
+
 	}
+
+	@Override
+	public void setAccessToken(String accessToken) {
+		super.setAccessToken(accessToken);
+
+		// Session session = Session.getActiveSession();
+		// if (session != null) {
+		// session.open(AccessToken.createFromExistingAccessToken(accessToken,
+		// null, null, null, null), new StatusCallback() {
+		//
+		// @Override
+		// public void call(Session session, SessionState state, Exception
+		// exception) {
+		//
+		// }
+		// });
+		// }
+	}
+
 }

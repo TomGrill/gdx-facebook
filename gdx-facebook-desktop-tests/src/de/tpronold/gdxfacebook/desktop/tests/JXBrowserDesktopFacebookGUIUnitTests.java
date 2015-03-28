@@ -54,6 +54,7 @@ public class JXBrowserDesktopFacebookGUIUnitTests {
 
 	@Test(expected = RuntimeException.class)
 	public void showThrowsRuntimeExceptionWhenAppIdIsNull() {
+		fixture.setAppId(null);
 		fixture.setPermissions("ABC,BVC");
 		fixture.show(new FacebookLoginListener() {
 
@@ -69,7 +70,6 @@ public class JXBrowserDesktopFacebookGUIUnitTests {
 
 			@Override
 			public void onCancel() {
-				// TODO Auto-generated method stub
 
 			}
 		});
@@ -77,6 +77,7 @@ public class JXBrowserDesktopFacebookGUIUnitTests {
 
 	@Test(expected = RuntimeException.class)
 	public void showThrowsRuntimeExceptionWhenAppIdLengthIsZero() {
+		fixture.setAppId("");
 		fixture.setPermissions("ABC,BVC");
 		fixture.show(new FacebookLoginListener() {
 
@@ -92,7 +93,6 @@ public class JXBrowserDesktopFacebookGUIUnitTests {
 
 			@Override
 			public void onCancel() {
-				// TODO Auto-generated method stub
 
 			}
 		});
@@ -101,6 +101,7 @@ public class JXBrowserDesktopFacebookGUIUnitTests {
 	@Test(expected = RuntimeException.class)
 	public void showThrowsRuntimeExceptionWhenPermissionsIsNull() {
 		fixture.setAppId("12345");
+		fixture.setPermissions(null);
 		fixture.show(new FacebookLoginListener() {
 
 			@Override
