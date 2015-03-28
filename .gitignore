@@ -10,3 +10,6 @@ local.properties
 .gradle/
 .settings/
 /build/
+
+publishLocal.sh
+publishSnapshot.sh
