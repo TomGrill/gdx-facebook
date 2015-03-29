@@ -53,10 +53,6 @@ public class FacebookSystem {
 			Gdx.app.debug(TAG, "Skip loading FacebookAPI for iOS. Not running iOS. \n");
 			return;
 		}
-		if (!config.ENABLE_IOS) {
-			Gdx.app.debug(TAG, "Did not load FacebookAPI for iOS. Disabled in FacebookConfig. \n");
-			return;
-		}
 		try {
 
 			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.ios.IOSFacebookAPI");
@@ -78,11 +74,6 @@ public class FacebookSystem {
 			Gdx.app.debug(TAG, "Skip loading FacebookAPI for Desktop. Not running Desktop. \n");
 			return;
 		}
-		if (!config.ENABLE_DESKTOP) {
-			Gdx.app.debug(TAG, "Did not load FacebookAPI for Desktop. Disabled in FacebookConfig. \n");
-			return;
-		}
-
 		try {
 
 			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.desktop.DesktopFacebookAPI");
@@ -102,10 +93,6 @@ public class FacebookSystem {
 	private void tryLoadHTMLFacebookForAPI() {
 		if (Gdx.app.getType() != ApplicationType.WebGL) {
 			Gdx.app.debug(TAG, "Skip loading FacebookAPI for HTML. Not running HTML. \n");
-			return;
-		}
-		if (!config.ENABLE_HTML) {
-			Gdx.app.debug(TAG, "Did not load FacebookAPI for HTML. Disabled in FacebookConfig. \n");
 			return;
 		}
 
@@ -128,10 +115,6 @@ public class FacebookSystem {
 	private void tryLoadAndroidFacebookAPI() {
 		if (Gdx.app.getType() != ApplicationType.Android) {
 			Gdx.app.debug(TAG, "Skip loading FacebookAPI for Android. Not running Android. \n");
-			return;
-		}
-		if (!config.ENABLE_ANDROID) {
-			Gdx.app.debug(TAG, "Did not load FacebookAPI for Android. Disabled in FacebookConfig. \n");
 			return;
 		}
 

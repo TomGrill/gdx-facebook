@@ -18,10 +18,6 @@ public class FacebookConfigUnitTests {
 
 	@Test
 	public void defaultValues() {
-		assertEquals(false, fixture.ENABLE_ANDROID);
-		assertEquals(false, fixture.ENABLE_DESKTOP);
-		assertEquals(false, fixture.ENABLE_HTML);
-		assertEquals(false, fixture.ENABLE_IOS);
 		assertEquals("libgdx-facebook.pref", fixture.PREF_FILENAME);
 		assertEquals("", fixture.APP_ID);
 		assertEquals("email,public_profile,user_friends", fixture.PERMISSIONS);

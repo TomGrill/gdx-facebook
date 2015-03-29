@@ -93,7 +93,6 @@ public class FacebookSystemUnitTests {
 	@Test
 	@SuppressWarnings("static-access")
 	public void DesktopIsLoaded() {
-		config.ENABLE_DESKTOP = true;
 		Mockito.when(Gdx.app.getType()).thenReturn(ApplicationType.Desktop);
 		try {
 
@@ -110,7 +109,6 @@ public class FacebookSystemUnitTests {
 	@Test
 	@SuppressWarnings("static-access")
 	public void HTMLIsLoaded() {
-		config.ENABLE_HTML = true;
 		Mockito.when(Gdx.app.getType()).thenReturn(ApplicationType.WebGL);
 		try {
 			Mockito.when(classReflectionMock.forName("de.tomgrill.gdxfacebook.html.HTMLFacebookAPI")).thenReturn(facebookAPIStub.getClass());
@@ -126,7 +124,6 @@ public class FacebookSystemUnitTests {
 	@Test
 	@SuppressWarnings("static-access")
 	public void iOSIsLoaded() {
-		config.ENABLE_IOS = true;
 		try {
 			Mockito.when(Gdx.app.getType()).thenReturn(ApplicationType.iOS);
 			Mockito.when(classReflectionMock.forName("de.tomgrill.gdxfacebook.ios.IOSFacebookAPI")).thenReturn(facebookAPIStub.getClass());
@@ -141,7 +138,6 @@ public class FacebookSystemUnitTests {
 
 	@SuppressWarnings("static-access")
 	private void androidSetup() {
-		config.ENABLE_ANDROID = true;
 
 		try {
 			Mockito.when(classReflectionMock.forName("android.app.Activity")).thenReturn(activityStub.getClass());
