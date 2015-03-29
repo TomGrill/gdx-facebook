@@ -103,7 +103,6 @@ Add this to your robovm.xml
     ....
     <pattern>de.tomgrill.gdxfacebook.ios.IOSFacebookAPI</pattern>
   </forceLinkClasses>
-Add this to your libGDX build.gradle
 ```
 Add this to your libGDX build.gradle
 ```
