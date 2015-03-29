@@ -24,12 +24,18 @@ Login: https://developers.facebook.com/docs/facebook-login/
 Graph API: https://developers.facebook.com/docs/graph-api/using-graph-api/
 
 ## Setting up your Facebook App
-coming soon...
+Go to https://developers.facebook.com/apps/ and create a new app. 
+
+**Android**
+
+1. Add a new platform Android.
+2. Enable Single Sign On
+3. Add the key hashes of your debug and certificate. Read this to find out how to do that. https://developers.facebook.com/docs/android/getting-started/
 
 ## Installation
-Add this lines to your libGDX build.gradle
-
 **Core**
+
+Add this to your libGDX build.gradle
 ```
 dependencies {
     ...
@@ -39,6 +45,28 @@ dependencies {
 ```
 
 **Android**
+
+Add this to your AndroidManifest.xml
+```
+<uses-permission android:name="android.permission.INTERNET" />
+
+<application
+	...
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
+ 		
+ 	<activity android:name="com.facebook.LoginActivity"
+          android:theme="@android:style/Theme.Translucent.NoTitleBar"
+          android:label="@string/app_name" />
+	...
+</application>
+```
+Add this to your /res/values/strings.xml and replace **0123456789** with your App ID.
+```
+<string name="facebook_app_id">0123456789</string>
+```
+
+
+Add this to your libGDX build.gradle
 ```
 dependencies {
     ...
@@ -52,6 +80,32 @@ dependencies {
 ```
 
 **iOS**
+
+Add this to your Info.plist.xml and replace **0123456789** (twice!, *fb*-prefix in 2nd part is correct!) and **YOUR_FACEBOOK_APP_NAM**E accordingly.
+```
+<key>FacebookAppID</key>
+<string>0123456789</string>
+<key>FacebookDisplayName</key>
+<string>YOUR_FACEBOOK_APP_NAME</string>
+<key>CFBundleURLTypes</key>
+<array>
+<dict>
+<key>CFBundleURLSchemes</key>
+<array>
+    <string>fb0123456789</string>
+</array>
+</dict>
+</array>
+```
+Add this to your robovm.xml
+```
+<forceLinkClasses>
+    ....
+    <pattern>de.tomgrill.gdxfacebook.ios.IOSFacebookAPI</pattern>
+  </forceLinkClasses>
+Add this to your libGDX build.gradle
+```
+Add this to your libGDX build.gradle
 ```
 dependencies {
     ...
