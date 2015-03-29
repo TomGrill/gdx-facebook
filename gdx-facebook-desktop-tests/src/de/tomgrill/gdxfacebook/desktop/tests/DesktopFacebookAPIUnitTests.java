@@ -63,7 +63,6 @@ public class DesktopFacebookAPIUnitTests {
 		browserMock = mock(JXBrowserDesktopFacebookGUI.class);
 
 		config = new FacebookConfig();
-		fixture = new DesktopFacebookAPI(config);
 
 		HeadlessApplicationConfiguration conf = new HeadlessApplicationConfiguration();
 		new HeadlessApplication(new ApplicationAdapter() {
@@ -77,6 +76,7 @@ public class DesktopFacebookAPIUnitTests {
 		when(Gdx.app.getPreferences(anyString())).thenReturn(prefs);
 		when(prefs.getString("accessToken", "")).thenReturn("INVALID_TOKEN");
 
+		fixture = new DesktopFacebookAPI(config);
 	}
 
 	@Test

@@ -20,7 +20,7 @@ public class DesktopFacebookAPI extends FacebookAPI {
 	public DesktopFacebookAPI(FacebookConfig config) {
 		this.config = config;
 
-		prefs = Gdx.app.getPreferences("DesktopFacebookAPI.storage.dat");
+		prefs = Gdx.app.getPreferences(config.PREF_FILENAME);
 
 		String existingToken = prefs.getString("access_token", null);
 
