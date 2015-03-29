@@ -13,6 +13,16 @@ Current stable: **not yet existing**
 ##Supported Platforms
 Android, iOS, Desktop
 
+## That is how Facebook Graph API works.
+
+Basically you send an HTTP request to Facebook and you will get a result which is nothing more than a JSON string. Before you can use the Graph API you need a so called "Acces Token" for a user allowing you to make requests on the users behalf. The Facebook SDKs for Android and iOS manage the signin process (getting an "Access Token") and caching of the "Access Token". For a desktop project there is no SDK one could use so its written by myself (and might be buggy). 
+
+**Read more:**
+
+Login: https://developers.facebook.com/docs/facebook-login/
+
+Graph API: https://developers.facebook.com/docs/graph-api/using-graph-api/
+
 ## Setting up your Facebook App
 coming soon...
 
