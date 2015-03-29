@@ -66,9 +66,6 @@ Gdx.app.setLogLevel(Application.LOG_DEBUG); // only if you want log output
 
 FacebookConfig facebookConfig = new FacebookConfig();
 facebookConfig.APP_ID = "0123456789"; // put your app ID here
-facebookConfig.ENABLE_DESKTOP = true;
-facebookConfig.ENABLE_ANDROID = true;
-facebookConfig.ENABLE_IOS = true;
 facebookCOnfig.PERMISSIONS = "email,public_profile,user_friends"; // comma seperated list of permissions.
 
 FacebookSystem facebookSystem = new FacebookSystem(facebookConfig);
