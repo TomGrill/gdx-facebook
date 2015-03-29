@@ -1,5 +1,5 @@
 ext {
-	GROUPID = 'de.tpronold.gdxfacebook'
+	GROUPID = 'de.tomgrill.gdxfacebook'
 	VERSION = '0.1.0-SNAPSHOT'
 }
 
