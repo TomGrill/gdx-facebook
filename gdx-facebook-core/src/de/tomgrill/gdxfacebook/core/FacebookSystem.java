@@ -59,7 +59,7 @@ public class FacebookSystem {
 		}
 		try {
 
-			final Class<?> facebookClazz = ClassReflection.forName("de.tpronold.gdxfacebook.ios.IOSFacebookAPI");
+			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.ios.IOSFacebookAPI");
 			Object facebook = ClassReflection.getConstructor(facebookClazz, FacebookConfig.class).newInstance(config);
 
 			facebookAPI = (FacebookAPI) facebook;
@@ -85,7 +85,7 @@ public class FacebookSystem {
 
 		try {
 
-			final Class<?> facebookClazz = ClassReflection.forName("de.tpronold.gdxfacebook.desktop.DesktopFacebookAPI");
+			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.desktop.DesktopFacebookAPI");
 			Object facebook = ClassReflection.getConstructor(facebookClazz, FacebookConfig.class).newInstance(config);
 
 			facebookAPI = (FacebookAPI) facebook;
@@ -111,7 +111,7 @@ public class FacebookSystem {
 
 		try {
 
-			final Class<?> facebookClazz = ClassReflection.forName("de.tpronold.gdxfacebook.html.HTMLFacebookAPI");
+			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.html.HTMLFacebookAPI");
 			Object facebook = ClassReflection.getConstructor(facebookClazz, FacebookConfig.class).newInstance(config);
 
 			facebookAPI = (FacebookAPI) facebook;
@@ -138,7 +138,7 @@ public class FacebookSystem {
 		try {
 
 			Class<?> activityClazz = ClassReflection.forName("android.app.Activity");
-			final Class<?> facebookClazz = ClassReflection.forName("de.tpronold.gdxfacebook.android.AndroidFacebookAPI");
+			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.android.AndroidFacebookAPI");
 
 			Object activity = null;
 			if (ClassReflection.isAssignableFrom(activityClazz, gdxAppObject.getClass())) {
