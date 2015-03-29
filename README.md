@@ -1,3 +1,5 @@
+**Note: When you scrumble about this project you need to know that I am currently setting up the project for release. This is not ready to use yet!!**
+
 # gdx-facebook
 libGDX extension providing cross-platform support for Facebook Graph API.
 
