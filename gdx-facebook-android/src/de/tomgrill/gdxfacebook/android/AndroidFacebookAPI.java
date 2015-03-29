@@ -3,7 +3,6 @@ package de.tomgrill.gdxfacebook.android;
 import android.app.Activity;
 
 import com.facebook.Session;
-import com.facebook.Session.OpenRequest;
 import com.facebook.SessionState;
 
 import de.tomgrill.gdxfacebook.core.FacebookAPI;
@@ -36,8 +35,9 @@ public class AndroidFacebookAPI extends FacebookAPI {
 
 	@Override
 	public void signin(final boolean allowGUI, final ResponseListener responseListener) {
-		signout();
-		OpenRequest openRequest = new OpenRequest(activity).setPermissions(FacebookUtils.permissionSplit(config.PERMISSIONS)).setCallback(new Session.StatusCallback() {
+		isSignedin = false;
+
+		Session.openActiveSession(activity, allowGUI, FacebookUtils.permissionSplitToList(config.PERMISSIONS), new Session.StatusCallback() {
 
 			@Override
 			public void call(Session session, SessionState state, Exception exception) {
@@ -49,24 +49,18 @@ public class AndroidFacebookAPI extends FacebookAPI {
 					responseListener.error(error);
 				} else {
 					isSignedin = true;
-					setAccessToken(session.getAccessToken());
+					accessToken = session.getAccessToken();
 					responseListener.success();
 				}
 
 			}
 		});
 
-		Session session = new Session.Builder(activity).build();
-		if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState()) || allowGUI) {
-			Session.setActiveSession(session);
-			session.openForRead(openRequest);
-		}
-
 	}
 
 	@Override
 	public void setAccessToken(String accessToken) {
-		super.setAccessToken(accessToken);
+		// super.setAccessToken(accessToken);
 
 		// Session session = Session.getActiveSession();
 		// if (session != null) {
