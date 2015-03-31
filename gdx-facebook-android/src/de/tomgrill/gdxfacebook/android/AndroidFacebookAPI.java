@@ -92,4 +92,9 @@ public class AndroidFacebookAPI extends FacebookAPI {
 		// }
 	}
 
+	@Override
+	public boolean isLoaded() {
+		return true;
+	}
+
 }

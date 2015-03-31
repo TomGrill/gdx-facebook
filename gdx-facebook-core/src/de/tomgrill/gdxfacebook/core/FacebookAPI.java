@@ -66,4 +66,6 @@ public abstract class FacebookAPI {
 
 	}
 
+	abstract public boolean isLoaded();
+
 }

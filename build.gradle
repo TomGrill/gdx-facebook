@@ -303,12 +303,25 @@ project(":gdx-facebook-ios-tests") {
         custom
         compile.extendsFrom custom
 	} 
-
+    
 	eclipse {
 		project {
 		    name = appName + "-ios-tests"
 		}
 	}
+	
+	dependencies {
+		
+		compile project(':gdx-facebook-ios')
+		
+		compile "junit:junit:$jUnitVersion"
+		compile "org.mockito:mockito-all:$mockitoVersion"
+		compile "org.powermock:powermock-mockito-release-full:$powermockVersion"
+		
+		
+		
+	}
+	
 }
 
 tasks.eclipse.doLast {

@@ -16,6 +16,7 @@
 
 package de.tomgrill.gdxfacebook.desktop.tests;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
@@ -445,4 +446,8 @@ public class DesktopFacebookAPIUnitTests {
 
 	}
 
+	@Test
+	public void isLoadedIsTrue() {
+		assertTrue(fixture.isLoaded());
+	}
 }

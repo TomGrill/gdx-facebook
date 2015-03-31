@@ -78,4 +78,9 @@ public class IOSFacebookAPI extends FacebookAPI {
 
 	}
 
+	@Override
+	public boolean isLoaded() {
+		return true;
+	}
+
 }

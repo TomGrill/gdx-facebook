@@ -14,33 +14,27 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.core.tests.stubs;
+package de.tomgrill.gdxfacebook.ios.tests;
 
-import de.tomgrill.gdxfacebook.core.FacebookAPI;
-import de.tomgrill.gdxfacebook.core.ResponseListener;
+import static org.junit.Assert.assertTrue;
 
-public class FacebookAPIStub extends FacebookAPI {
+import org.junit.Before;
+import org.junit.Test;
 
-	@Override
-	public boolean isSignedin() {
-		return false;
+import de.tomgrill.gdxfacebook.core.FacebookConfig;
+import de.tomgrill.gdxfacebook.ios.IOSFacebookAPI;
+
+public class IOSFacebookAPIUnitTests {
+	private IOSFacebookAPI fixture;
+
+	@Before
+	public void setup() {
+
+		fixture = new IOSFacebookAPI(new FacebookConfig());
 	}
 
-	@Override
-	public void signout() {
-
+	@Test
+	public void isLoadedIsTrue() {
+		assertTrue(fixture.isLoaded());
 	}
-
-	@Override
-	public void signin(boolean allowGUI, ResponseListener responseListener) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean isLoaded() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

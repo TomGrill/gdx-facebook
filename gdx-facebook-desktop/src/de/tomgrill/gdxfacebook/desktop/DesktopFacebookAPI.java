@@ -184,4 +184,9 @@ public class DesktopFacebookAPI extends FacebookAPI {
 		prefs.flush();
 	}
 
+	@Override
+	public boolean isLoaded() {
+		return true;
+	}
+
 }
