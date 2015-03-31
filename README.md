@@ -1,5 +1,3 @@
-**Note: When you scrumble about this project you need to know that I am currently setting up the project for release. This is not ready to use yet!!**
-
 # gdx-facebook
 libGDX extension providing cross-platform support for Facebook Graph API.
 
@@ -31,6 +29,15 @@ Go to https://developers.facebook.com/apps/ and create a new app.
 1. Add a new platform Android.
 2. Enable Single Sign On
 3. Add the key hashes of your debug and certificate. Read this to find out how to do that. https://developers.facebook.com/docs/android/getting-started/
+
+**Desktop**
+nothing to do.
+
+**iOS**
+
+1. Add a new platform iOS
+2. Enable Single Sign On
+3. Add the Bundle ID. Must be same as your robovm.properties->app.id value.
 
 ## Installation
 **Core**
@@ -184,7 +191,7 @@ facebookConfig.APP_ID = "0123456789"; // put your app ID here
 facebookCOnfig.PERMISSIONS = "email,public_profile,user_friends"; // comma seperated list of permissions.
 
 FacebookSystem facebookSystem = new FacebookSystem(facebookConfig);
-FacebookAPI facebookAPI = facebookSystem.getFacebookAPI(); // returns null when current platform is not enabled/supported or anything else went wrong. I am looking for a better solution in the future since I do not like null returns :)
+FacebookAPI facebookAPI = facebookSystem.getFacebookAPI(); 
 ```
 
 **Signin to Facebook**
@@ -194,22 +201,24 @@ The first parameter enables the GUI signin when set true.
 When set false the login process will be done silently in the background. 
 
 ```
-facebookAPI.signin(true, new ResponseListener() {
-	@Override
-	public void success() {
-		Gdx.app.log(TAG, "Signin: User logged in successfully.");
-	}
-
-	@Override
-	public void error(ResponseError responseError) {
-		Gdx.app.log(TAG, "Signin: Error: " + responseError.getMessage() + "(Error Code: " + responseError.getCode() + ")");
-	}
-
-	@Override
-	public void cancel() {
-		Gdx.app.log(TAG, "Signin: Something canceled login.");
-	}
-});
+if(facebookAPI.isLoaded()) {
+	facebookAPI.signin(true, new ResponseListener() {
+		@Override
+		public void success() {
+			Gdx.app.log(TAG, "Signin: User logged in successfully.");
+		}
+	
+		@Override
+		public void error(ResponseError responseError) {
+			Gdx.app.log(TAG, "Signin: Error: " + responseError.getMessage() + "(Error Code: " + responseError.getCode() + ")");
+		}
+	
+		@Override
+		public void cancel() {
+			Gdx.app.log(TAG, "Signin: Something canceled login.");
+		}
+	});
+{
 ```
 
 **Making a graph request**
