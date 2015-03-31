@@ -61,7 +61,9 @@ Add this to your AndroidManifest.xml
 	...
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
  		
- 	<activity android:name="com.facebook.LoginActivity"
+ 	<activity android:name="com.facebook.FacebookActivity"
+          android:configChanges=
+                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
           android:theme="@android:style/Theme.Translucent.NoTitleBar"
           android:label="@string/app_name" />
 	...
