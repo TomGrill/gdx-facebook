@@ -68,7 +68,6 @@ project(":gdx-facebook-android") {
 		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 		
 		
-		
 		compile fileTree(dir: 'libs', include: '*.jar')
 	}
 }

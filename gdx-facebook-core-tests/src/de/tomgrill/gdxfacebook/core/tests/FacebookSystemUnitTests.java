@@ -39,6 +39,7 @@ import de.tomgrill.gdxfacebook.core.FacebookAPI;
 import de.tomgrill.gdxfacebook.core.FacebookConfig;
 import de.tomgrill.gdxfacebook.core.FacebookSystem;
 import de.tomgrill.gdxfacebook.core.tests.stubs.ActivityStub;
+import de.tomgrill.gdxfacebook.core.tests.stubs.AndroidEventListenerStub;
 import de.tomgrill.gdxfacebook.core.tests.stubs.FacebookAPIStub;
 import de.tomgrill.gdxfacebook.core.tests.stubs.FragmentStub;
 import de.tomgrill.gdxfacebook.core.tests.stubs.GdxStub;
@@ -63,6 +64,7 @@ public class FacebookSystemUnitTests {
 	private ActivityStub activityStub;
 	private SupportFragmentStub supportFragmentStub;
 	private FragmentStub fragmentStub;
+	private AndroidEventListenerStub androidEventListenerStub;
 
 	@Before
 	@SuppressWarnings("static-access")
@@ -88,6 +90,7 @@ public class FacebookSystemUnitTests {
 		activityStub = new ActivityStub();
 		supportFragmentStub = new SupportFragmentStub();
 		fragmentStub = new FragmentStub();
+		androidEventListenerStub = new AndroidEventListenerStub();
 
 		try {
 			Mockito.when(classReflectionMock.forName("com.badlogic.gdx.Gdx")).thenReturn(gdxStub.getClass());
@@ -158,8 +161,10 @@ public class FacebookSystemUnitTests {
 		try {
 			Mockito.when(classReflectionMock.forName("android.app.Activity")).thenReturn(activityStub.getClass());
 			Mockito.when(classReflectionMock.forName("de.tomgrill.gdxfacebook.android.AndroidFacebookAPI")).thenReturn(facebookAPIStub.getClass());
+			Mockito.when(classReflectionMock.forName("com.badlogic.gdx.backends.android.AndroidEventListener")).thenReturn(androidEventListenerStub.getClass());
 			Mockito.when(Gdx.app.getType()).thenReturn(ApplicationType.Android);
 			Mockito.when(classReflectionMock.getConstructor(facebookAPIStub.getClass(), activityStub.getClass(), FacebookConfig.class)).thenReturn(constructorMock);
+			Mockito.when(classReflectionMock.getMethod(Gdx.app.getClass(), "addAndroidEventListener", androidEventListenerStub.getClass())).thenReturn(methodMock);
 
 		} catch (ReflectionException e) {
 		}
@@ -172,6 +177,7 @@ public class FacebookSystemUnitTests {
 
 		try {
 			Mockito.when(constructorMock.newInstance(Gdx.app, config)).thenReturn(facebookAPIStub);
+
 		} catch (ReflectionException e) {
 			e.printStackTrace();
 		}

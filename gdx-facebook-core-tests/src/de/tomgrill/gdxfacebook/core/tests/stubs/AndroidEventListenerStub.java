@@ -14,28 +14,9 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.android.tests;
 
-import static org.junit.Assert.assertTrue;
+package de.tomgrill.gdxfacebook.core.tests.stubs;
 
-import org.junit.Before;
-import org.junit.Test;
+public class AndroidEventListenerStub {
 
-import de.tomgrill.gdxfacebook.android.AndroidFacebookAPI;
-import de.tomgrill.gdxfacebook.core.FacebookConfig;
-
-public class AndroidFacebookAPIUnitTests {
-
-	private AndroidFacebookAPI fixture;
-
-	@Before
-	public void setup() {
-
-		fixture = new AndroidFacebookAPI(null, new FacebookConfig());
-	}
-
-	@Test
-	public void isLoadedIsTrue() {
-		assertTrue(fixture.isLoaded());
-	}
 }

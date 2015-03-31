@@ -19,10 +19,12 @@ package de.tomgrill.gdxfacebook.core;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 public class FacebookSystem {
-	public static final String TAG = "libGDX Facebook";
+	public static final String TAG = "libGDX Facebook";// TODO
+														// OOOOOOOOOOOOOOOOOOOOOOOO
 
 	private FacebookConfig config;
 
@@ -135,7 +137,7 @@ public class FacebookSystem {
 		}
 
 		try {
-
+			Class<?> gdxAndroidEventListenerClazz = ClassReflection.forName("com.badlogic.gdx.backends.android.AndroidEventListener");
 			Class<?> activityClazz = ClassReflection.forName("android.app.Activity");
 			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.android.AndroidFacebookAPI");
 
@@ -163,6 +165,10 @@ public class FacebookSystem {
 			}
 
 			Object facebook = ClassReflection.getConstructor(facebookClazz, activityClazz, FacebookConfig.class).newInstance(activity, config);
+
+			Method gdxAppAddAndroidEventListenerMethod = ClassReflection.getMethod(gdxAppObject.getClass(), "addAndroidEventListener", gdxAndroidEventListenerClazz);
+
+			gdxAppAddAndroidEventListenerMethod.invoke(gdxAppObject, facebook);
 
 			setFacebookAPI((FacebookAPI) facebook);
 

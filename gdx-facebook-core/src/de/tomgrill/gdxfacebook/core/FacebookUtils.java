@@ -17,6 +17,7 @@
 package de.tomgrill.gdxfacebook.core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class FacebookUtils {
@@ -31,7 +32,7 @@ public class FacebookUtils {
 
 	}
 
-	public static List<String> permissionSplitToList(String stringToSplit) {
+	public static Collection<String> permissionSplitToList(String stringToSplit) {
 
 		String[] tmpResult = permissionSplit(stringToSplit);
 
@@ -44,4 +45,5 @@ public class FacebookUtils {
 		return result;
 
 	}
+
 }

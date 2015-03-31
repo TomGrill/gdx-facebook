@@ -18,6 +18,8 @@ package de.tomgrill.gdxfacebook.core.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import de.tomgrill.gdxfacebook.core.FacebookUtils;
@@ -37,10 +39,10 @@ public class FacebookUtilsUnitTests {
 	@Test
 	public void permissionSplitToList() {
 		String s = "s1 ,  s2,s3,  s4   ";
-
-		assertEquals("s1", FacebookUtils.permissionSplitToList(s).get(0));
-		assertEquals("s2", FacebookUtils.permissionSplitToList(s).get(1));
-		assertEquals("s3", FacebookUtils.permissionSplitToList(s).get(2));
-		assertEquals("s4", FacebookUtils.permissionSplitToList(s).get(3));
+		List<String> list = (List<String>) FacebookUtils.permissionSplitToList(s);
+		assertEquals("s1", list.get(0));
+		assertEquals("s2", list.get(1));
+		assertEquals("s3", list.get(2));
+		assertEquals("s4", list.get(3));
 	}
 }

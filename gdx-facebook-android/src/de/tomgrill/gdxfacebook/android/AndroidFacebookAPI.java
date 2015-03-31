@@ -17,9 +17,17 @@
 package de.tomgrill.gdxfacebook.android;
 
 import android.app.Activity;
+import android.content.Intent;
 
-import com.facebook.Session;
-import com.facebook.SessionState;
+import com.badlogic.gdx.backends.android.AndroidEventListener;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginBehavior;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 
 import de.tomgrill.gdxfacebook.core.FacebookAPI;
 import de.tomgrill.gdxfacebook.core.FacebookConfig;
@@ -27,14 +35,19 @@ import de.tomgrill.gdxfacebook.core.FacebookUtils;
 import de.tomgrill.gdxfacebook.core.ResponseError;
 import de.tomgrill.gdxfacebook.core.ResponseListener;
 
-public class AndroidFacebookAPI extends FacebookAPI {
-
+public class AndroidFacebookAPI extends FacebookAPI implements AndroidEventListener {
 	private final Activity activity;
 	private final FacebookConfig config;
+
+	private CallbackManager callbackManager;
 
 	public AndroidFacebookAPI(final Activity activity, final FacebookConfig config) {
 		this.activity = activity;
 		this.config = config;
+
+		FacebookSdk.sdkInitialize(activity.getApplicationContext());
+		callbackManager = CallbackManager.Factory.create();
+
 	}
 
 	@Override
@@ -44,52 +57,57 @@ public class AndroidFacebookAPI extends FacebookAPI {
 
 	@Override
 	public void signout() {
-		super.signout();
 		isSignedin = false;
-		Session.getActiveSession().closeAndClearTokenInformation();
+		LoginManager.getInstance().logOut();
+
 	}
 
 	@Override
 	public void signin(final boolean allowGUI, final ResponseListener responseListener) {
 		isSignedin = false;
 
-		Session.openActiveSession(activity, allowGUI, FacebookUtils.permissionSplitToList(config.PERMISSIONS), new Session.StatusCallback() {
+		if (AccessToken.getCurrentAccessToken() != null) {
+			isSignedin = true;
+			setAccessToken(AccessToken.getCurrentAccessToken().getToken());
+			responseListener.success();
+		} else {
 
-			@Override
-			public void call(Session session, SessionState state, Exception exception) {
+			LoginBehavior loginBehavior = LoginBehavior.SSO_WITH_FALLBACK;
+			//
+			// if (allowGUI) {
+			// loginBehavior = LoginBehavior.SSO_WITH_FALLBACK;
+			// }
 
-				if (!session.isOpened() || exception != null || state == null || state.isClosed()) {
+			LoginManager.getInstance().setLoginBehavior(loginBehavior);
+			// LoginManager.getInstance().setDefaultAudience(dfdf);
+
+			LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+				@Override
+				public void onSuccess(LoginResult loginResult) {
+					isSignedin = true;
+					setAccessToken(loginResult.getAccessToken().getToken());
+					responseListener.success();
+				}
+
+				@Override
+				public void onCancel() {
+					responseListener.cancel();
+				}
+
+				@Override
+				public void onError(FacebookException arg0) {
+					// TODO evaluate arg0
 					ResponseError error = new ResponseError();
 					error.setCode(-1);
 					error.setMessage("Could not (re)open Facebook session.");
 					responseListener.error(error);
-				} else {
-					isSignedin = true;
-					accessToken = session.getAccessToken();
-					responseListener.success();
+
 				}
 
-			}
-		});
+			});
 
-	}
-
-	@Override
-	public void setAccessToken(String accessToken) {
-		// super.setAccessToken(accessToken);
-
-		// Session session = Session.getActiveSession();
-		// if (session != null) {
-		// session.open(AccessToken.createFromExistingAccessToken(accessToken,
-		// null, null, null, null), new StatusCallback() {
-		//
-		// @Override
-		// public void call(Session session, SessionState state, Exception
-		// exception) {
-		//
-		// }
-		// });
-		// }
+			LoginManager.getInstance().logInWithReadPermissions(activity, FacebookUtils.permissionSplitToList(config.PERMISSIONS));
+		}
 	}
 
 	@Override
@@ -97,4 +115,8 @@ public class AndroidFacebookAPI extends FacebookAPI {
 		return true;
 	}
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		callbackManager.onActivityResult(requestCode, resultCode, data);
+	}
 }
