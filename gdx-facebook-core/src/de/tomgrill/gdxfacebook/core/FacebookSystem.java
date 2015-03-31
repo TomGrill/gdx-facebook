@@ -33,7 +33,7 @@ public class FacebookSystem {
 	// private Method gdxAppLogMethodT = null;
 	// private Method gdxAppAddLifecycleListenerMethod = null;
 
-	private FacebookAPI facebookAPI = null;
+	private FacebookAPI facebookAPI = new NotLoadedFacebookAPI();
 
 	public FacebookSystem(FacebookConfig config) {
 		this.config = config;
