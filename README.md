@@ -73,62 +73,13 @@ Add this to your /res/values/strings.xml and replace **0123456789** with your Ap
 ```
 <string name="facebook_app_id">0123456789</string>
 ```
-Let your Android Launcher class extend from **GdxFacebookAndroidApplication**
-
-OR
-
-add this code to your Android Launcher class:
-```
-private UiLifecycleHelper fbUiLifecycleHelper;
-
-@Override
-protected void onCreate(Bundle state) {
-	super.onCreate(state);
-	fbUiLifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
-		@Override
-		public void call(Session session, SessionState state, Exception exception) {
-		}
-	});
-	fbUiLifecycleHelper.onCreate(state);
-}
-
-@Override
-protected void onSaveInstanceState(Bundle state) {
-	super.onSaveInstanceState(state);
-	fbUiLifecycleHelper.onSaveInstanceState(state);
-}
-
-@Override
-protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	super.onActivityResult(requestCode, resultCode, data);
-	fbUiLifecycleHelper.onActivityResult(requestCode, resultCode, data);
-}
-
-@Override
-protected void onResume() {
-	super.onResume();
-	fbUiLifecycleHelper.onResume();
-}
-
-@Override
-protected void onPause() {
-	super.onPause();
-	fbUiLifecycleHelper.onPause();
-}
-
-@Override
-protected void onDestroy() {
-	super.onDestroy();
-	fbUiLifecycleHelper.onDestroy();
-}
-```
 
 Add this to your libGDX build.gradle
 ```
 dependencies {
     ...
-    compile 'com.android.support:appcompat-v7:21.0.+'
-    compile ("com.facebook.android:facebook-android-sdk:3.23.1") {
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile ("com.facebook.android:facebook-android-sdk:4.0.0") {
 	    exclude module: 'support-v4'
     }
     compile "de.tomgrill.gdxfacebook:gdx-facebook-android:0.1.0-SNAPSHOT"
