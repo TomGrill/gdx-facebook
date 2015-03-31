@@ -29,8 +29,8 @@ public class FacebookSystem {
 	private Class<?> gdxClazz = null;
 	// private Class<?> gdxLifecycleListenerClazz = null;
 	private Object gdxAppObject = null;
-	// private Method gdxAppLogMethod = null; // TODO can we remove this?
-	// private Method gdxAppLogMethodT = null; // TODO can we remove this?
+	// private Method gdxAppLogMethod = null;
+	// private Method gdxAppLogMethodT = null;
 	// private Method gdxAppAddLifecycleListenerMethod = null;
 
 	private FacebookAPI facebookAPI = null;
