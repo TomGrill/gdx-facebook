@@ -25,7 +25,7 @@ def getReleaseRepositoryUrl() {
 
 def getSnapshotRepositoryUrl() {
     return hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
-            : "http://tpronold.de:8081/nexus/content/repositories/snapshots/"
+            : "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
 def getRepositoryUsername() {
