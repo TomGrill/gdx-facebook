@@ -113,7 +113,7 @@ Add this to your robovm.xml
 </forceLinkClasses>
 ```
 
-Add this file https://github.com/TomGrill/gdx-facebook/blob/master/gdx-facebook-ios/libs/facebook-1.0.0-beta-03.jar to your libs folder under your libGDX ios subproject. Yes, I know this pretty huge :( 
+Add the **facebook-1.0.0.jar** file from this repository or from http://libgdx.badlogicgames.com/robovm-ios-bindings/facebook-1.0.0.jar to your libs folder under your libGDX ios subproject.
 
 Add this to your libGDX build.gradle
 ```
