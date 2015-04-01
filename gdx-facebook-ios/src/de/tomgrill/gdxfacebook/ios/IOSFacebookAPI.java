@@ -36,30 +36,30 @@ import de.tomgrill.gdxfacebook.core.ResponseListener;
 
 public class IOSFacebookAPI extends FacebookAPI {
 
-	private UIWindow window;
+	//private UIWindow window;
 
-	private UIViewController rootViewController;
+	//private UIViewController rootViewController;
 
 	private FacebookConfig config;
 
-	private GraphUser me;
+	
 
 	private FacebookPermission[] permissions;
 
-	private IOSApplication.Delegate applicationDelegate;
+	
 
-	public IOSFacebookAPI(IOSApplication.Delegate applicationDelegate, FacebookConfig config) {
+	public IOSFacebookAPI(FacebookConfig config) {
 		this.config = config;
-		this.applicationDelegate = applicationDelegate;
 
-		String[] permissionsSplitted = FacebookUtils.permissionSplit(config.PERMISSIONS);
+
+		String[] permissionsSplitted = FacebookUtils.permissionSplit(this.config.PERMISSIONS);
 		permissions = new FacebookPermission[permissionsSplitted.length];
 
 		for (int i = 0; i < permissionsSplitted.length; i++) {
 			permissions[i] = FacebookPermission.fromName(permissionsSplitted[i]);
 
 		}
-
+/*
 		if (rootViewController == null) {
 			rootViewController = new UIViewController();
 		}
@@ -70,8 +70,8 @@ public class IOSFacebookAPI extends FacebookAPI {
 			window.addSubview(rootViewController.getView());
 		}
 
-		window.makeKeyAndVisible();
-		applicationDelegate.addStrongRef(window);
+		*/
+		
 
 	}
 
@@ -83,7 +83,7 @@ public class IOSFacebookAPI extends FacebookAPI {
 		if (FacebookManager.getInstance().isLoggedIn()) {
 			FacebookManager.getInstance().logout();
 			// Remove user data.
-			me = null;
+			
 
 		}
 
@@ -98,7 +98,9 @@ public class IOSFacebookAPI extends FacebookAPI {
 
 		// addStrongRef(window);
 
-		System.out.println("sign in command recevied1");
+		//System.out.println("sign in command recevied1");
+		
+		//window.makeKeyAndVisible();
 
 		FacebookManager.getInstance().login(permissions, allowGUI, new FacebookLoginListener() {
 			@Override
@@ -107,21 +109,21 @@ public class IOSFacebookAPI extends FacebookAPI {
 				// sampleViewController.setMe(result);
 				// Update UI
 				// sampleViewController.getTableView().reloadData();
-				me = result;
+				
 				isSignedin = true;
 
 				setAccessToken(FBSession.getActiveSession().getAccessTokenData().getAccessToken());
 
 				responseListener.success();
 
-				// window.setHidden(true);
+				//window.setHidden(true);
 
 			}
 
 			@Override
 			public void onError(FacebookError error) {
 				// We ignore any errors because this is a silent login.
-				System.out.println("error" + error.getMessage());
+				//System.out.println("error" + error.getMessage());
 
 				ResponseError rError = new ResponseError();
 				rError.setCode(-1);
@@ -134,17 +136,17 @@ public class IOSFacebookAPI extends FacebookAPI {
 				responseListener.error(rError);
 
 				// if (allowGUI)
-				// window.setHidden(true);
+				//window.setHidden(true);
 			}
 
 			@Override
 			public void onCancel() {
 
-				System.out.println("cancel");
+				//System.out.println("cancel");
 
 				responseListener.cancel();
 				// if (allowGUI)
-				// window.setHidden(true);
+				//window.setHidden(true);
 			}
 		});
 
