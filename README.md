@@ -135,6 +135,11 @@ dependencies {
 ```
 
 ## Usage
+
+**View the libGDX Facebook sample app**
+https://github.com/TomGrill/gdx-facebook-app
+
+
 **Enable**
 ```
 Gdx.app.setLogLevel(Application.LOG_DEBUG); // only if you want log output
