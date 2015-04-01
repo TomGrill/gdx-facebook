@@ -94,8 +94,10 @@ public class FacebookSystem {
 		}
 		try {
 
+			Class<?> activityClazz = ClassReflection.forName("com.badlogic.gdx.backends.iosrobovm.IOSApplication$Delegate");
+
 			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.desktop.DesktopFacebookAPI");
-			Object facebook = ClassReflection.getConstructor(facebookClazz, FacebookConfig.class).newInstance(config);
+			Object facebook = ClassReflection.getConstructor(facebookClazz, activityClazz, FacebookConfig.class).newInstance(gdxAppObject, config);
 
 			facebookAPI = (FacebookAPI) facebook;
 

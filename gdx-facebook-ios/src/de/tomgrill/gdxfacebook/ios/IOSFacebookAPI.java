@@ -26,6 +26,8 @@ import org.robovm.bindings.facebook.manager.FacebookPermission;
 import org.robovm.bindings.facebook.manager.request.GraphUser;
 import org.robovm.bindings.facebook.session.FBSession;
 
+import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
+
 import de.tomgrill.gdxfacebook.core.FacebookAPI;
 import de.tomgrill.gdxfacebook.core.FacebookConfig;
 import de.tomgrill.gdxfacebook.core.FacebookUtils;
@@ -44,8 +46,11 @@ public class IOSFacebookAPI extends FacebookAPI {
 
 	private FacebookPermission[] permissions;
 
-	public IOSFacebookAPI(FacebookConfig config) {
+	private IOSApplication.Delegate applicationDelegate;
+
+	public IOSFacebookAPI(IOSApplication.Delegate applicationDelegate, FacebookConfig config) {
 		this.config = config;
+		this.applicationDelegate = applicationDelegate;
 
 		String[] permissionsSplitted = FacebookUtils.permissionSplit(config.PERMISSIONS);
 		permissions = new FacebookPermission[permissionsSplitted.length];
@@ -64,6 +69,9 @@ public class IOSFacebookAPI extends FacebookAPI {
 			window.setRootViewController(rootViewController);
 			window.addSubview(rootViewController.getView());
 		}
+
+		window.makeKeyAndVisible();
+		applicationDelegate.addStrongRef(window);
 
 	}
 
@@ -87,8 +95,6 @@ public class IOSFacebookAPI extends FacebookAPI {
 		isSignedin = false;
 
 		// try silent login first
-
-		window.makeKeyAndVisible();
 
 		// addStrongRef(window);
 
