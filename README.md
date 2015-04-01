@@ -216,7 +216,7 @@ facebookAPI.newGraphRequest("me", "access_token=" + facebookAPI.getAccessToken()
 
 ##Release History
 
-Release history for major milestones (available vie Maven):
+Release history for major milestones (available via Maven):
 
 *Version 0.1.0: Initial Release
 
