@@ -113,6 +113,29 @@ Add this to your robovm.xml
 </forceLinkClasses>
 ```
 
+Add this to your IOSLauncher
+
+```
+ @Override
+    public void didBecomeActive (UIApplication application) {
+    	super.didBecomeActive(application);
+	    // You need to add this line, otherwise Facebook will not work correctly!
+	    FacebookManager.getInstance().handleDidBecomeActive(application);
+    }
+    @Override
+    public boolean openURL (UIApplication application, NSURL url, String sourceApplication, NSPropertyList annotation) {
+    	// You need to add this line, otherwise Facebook will not work correctly!
+		return FacebookManager.getInstance().handleOpenURL(application, url, sourceApplication, annotation);		
+    }
+    @Override
+    public void willTerminate (UIApplication application) {
+	    // You need to add this line, otherwise Facebook will not work correctly!
+	    FacebookManager.getInstance().handleWillTerminate(application);	
+		super.willTerminate(application);
+    }
+```
+
+
 Add the **facebook-1.0.0.jar** file from this repository or from http://libgdx.badlogicgames.com/robovm-ios-bindings/facebook-1.0.0.jar to your libs folder under your libGDX ios subproject.
 
 Add this to your libGDX build.gradle
