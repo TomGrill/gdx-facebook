@@ -44,10 +44,12 @@ nothing to do.
 
 Add this to your libGDX build.gradle
 ```
-dependencies {
-    ...
-    compile "de.tomgrill.gdxfacebook:gdx-facebook-core:0.1.0-SNAPSHOT"
-    ...
+project(":core") {
+	dependencies {
+	    ...
+	    compile "de.tomgrill.gdxfacebook:gdx-facebook-core:0.1.0-SNAPSHOT"
+	    ...
+	}
 }
 ```
 
@@ -76,14 +78,16 @@ Add this to your /res/values/strings.xml and replace **0123456789** with your Ap
 
 Add this to your libGDX build.gradle
 ```
-dependencies {
-    ...
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile ("com.facebook.android:facebook-android-sdk:4.0.0") {
-	    exclude module: 'support-v4'
-    }
-    compile "de.tomgrill.gdxfacebook:gdx-facebook-android:0.1.0-SNAPSHOT"
-    ...
+project(":android") {
+	dependencies {
+	    ...
+	    compile 'com.android.support:appcompat-v7:21.0.3'
+	    compile ("com.facebook.android:facebook-android-sdk:4.0.0") {
+		    exclude module: 'support-v4'
+	    }
+	    compile "de.tomgrill.gdxfacebook:gdx-facebook-android:0.1.0-SNAPSHOT"
+	    ...
+	}
 }
 ```
 
@@ -116,7 +120,7 @@ Add this to your robovm.xml
 Add this to your IOSLauncher
 
 ```
- @Override
+    @Override
     public void didBecomeActive (UIApplication application) {
     	super.didBecomeActive(application);
 	    // You need to add this line, otherwise Facebook will not work correctly!
@@ -140,20 +144,24 @@ Add the **facebook-1.0.0.jar** file from this repository or from http://libgdx.b
 
 Add this to your libGDX build.gradle
 ```
-dependencies {
-    ...
-    compile "de.tomgrill.gdxfacebook:gdx-facebook-ios:0.1.0-SNAPSHOT"
-    compile fileTree(dir: 'libs', include: '*.jar')
-    ...
+project(":ios") {
+	dependencies {
+	    ...
+	    compile "de.tomgrill.gdxfacebook:gdx-facebook-ios:0.1.0-SNAPSHOT"
+	    compile fileTree(dir: 'libs', include: '*.jar')
+	    ...
+	}
 }
 ```
 
 **Desktop**
 ```
-dependencies {
-    ...
-    compile "de.tomgrill.gdxfacebook:gdx-facebook-desktop:0.1.0-SNAPSHOT"
-    ...
+project(":desktop") {
+	dependencies {
+	    ...
+	    compile "de.tomgrill.gdxfacebook:gdx-facebook-desktop:0.1.0-SNAPSHOT"
+	    ...
+	}
 }
 ```
 
