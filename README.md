@@ -215,7 +215,7 @@ Release history for major milestones (available vie Maven):
 
 *Version 0.1.0: Initial Release
 
-##Reporting Issues*
+##Reporting Issues
 
 Something not working quite as expected? Do you need a feature that has not been implemented yet? Check the issue tracker and add a new one if your problem is not already listed. Please try to provide a detailed description of your problem, including the steps to reproduce it.
 
