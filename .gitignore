@@ -13,3 +13,5 @@ local.properties
 
 publishLocal.sh
 publishSnapshot.sh
+
+.DS_Store
