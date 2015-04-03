@@ -29,28 +29,23 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import de.tomgrill.gdxfacebook.core.FacebookLoginListener;
 
-public class JXBrowserDesktopFacebookGUI extends Application implements DesktopFacebookGUI {
+public class JXBrowserDesktopFacebookGUI extends Application {
 
-	/**
-	 * TODO I really dont like this static variables. But that is doing it for
-	 * now. NEEDS REFACTOR
-	 */
 	private static String appId;
 	private static String permissions;
 	private static FacebookLoginListener listener;
-	private static boolean applicationIsStartet;
 
-	private String access_token;
-	private long expirationTimeMillis;
-	private String url;
-	private WebView browser;
-	private WebEngine engine;
-	private StackPane sp;
-	private Scene root;
+	private static String access_token;
+	private static long expirationTimeMillis;
+	private static String url;
+	private static WebView browser;
+	private static WebEngine engine;
+	private static StackPane sp;
+	private static Scene root;
 
-	private Stage primaryStage;
+	private static Stage primaryStage;
 
-	public void open() {
+	public static void open() {
 		if (JXBrowserDesktopFacebookGUI.appId == null || JXBrowserDesktopFacebookGUI.appId.length() == 0) {
 			throw new RuntimeException("App ID is empty. Use setAppId() before show()");
 		}
@@ -58,24 +53,24 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 		if (JXBrowserDesktopFacebookGUI.permissions == null) {
 			throw new RuntimeException("Permissions is empty. Use setPermissions() before show()");
 		}
-		if (!applicationIsStartet) {
-			applicationIsStartet = true;
+		if (!RunHelper.isStarted) {
+			RunHelper.isStarted = true;
 			Application.launch(new String());
 		}
 
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage2) throws Exception {
 
 		Platform.setImplicitExit(false);
 
 		url = "https://www.facebook.com/dialog/oauth?" + "client_id=" + appId + "&redirect_uri=https://www.facebook.com/connect/login_success.html" + "&scope=" + permissions
 				+ "&response_type=token";
 
-		this.primaryStage = primaryStage;
-		this.primaryStage.setAlwaysOnTop(true);
-		this.primaryStage.setTitle("Facebook Signin");
+		primaryStage = primaryStage2;
+		primaryStage.setAlwaysOnTop(true);
+		primaryStage.setTitle("Facebook Signin");
 
 		browser = new WebView();
 
@@ -136,10 +131,10 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 
 		root = new Scene(sp);
 
-		this.primaryStage.setScene(root);
-		this.primaryStage.show();
+		primaryStage.setScene(root);
+		primaryStage.show();
 
-		this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			public void handle(WindowEvent we) {
 				JXBrowserDesktopFacebookGUI.listener.onCancel();
 			}
@@ -154,32 +149,33 @@ public class JXBrowserDesktopFacebookGUI extends Application implements DesktopF
 		primaryStage.close();
 	}
 
-	@Override
-	public void show(FacebookLoginListener listener) {
+	public static void show(FacebookLoginListener listener) {
 		JXBrowserDesktopFacebookGUI.listener = listener;
 
 		open();
 	}
 
-	@Override
-	public void setAppId(String appId) {
+	public static void setAppId(String appId) {
 		JXBrowserDesktopFacebookGUI.appId = appId;
 
 	}
 
-	@Override
 	public String getAppId() {
 		return JXBrowserDesktopFacebookGUI.appId;
 	}
 
-	@Override
 	public String getPermissions() {
 		return permissions;
 	}
 
-	@Override
-	public void setPermissions(String permissions) {
+	public static void setPermissions(String permissions) {
 		JXBrowserDesktopFacebookGUI.permissions = permissions;
+	}
+
+	public static void reuse() {
+		engine.load(url);
+		primaryStage.show();
+
 	}
 
 }
