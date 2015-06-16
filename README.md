@@ -249,8 +249,8 @@ facebookAPI.newGraphRequest("me", "access_token=" + facebookAPI.getAccessToken()
 
 Release history for major milestones (available via Maven):
 
-*Version 0.1.0: Initial Release
-*Version 0.2.0: Upgrade to IOS Facebook SDK 4.x - uses robopods-facebook now https://github.com/robovm/robovm-robopods/tree/master/facebook
+* Version 0.1.0: Initial Release
+* Version 0.2.0: Upgrade to IOS Facebook SDK 4.x - uses robopods-facebook now https://github.com/robovm/robovm-robopods/tree/master/facebook
 
 ##Reporting Issues
 
