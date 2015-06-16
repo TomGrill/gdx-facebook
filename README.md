@@ -83,7 +83,7 @@ project(":android") {
 	dependencies {
 	    ...
 	    compile 'com.android.support:appcompat-v7:21.0.3'
-	    compile ("com.facebook.android:facebook-android-sdk:4.0.0") {
+	    compile ("com.facebook.android:facebook-android-sdk:4.1.0") {
 		    exclude module: 'support-v4'
 	    }
 	    compile "de.tomgrill.gdxfacebook:gdx-facebook-android:0.2.0-SNAPSHOT"
@@ -147,7 +147,7 @@ project(":ios") {
 	dependencies {
 	    ...
 	    compile "de.tomgrill.gdxfacebook:gdx-facebook-ios:0.2.0-SNAPSHOT"
-	    compile fileTree(dir: 'libs', include: '*.jar')
+	    compile "org.robovm:robopods-facebook-ios:1.0-SNAPSHOT"
 	    ...
 	}
 }
