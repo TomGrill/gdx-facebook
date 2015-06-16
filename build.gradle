@@ -284,6 +284,8 @@ project(":gdx-facebook-ios") {
         compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
         compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
 //        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+        
+        compile "org.robovm:robopods-facebook-ios:1.0-SNAPSHOT"
 		
 		compile fileTree(dir: 'libs', include: '*.jar')
 	}
