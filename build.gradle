@@ -46,7 +46,6 @@ allprojects {
 
 project(":gdx-facebook-android") {
     apply plugin : 'java'
-    	
 	apply from : '../publish.gradle'
 
     configurations {
@@ -63,10 +62,7 @@ project(":gdx-facebook-android") {
 	dependencies {
 		
 		compile project(':gdx-facebook-core')
-		
-		
-		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-		
+		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"		
 		
 		compile fileTree(dir: 'libs', include: '*.jar')
 	}
