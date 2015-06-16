@@ -4,7 +4,7 @@ libGDX extension providing cross-platform support for Facebook Graph API.
 ## Version
 Current status i **beta**. (It is not recommended to use this library in production releases.)
 
-Current snapshot: **0.1.0**
+Current snapshot: **0.2.0**
 
 Current stable: **not yet existing**
 
@@ -43,11 +43,11 @@ nothing to do.
 **Core**
 
 Add this to your libGDX build.gradle
-```
+```gradle
 project(":core") {
 	dependencies {
 	    ...
-	    compile "de.tomgrill.gdxfacebook:gdx-facebook-core:0.1.0-SNAPSHOT"
+	    compile "de.tomgrill.gdxfacebook:gdx-facebook-core:0.2.0-SNAPSHOT"
 	    ...
 	}
 }
@@ -56,7 +56,7 @@ project(":core") {
 **Android**
 
 Add this to your AndroidManifest.xml
-```
+```xml
 <uses-permission android:name="android.permission.INTERNET" />
 
 <application
@@ -72,12 +72,13 @@ Add this to your AndroidManifest.xml
 </application>
 ```
 Add this to your /res/values/strings.xml and replace **0123456789** with your App ID.
-```
+
+```xml
 <string name="facebook_app_id">0123456789</string>
 ```
 
 Add this to your libGDX build.gradle
-```
+```gradle
 project(":android") {
 	dependencies {
 	    ...
@@ -85,7 +86,7 @@ project(":android") {
 	    compile ("com.facebook.android:facebook-android-sdk:4.0.0") {
 		    exclude module: 'support-v4'
 	    }
-	    compile "de.tomgrill.gdxfacebook:gdx-facebook-android:0.1.0-SNAPSHOT"
+	    compile "de.tomgrill.gdxfacebook:gdx-facebook-android:0.2.0-SNAPSHOT"
 	    ...
 	}
 }
@@ -94,7 +95,7 @@ project(":android") {
 **iOS**
 
 Add this to your Info.plist.xml and replace **0123456789** (twice!, *fb*-prefix in 2nd part is correct!) and **YOUR_FACEBOOK_APP_NAM**E accordingly.
-```
+```xml
 <key>FacebookAppID</key>
 <string>0123456789</string>
 <key>FacebookDisplayName</key>
@@ -110,7 +111,7 @@ Add this to your Info.plist.xml and replace **0123456789** (twice!, *fb*-prefix 
 </array>
 ```
 Add this to your robovm.xml
-```
+```xml
 <forceLinkClasses>
     ....
     <pattern>de.tomgrill.gdxfacebook.ios.IOSFacebookAPI</pattern>
@@ -119,35 +120,33 @@ Add this to your robovm.xml
 
 Add this to your IOSLauncher
 
-```
-    @Override
-    public void didBecomeActive (UIApplication application) {
-    	super.didBecomeActive(application);
-	    // You need to add this line, otherwise Facebook will not work correctly!
-	    FacebookManager.getInstance().handleDidBecomeActive(application);
-    }
-    @Override
-    public boolean openURL (UIApplication application, NSURL url, String sourceApplication, NSPropertyList annotation) {
-    	// You need to add this line, otherwise Facebook will not work correctly!
-		return FacebookManager.getInstance().handleOpenURL(application, url, sourceApplication, annotation);		
-    }
-    @Override
-    public void willTerminate (UIApplication application) {
-	    // You need to add this line, otherwise Facebook will not work correctly!
-	    FacebookManager.getInstance().handleWillTerminate(application);	
-		super.willTerminate(application);
-    }
-```
+```java
+@Override
+public void didBecomeActive (UIApplication application) {
+    super.didBecomeActive(application);
+    // You need to add this line, otherwise Facebook will not work correctly!
+    FBSDKAppEvents.activateApp();
+}
 
-
-Add the **facebook-1.0.0.jar** file from this repository or from http://libgdx.badlogicgames.com/robovm-ios-bindings/facebook-1.0.0.jar to your libs folder under your libGDX ios subproject.
+@Override
+public boolean openURL (UIApplication application, NSURL url, String sourceApplication, NSPropertyList annotation) {
+    // You need to add this line, otherwise Facebook will not work correctly!
+	return FBSDKApplicationDelegate.getSharedInstance().openURL(application, url, sourceApplication, annotation);	
+}
+@Override
+public boolean didFinishLaunching(UIApplication application, UIApplicationLaunchOptions launchOptions) {
+	boolean finished = super.didFinishLaunching(application, launchOptions);
+	FBSDKApplicationDelegate.getSharedInstance().didFinishLaunching(application, launchOptions);
+	return finished;
+}
+```
 
 Add this to your libGDX build.gradle
-```
+```gradle
 project(":ios") {
 	dependencies {
 	    ...
-	    compile "de.tomgrill.gdxfacebook:gdx-facebook-ios:0.1.0-SNAPSHOT"
+	    compile "de.tomgrill.gdxfacebook:gdx-facebook-ios:0.2.0-SNAPSHOT"
 	    compile fileTree(dir: 'libs', include: '*.jar')
 	    ...
 	}
@@ -155,11 +154,11 @@ project(":ios") {
 ```
 
 **Desktop**
-```
+```gradle
 project(":desktop") {
 	dependencies {
 	    ...
-	    compile "de.tomgrill.gdxfacebook:gdx-facebook-desktop:0.1.0-SNAPSHOT"
+	    compile "de.tomgrill.gdxfacebook:gdx-facebook-desktop:0.2.0-SNAPSHOT"
 	    ...
 	}
 }
@@ -172,7 +171,7 @@ https://github.com/TomGrill/gdx-facebook-app
 
 
 **Enable**
-```
+```java
 Gdx.app.setLogLevel(Application.LOG_DEBUG); // only if you want log output
 
 FacebookConfig facebookConfig = new FacebookConfig();
@@ -189,7 +188,7 @@ This will start the signin process for the current platform.
 The first parameter enables the GUI signin when set true. 
 When set false the login process will be done silently in the background. 
 
-```
+```java
 if(facebookAPI.isLoaded()) {
 	facebookAPI.signin(true, new ResponseListener() {
 		@Override
@@ -213,7 +212,8 @@ if(facebookAPI.isLoaded()) {
 **Making a graph request**
 
 This is a example for a "me" request. The Facebook Graph API allows a lot of requests. I did not cover all possibles. So there might be stuff that does not work yet.
-```
+
+```java
 facebookAPI.newGraphRequest("me", "access_token=" + facebookAPI.getAccessToken(), new HttpResponseListener() {
 
 	@Override
@@ -250,6 +250,7 @@ facebookAPI.newGraphRequest("me", "access_token=" + facebookAPI.getAccessToken()
 Release history for major milestones (available via Maven):
 
 *Version 0.1.0: Initial Release
+*Version 0.2.0: Upgrade to IOS Facebook SDK 4.x - uses robopods-facebook now https://github.com/robovm/robovm-robopods/tree/master/facebook
 
 ##Reporting Issues
 
