@@ -16,12 +16,12 @@
 
 package de.tomgrill.gdxfacebook.core;
 
-public class FacebookConfig {
+public interface GDXFacebookCallback<T> {
 
-	public String PREF_FILENAME = "libgdx-facebook.pref";
+	public void onSuccess(T result);
 
-	public String PERMISSIONS = "email,public_profile,user_friends";
+	public void onError(GDXFacebookError error);
 
-	public String APP_ID = "";
+	public void onCancel();
 
 }

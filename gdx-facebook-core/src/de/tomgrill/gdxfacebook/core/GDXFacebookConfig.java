@@ -16,16 +16,10 @@
 
 package de.tomgrill.gdxfacebook.core;
 
-public class NotLoadedFacebookAPI extends FacebookAPI {
+public class GDXFacebookConfig {
 
-	@Override
-	public void signin(boolean allowGUI, ResponseListener responseListener) {
-		throw new RuntimeException("Only call this signin() when isLoaded() returns true. Wrap this call with if(facebookAPI.isLoaded()) {...}");
-	}
+	public String PREF_FILENAME = null;
 
-	@Override
-	public boolean isLoaded() {
-		return false;
-	}
+	public String APP_ID = "";
 
 }

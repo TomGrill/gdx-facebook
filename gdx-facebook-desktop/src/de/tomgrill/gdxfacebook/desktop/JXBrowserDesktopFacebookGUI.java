@@ -27,13 +27,15 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import de.tomgrill.gdxfacebook.core.FacebookLoginListener;
+import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
+import de.tomgrill.gdxfacebook.core.GDXFacebookError;
+import de.tomgrill.gdxfacebook.core.GDXFacebookLoginResult;
 
 public class JXBrowserDesktopFacebookGUI extends Application {
 
 	private static String appId;
 	private static String permissions;
-	private static FacebookLoginListener listener;
+	private static GDXFacebookCallback<GDXFacebookLoginResult> listener;
 
 	private static String access_token;
 	private static long expirationTimeMillis;
@@ -103,21 +105,31 @@ public class JXBrowserDesktopFacebookGUI extends Application {
 					amperIndex = newLocation.indexOf("&", amperIndex);
 					error = newLocation.substring(newLocation.lastIndexOf(errorIdentifier) + errorIdentifier.length(), amperIndex);
 
-					String errorCode;
-					String errorCodeIdentifier = "error_code=";
-					amperIndex = newLocation.indexOf("&", amperIndex + 1);
-					errorCode = newLocation.substring(newLocation.lastIndexOf(errorCodeIdentifier) + errorCodeIdentifier.length(), amperIndex);
+					GDXFacebookError fbError = new GDXFacebookError();
+					fbError.setErrorMessage(error);
 
-					String errorDescription;
-					String errorDescriptionIdentifier = "error_description=";
-					amperIndex = newLocation.indexOf("&", amperIndex + 1);
-					errorDescription = newLocation.substring(newLocation.lastIndexOf(errorDescriptionIdentifier) + errorDescriptionIdentifier.length(), amperIndex);
+					// String errorCode;
+					// String errorCodeIdentifier = "error_code=";
+					// amperIndex = newLocation.indexOf("&", amperIndex + 1);
+					// errorCode =
+					// newLocation.substring(newLocation.lastIndexOf(errorCodeIdentifier)
+					// + errorCodeIdentifier.length(), amperIndex);
+					//
+					// String errorDescription;
+					// String errorDescriptionIdentifier = "error_description=";
+					// amperIndex = newLocation.indexOf("&", amperIndex + 1);
+					// errorDescription =
+					// newLocation.substring(newLocation.lastIndexOf(errorDescriptionIdentifier)
+					// + errorDescriptionIdentifier.length(), amperIndex);
+					//
+					// String errorReason;
+					// String errorReasonIdentifier = "error_reason=";
+					// errorReason =
+					// newLocation.substring(newLocation.lastIndexOf(errorReasonIdentifier)
+					// + errorReasonIdentifier.length(),
+					// newLocation.lastIndexOf('#'));
 
-					String errorReason;
-					String errorReasonIdentifier = "error_reason=";
-					errorReason = newLocation.substring(newLocation.lastIndexOf(errorReasonIdentifier) + errorReasonIdentifier.length(), newLocation.lastIndexOf('#'));
-
-					JXBrowserDesktopFacebookGUI.listener.onError(error, errorCode, errorDescription, errorReason);
+					JXBrowserDesktopFacebookGUI.listener.onError(fbError);
 
 					closeBrowser();
 
@@ -142,14 +154,16 @@ public class JXBrowserDesktopFacebookGUI extends Application {
 	}
 
 	private void passValuesToListener(String accessToken, long expirationTimeMillis) {
-		JXBrowserDesktopFacebookGUI.listener.onSuccess(accessToken, expirationTimeMillis);
+		GDXFacebookLoginResult result = new GDXFacebookLoginResult();
+		result.setAccessToken(accessToken);
+		JXBrowserDesktopFacebookGUI.listener.onSuccess(result);
 	}
 
 	private void closeBrowser() {
 		primaryStage.close();
 	}
 
-	public static void show(FacebookLoginListener listener) {
+	public static void show(GDXFacebookCallback<GDXFacebookLoginResult> listener) {
 		JXBrowserDesktopFacebookGUI.listener = listener;
 
 		open();
