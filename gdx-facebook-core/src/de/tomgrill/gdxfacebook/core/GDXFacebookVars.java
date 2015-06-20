@@ -16,7 +16,7 @@
 
 package de.tomgrill.gdxfacebook.core;
 
-public class GDXFacebookVars {
+class GDXFacebookVars {
 
 	public static final String VERSION = "0.3.0-SNAPSHOT";
 
