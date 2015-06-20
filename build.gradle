@@ -68,34 +68,6 @@ project(":gdx-facebook-android") {
 	}
 }
 
-project(":gdx-facebook-android-tests") {
-    apply plugin : 'java'
-
-	apply from : '../publish.gradle'
-
-    configurations {
-        custom
-        compile.extendsFrom custom
-	}     	
-    	
-	eclipse {
-		project {
-		    name = appName + "-android-tests"
-		}
-	}
-
-	dependencies {
-		
-		compile project(':gdx-facebook-android')
-		
-		
-		compile "junit:junit:$jUnitVersion"
-		compile "org.mockito:mockito-all:$mockitoVersion"
-		compile "org.powermock:powermock-mockito-release-full:$powermockVersion"
-		
-		
-	}
-}
 
 project(":gdx-facebook-core") {
     apply plugin : 'java'
@@ -114,48 +86,10 @@ project(":gdx-facebook-core") {
 	}
 
 	dependencies {
-		compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-		
-		compile fileTree(dir: 'libs', include: '*.jar')
+		compile "com.badlogicgames.gdx:gdx:$gdxVersion"		
 	}
 }
 
-project(":gdx-facebook-core-tests") {
-    apply plugin : 'java'
-    	
-	apply from : '../publish.gradle'
-
-    configurations {
-        custom
-        compile.extendsFrom custom
-	} 
-
-	eclipse {
-		project {
-		    name = appName + "-core-tests"
-		}
-	}
-	dependencies {
-		
-		compile project(':gdx-facebook-core')
-		
-		compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-		
-//		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-		
-		compile "junit:junit:$jUnitVersion"
-		compile "org.mockito:mockito-all:$mockitoVersion"
-		compile "org.powermock:powermock-mockito-release-full:$powermockVersion"
-
-		/** required for running test from eclipse */
-		compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-		
-		/* required to prevent Couldn't load shared library 'libgdx64.so' for target: Linux, 64-bit - ERROR */
-		testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-		
-		compile fileTree(dir: 'libs', include: '*.jar')
-	}
-}
 
 
 
@@ -175,53 +109,11 @@ project(":gdx-facebook-desktop") {
 		}
 	}
 
-	dependencies {
-		
+	dependencies {		
 		compile project(':gdx-facebook-core')
-		
-//		compile "com.badlogicgames.gdx:gdx-backend-desktop:$gdxVersion"
-		
-		compile fileTree(dir: 'libs', include: '*.jar')
 	}
 }
 
-project(":gdx-facebook-desktop-tests") {
-    apply plugin : 'java'
-
-	apply from : '../publish.gradle'
-
-    configurations {
-        custom
-        compile.extendsFrom custom
-	} 	
-    
-    	
-	eclipse {
-		project {
-		    name = appName + "-desktop-tests"
-		}
-	}
-
-	dependencies {
-		
-		compile project(':gdx-facebook-desktop')
-		
-	//	compile "com.badlogicgames.gdx:gdx-backend-desktop:$gdxVersion"
-		compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-		
-		compile "junit:junit:$jUnitVersion"
-		compile "org.mockito:mockito-all:$mockitoVersion"
-		compile "org.powermock:powermock-mockito-release-full:$powermockVersion"
-		
-		/** required for running test from eclipse */
-		compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-		
-		/* required to prevent Couldn't load shared library 'libgdx64.so' for target: Linux, 64-bit - ERROR */
-		testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-		
-		compile fileTree(dir: 'libs', include: '*.jar')
-	}
-}
 
 project(":gdx-facebook-html") {
     apply plugin : 'java'
@@ -241,22 +133,7 @@ project(":gdx-facebook-html") {
 	}
 }
 
-project(":gdx-facebook-html-tests") {
-    apply plugin : 'java'
-    	
-	apply from : '../publish.gradle'
 
-    configurations {
-        custom
-        compile.extendsFrom custom
-	} 
-
-	eclipse {
-		project {
-		    name = appName + "-html-tests"
-		}
-	}
-}
 
 project(":gdx-facebook-ios") {
     apply plugin : 'java'
@@ -283,43 +160,11 @@ project(":gdx-facebook-ios") {
 		compile "org.robovm:robovm-rt:${roboVMVersion}"
         compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
         compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
-//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
         
         compile "org.robovm:robopods-facebook-ios:1.0-SNAPSHOT"
-		
-		compile fileTree(dir: 'libs', include: '*.jar')
 	}
 }
 
-project(":gdx-facebook-ios-tests") {
-    apply plugin : 'java'
-    	
-	apply from : '../publish.gradle'
-
-    configurations {
-        custom
-        compile.extendsFrom custom
-	} 
-    
-	eclipse {
-		project {
-		    name = appName + "-ios-tests"
-		}
-	}
-	
-	dependencies {
-		
-		compile project(':gdx-facebook-ios')
-		
-		compile "junit:junit:$jUnitVersion"
-		compile "org.mockito:mockito-all:$mockitoVersion"
-		compile "org.powermock:powermock-mockito-release-full:$powermockVersion"
-		
-		
-		
-	}
-	
-}
 
 tasks.eclipse.doLast {
     delete ".project"
