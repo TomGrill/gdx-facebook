@@ -21,10 +21,20 @@ import java.util.Collection;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
+import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.net.HttpRequestBuilder;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 
+/**
+ * 
+ * @author Thomas Pronold (TomGrill) mail@tomgrill.de
+ *
+ */
 public abstract class GDXFacebook {
+
+	private GDXFacebookCallback<GDXFacebookGraphResult> callback;
 
 	/**
 	 * This will start a login process. The login process is usually done
@@ -34,7 +44,7 @@ public abstract class GDXFacebook {
 	 * 
 	 * @param permissions
 	 *            List of Strings with requested permissions. Learn more about
-	 *            Facebook Permissions: @see <a href=
+	 *            Facebook Permissions: <a href=
 	 *            "https://developers.facebook.com/docs/facebook-login/permissions/"
 	 *            >https://developers.facebook.com/docs/facebook-login/
 	 *            permissions/</a>
@@ -52,7 +62,7 @@ public abstract class GDXFacebook {
 	 * 
 	 * @param permissions
 	 *            List of Strings with requested permissions. Learn more about
-	 *            Facebook Permissions: @see <a href=
+	 *            Facebook Permissions: <a href=
 	 *            "https://developers.facebook.com/docs/facebook-login/permissions/"
 	 *            >https://developers.facebook.com/docs/facebook-login/
 	 *            permissions/</a>
@@ -76,29 +86,70 @@ public abstract class GDXFacebook {
 	 */
 	abstract public void logOut();
 
-	final public void newGraphRequest(String path, String parameter, final HttpResponseListener listener) {
-		HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
-		String uri = "";
+	final public void newGraphRequest(GDXFacebookGraphRequest request, final GDXFacebookCallback<GDXFacebookGraphResult> callback) {
 
-		if (path != null) {
-			uri += path;
-		} else {
-			uri = "https://graph.facebook.com/";
-		}
-		uri += "?";
-
-		if (parameter != null) {
-			uri += parameter;
+		if (request.isUseCurrentAccessToken()) {
+			request.putField("access_token", getAccessToken());
 		}
 
-		if (getAccessToken() != null) {
-			uri += "&access_token=" + getAccessToken();
-		}
+		String url = request.build();
 
-		System.out.println(uri);
+		HttpRequest httpRequest = new HttpRequestBuilder().newRequest().method(HttpMethods.GET).url(url).build();
+		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
 
-		HttpRequest httpRequest = requestBuilder.newRequest().method(HttpMethods.GET).url(uri).build();
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				String resultString = httpResponse.getResultAsString();
 
-		Gdx.net.sendHttpRequest(httpRequest, listener);
+				if (httpResponse.getStatus().getStatusCode() >= 200 && httpResponse.getStatus().getStatusCode() < 300) {
+					final GDXFacebookGraphResult gResult = new GDXFacebookGraphResult();
+					gResult.setResultAsJson(resultString);
+					callback.onSuccess(gResult);
+
+				} else {
+					GDXFacebookError error = new GDXFacebookError();
+
+					JsonValue errorNode = new JsonReader().parse(resultString).get("error");
+					if (errorNode != null) {
+
+						if (errorNode.has("message")) {
+							error.setErrorMessage(errorNode.getString("message"));
+						}
+						if (errorNode.has("code")) {
+							error.setErrorCode(errorNode.getString("code"));
+						}
+						if (errorNode.has("type")) {
+							error.setErrorType(errorNode.getString("type"));
+						}
+						if (errorNode.has("error_subcode")) {
+							error.setErrorSubCode(errorNode.getString("error_subcode"));
+						}
+						if (errorNode.has("error_user_msg")) {
+							error.setErrorUserMessage(errorNode.getString("error_user_msg"));
+						}
+						if (errorNode.has("error_user_title")) {
+							error.setErrorUserTitle(errorNode.getString("error_user_title"));
+						}
+
+					} else {
+						error.setErrorMessage("Unknown error: Facebook response: \n" + resultString);
+					}
+
+					callback.onError(error);
+				}
+
+			}
+
+			@Override
+			public void failed(Throwable t) {
+				callback.onFail(t);
+			}
+
+			@Override
+			public void cancelled() {
+				callback.onCancel();
+			}
+		});
+
 	}
 }

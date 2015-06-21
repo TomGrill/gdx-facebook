@@ -19,6 +19,11 @@ package de.tomgrill.gdxfacebook.core;
 public class GDXFacebookError {
 
 	private String errorMessage;
+	private String errorType;
+	private String errorCode;
+	private String errorSubCode;
+	private String errorUserTitle;
+	private String errorUserMessage;
 
 	public String getErrorMessage() {
 		return errorMessage;
@@ -26,6 +31,46 @@ public class GDXFacebookError {
 
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
+	}
+
+	public String getErrorType() {
+		return errorType;
+	}
+
+	public void setErrorType(String errorType) {
+		this.errorType = errorType;
+	}
+
+	public String getErrorCode() {
+		return errorCode;
+	}
+
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
+	}
+
+	public String getErrorSubCode() {
+		return errorSubCode;
+	}
+
+	public void setErrorSubCode(String errorSubCode) {
+		this.errorSubCode = errorSubCode;
+	}
+
+	public String getErrorUserTitle() {
+		return errorUserTitle;
+	}
+
+	public void setErrorUserTitle(String errorUserTitle) {
+		this.errorUserTitle = errorUserTitle;
+	}
+
+	public String getErrorUserMessage() {
+		return errorUserMessage;
+	}
+
+	public void setErrorUserMessage(String errorUserMessage) {
+		this.errorUserMessage = errorUserMessage;
 	}
 
 }

@@ -16,15 +16,33 @@
 
 package de.tomgrill.gdxfacebook.core;
 
-public class GDXFacebookLoginResult {
-	private String accessToken;
+/**
+ * Convenient class for {@link GDXFacebookCallback}
+ * 
+ * @author Thomas Pronold (TomGrill) mail@tomgrill.de
+ *
+ * @param <T>
+ */
+public class GDXFacebookCallbackAdapter<T> implements GDXFacebookCallback<T> {
 
-	public String getAccessToken() {
-		return accessToken;
+	@Override
+	public void onSuccess(T result) {
+
 	}
 
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
+	@Override
+	public void onError(GDXFacebookError error) {
+
+	}
+
+	@Override
+	public void onFail(Throwable t) {
+
+	}
+
+	@Override
+	public void onCancel() {
+
 	}
 
 }

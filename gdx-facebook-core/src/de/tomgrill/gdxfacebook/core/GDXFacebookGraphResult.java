@@ -16,15 +16,14 @@
 
 package de.tomgrill.gdxfacebook.core;
 
-public class GDXFacebookLoginResult {
-	private String accessToken;
+public class GDXFacebookGraphResult {
+	private String resultAsJson;
 
-	public String getAccessToken() {
-		return accessToken;
+	public String getResultAsJson() {
+		return resultAsJson;
 	}
 
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
+	public void setResultAsJson(String resultAsJson) {
+		this.resultAsJson = resultAsJson;
 	}
-
 }

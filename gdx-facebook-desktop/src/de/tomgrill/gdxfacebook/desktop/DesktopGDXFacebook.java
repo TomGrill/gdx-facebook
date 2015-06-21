@@ -22,14 +22,15 @@ import java.util.List;
 import javafx.application.Platform;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net.HttpResponse;
-import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.Preferences;
 
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
+import de.tomgrill.gdxfacebook.core.GDXFacebookCallbackAdapter;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
 import de.tomgrill.gdxfacebook.core.GDXFacebookError;
+import de.tomgrill.gdxfacebook.core.GDXFacebookGraphRequest;
+import de.tomgrill.gdxfacebook.core.GDXFacebookGraphResult;
 import de.tomgrill.gdxfacebook.core.GDXFacebookLoginResult;
 
 public class DesktopGDXFacebook extends GDXFacebook {
@@ -54,12 +55,14 @@ public class DesktopGDXFacebook extends GDXFacebook {
 		}
 	}
 
-	private void verifiyAccessToken(HttpResponseListener listener) {
-		newGraphRequest("https://graph.facebook.com/me", null, listener);
+	private void verifiyAccessToken(GDXFacebookCallback<GDXFacebookGraphResult> callback) {
+		GDXFacebookGraphRequest request = new GDXFacebookGraphRequest().setNode("me").useCurrentAccessToken();
+
+		newGraphRequest(request, callback);
 
 	}
 
-	private void startGUILogin(final Collection<String> permissions, final GDXFacebookCallback<GDXFacebookLoginResult> responseListener) {
+	private void startGUILogin(final Collection<String> permissions, final GDXFacebookCallback<GDXFacebookLoginResult> callback) {
 
 		if (RunHelper.isStarted) {
 
@@ -87,7 +90,7 @@ public class DesktopGDXFacebook extends GDXFacebook {
 
 					JXBrowserDesktopFacebookGUI.setAppId(config.APP_ID);
 					JXBrowserDesktopFacebookGUI.setPermissions(permissionString);
-					JXBrowserDesktopFacebookGUI.show(responseListener);
+					JXBrowserDesktopFacebookGUI.show(callback);
 
 				}
 			}).start();
@@ -128,37 +131,43 @@ public class DesktopGDXFacebook extends GDXFacebook {
 				callback.onCancel();
 			}
 
+			@Override
+			public void onFail(Throwable t) {
+
+			}
+
 		};
 
 		if ((getAccessToken() != null && getAccessToken().length() > 0)) {
-			verifiyAccessToken(new HttpResponseListener() {
+
+			verifiyAccessToken(new GDXFacebookCallbackAdapter<GDXFacebookGraphResult>() {
 
 				@Override
-				public void handleHttpResponse(HttpResponse httpResponse) {
-					if (httpResponse.getStatus().getStatusCode() == 200) {
-						GDXFacebookLoginResult result = new GDXFacebookLoginResult();
-						result.setAccessToken(getAccessToken());
-						isLoggedIn = true;
-						callback.onSuccess(result);
-
-					} else {
-						startGUILogin(permissions, desktopCallback);
-					}
+				public void onSuccess(GDXFacebookGraphResult result) {
+					final GDXFacebookLoginResult loginresult = new GDXFacebookLoginResult();
+					loginresult.setAccessToken(getAccessToken());
+					isLoggedIn = true;
+					callback.onSuccess(loginresult);
 				}
 
 				@Override
-				public void failed(Throwable t) {
-					GDXFacebookError error = new GDXFacebookError();
-					error.setErrorMessage(t.getMessage());
+				public void onError(GDXFacebookError error) {
+					startGUILogin(permissions, desktopCallback);
+				}
+
+				@Override
+				public void onFail(Throwable t) {
 					logOut();
-					callback.onError(error);
+					callback.onFail(t);
 				}
 
 				@Override
-				public void cancelled() {
+				public void onCancel() {
 					callback.onCancel();
 				}
+
 			});
+
 		} else {
 			startGUILogin(permissions, desktopCallback);
 		}
