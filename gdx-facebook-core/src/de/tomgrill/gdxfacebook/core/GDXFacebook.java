@@ -16,14 +16,15 @@
 
 package de.tomgrill.gdxfacebook.core;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.net.HttpRequestBuilder;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
@@ -34,7 +35,8 @@ import com.badlogic.gdx.utils.JsonValue;
  */
 public abstract class GDXFacebook {
 
-	private GDXFacebookCallback<GDXFacebookGraphResult> callback;
+	private boolean waitingForResponse = false;
+	private boolean permissionsGranted = false;
 
 	/**
 	 * This will start a login process. The login process is usually done
@@ -79,7 +81,24 @@ public abstract class GDXFacebook {
 	 */
 	abstract public boolean isLoggedIn();
 
+	/**
+	 * Returns the currently used access token. If you have a multiuser Facebook
+	 * application retrieve the access tokens with this method and store them
+	 * accordingly.
+	 * 
+	 * @return
+	 */
 	abstract public String getAccessToken();
+
+	// /**
+	// * Sets the accessToken. This is useful if you have a multiuser Facebook
+	// * application or want to reuse the access token from an earlier Facebook
+	// * SDK implementation.
+	// *
+	// * @return
+	// */
+	// @Deprecated
+	// abstract public void setAccessToken(String accessToken);
 
 	/**
 	 * Logs the user out.
@@ -92,43 +111,58 @@ public abstract class GDXFacebook {
 			request.putField("access_token", getAccessToken());
 		}
 
-		String url = request.build();
+		HttpRequestBuilder builder = new HttpRequestBuilder().newRequest();
 
-		HttpRequest httpRequest = new HttpRequestBuilder().newRequest().method(HttpMethods.GET).url(url).build();
+		builder.method(request.getMethod());
+		builder.url(request.getUrl());
+		builder.content(request.getContentAsString());
+		builder.timeout(request.getTimeout());
+
+		HttpRequest httpRequest = builder.build();
+
 		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
 
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				String resultString = httpResponse.getResultAsString();
+				int statusCode = httpResponse.getStatus().getStatusCode();
 
-				if (httpResponse.getStatus().getStatusCode() >= 200 && httpResponse.getStatus().getStatusCode() < 300) {
+				if (statusCode == -1) {
+					GDXFacebookError error = new GDXFacebookError();
+					error.setErrorMessage("Connection time out after. Handle error or increase timeout with GDXFacebookGraphRequest.setTimeout(); ");
+					error.setErrorCode("-1");
+					callback.onError(error);
+				} else if (statusCode >= 200 && statusCode < 300) {
 					final GDXFacebookGraphResult gResult = new GDXFacebookGraphResult();
 					gResult.setResultAsJson(resultString);
 					callback.onSuccess(gResult);
-
 				} else {
 					GDXFacebookError error = new GDXFacebookError();
 
-					JsonValue errorNode = new JsonReader().parse(resultString).get("error");
-					if (errorNode != null) {
+					JsonValue result = new JsonReader().parse(resultString);
 
-						if (errorNode.has("message")) {
-							error.setErrorMessage(errorNode.getString("message"));
-						}
-						if (errorNode.has("code")) {
-							error.setErrorCode(errorNode.getString("code"));
-						}
-						if (errorNode.has("type")) {
-							error.setErrorType(errorNode.getString("type"));
-						}
-						if (errorNode.has("error_subcode")) {
-							error.setErrorSubCode(errorNode.getString("error_subcode"));
-						}
-						if (errorNode.has("error_user_msg")) {
-							error.setErrorUserMessage(errorNode.getString("error_user_msg"));
-						}
-						if (errorNode.has("error_user_title")) {
-							error.setErrorUserTitle(errorNode.getString("error_user_title"));
+					if (result.has("error")) {
+						JsonValue errorNode = result.get("error");
+						if (errorNode != null) {
+
+							if (errorNode.has("message")) {
+								error.setErrorMessage(errorNode.getString("message"));
+							}
+							if (errorNode.has("code")) {
+								error.setErrorCode(errorNode.getString("code"));
+							}
+							if (errorNode.has("type")) {
+								error.setErrorType(errorNode.getString("type"));
+							}
+							if (errorNode.has("error_subcode")) {
+								error.setErrorSubCode(errorNode.getString("error_subcode"));
+							}
+							if (errorNode.has("error_user_msg")) {
+								error.setErrorUserMessage(errorNode.getString("error_user_msg"));
+							}
+							if (errorNode.has("error_user_title")) {
+								error.setErrorUserTitle(errorNode.getString("error_user_title"));
+							}
 						}
 
 					} else {
@@ -152,4 +186,77 @@ public abstract class GDXFacebook {
 		});
 
 	}
+
+	protected boolean arePermissionsGranted(final Collection<String> permissions) {
+
+		waitingForResponse = true;
+		permissionsGranted = false;
+
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				GDXFacebookGraphRequest request = new GDXFacebookGraphRequest().setNode("me/permissions").useCurrentAccessToken();
+				newGraphRequest(request, new GDXFacebookCallback<GDXFacebookGraphResult>() {
+
+					@Override
+					public void onSuccess(GDXFacebookGraphResult result) {
+
+						JsonValue data = new JsonReader().parse(result.getResultAsJson());
+						if (data != null && data.has("data")) {
+							JsonValue permissionList = data.get("data");
+
+							Array<String> grantedPermissions = new Array<String>();
+
+							for (int i = 0; i < permissionList.size; i++) {
+								JsonValue permission = permissionList.get(i);
+
+								if (permission.has("permission") && permission.has("status") && permission.getString("status").equals("granted")) {
+									grantedPermissions.add(permission.getString("permission"));
+								}
+							}
+							ArrayList<String> requiredPermissions = (ArrayList<String>) permissions;
+
+							for (int i = 0; i < requiredPermissions.size(); i++) {
+								if (!grantedPermissions.contains(requiredPermissions.get(i), false)) {
+									waitingForResponse = false;
+									return;
+								}
+							}
+							permissionsGranted = true;
+						}
+						waitingForResponse = false;
+					}
+
+					@Override
+					public void onError(GDXFacebookError error) {
+						waitingForResponse = false;
+
+					}
+
+					@Override
+					public void onFail(Throwable t) {
+						waitingForResponse = false;
+
+					}
+
+					@Override
+					public void onCancel() {
+						waitingForResponse = false;
+
+					}
+
+				});
+			}
+		}).start();
+
+		while (waitingForResponse) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+			}
+		}
+		return permissionsGranted;
+	}
+
 }

@@ -16,6 +16,7 @@
 
 package de.tomgrill.gdxfacebook.core;
 
+import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.utils.ArrayMap;
 
 /**
@@ -39,6 +40,10 @@ public class GDXFacebookGraphRequest {
 
 	private boolean useCurrentAccessToken = false;
 
+	private String method = HttpMethods.GET;
+
+	private int timeout = 10000;
+
 	public GDXFacebookGraphRequest() {
 		fields = new ArrayMap<String, String>();
 	}
@@ -48,7 +53,7 @@ public class GDXFacebookGraphRequest {
 	 * (https://graph.facebook.com/). F.e. using an older Graph API.
 	 * 
 	 * @param url
-	 * @return
+	 * @return this
 	 */
 	public GDXFacebookGraphRequest setUrl(String url) {
 		this.url = url.trim();
@@ -80,7 +85,7 @@ public class GDXFacebookGraphRequest {
 	 * 
 	 * @param key
 	 * @param value
-	 * @return
+	 * @return this
 	 */
 	public GDXFacebookGraphRequest putField(String key, String value) {
 		fields.put(key, value);
@@ -91,7 +96,7 @@ public class GDXFacebookGraphRequest {
 	 * Add multiple fields to the request.
 	 * 
 	 * @param fields
-	 * @return
+	 * @return this
 	 */
 	public GDXFacebookGraphRequest putFields(ArrayMap<String, String> fields) {
 		fields.putAll(fields);
@@ -102,7 +107,7 @@ public class GDXFacebookGraphRequest {
 	 * Call this method when your request requires an access_token field. The
 	 * field will be set with the current available access token.
 	 * 
-	 * @return
+	 * @return this
 	 */
 	public GDXFacebookGraphRequest useCurrentAccessToken() {
 		this.useCurrentAccessToken = true;
@@ -113,22 +118,51 @@ public class GDXFacebookGraphRequest {
 		return useCurrentAccessToken;
 	}
 
-	protected String build() {
-		String request = url;
+	protected String getUrl() {
+		String url = this.url;
 
 		if (node != null) {
-			request += node;
+			url += node;
 		}
 
-		request += "?";
+		return url;
+	}
+
+	protected String getMethod() {
+		return this.method;
+	}
+
+	/**
+	 * Set the HTTP request method. Default is GET
+	 * 
+	 * @param method
+	 */
+	public void setMethod(String method) {
+		this.method = method;
+	}
+
+	protected String getContentAsString() {
+		String content = "";
 
 		for (int i = 0; i < fields.size; i++) {
-			request += fields.getKeyAt(i) + "=" + fields.getValueAt(i);
+			content += fields.getKeyAt(i) + "=" + fields.getValueAt(i);
 			if (i + 1 < fields.size) {
-				request += "&";
+				content += "&";
 			}
 		}
+		return content;
+	}
 
-		return request;
+	protected int getTimeout() {
+		return timeout;
+	}
+
+	/**
+	 * Set the timeout in msec. Default is 10000 ~ 10 seconds
+	 * 
+	 * @param timeout
+	 */
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
 	}
 }

@@ -134,7 +134,7 @@ afterEvaluate { project ->
     artifacts {
         archives libraryJar
         archives sourcesJar
-        archives javadocJar
+//        archives javadocJar
     }
 
 }

@@ -56,7 +56,7 @@ public class IOSGDXFacebook extends GDXFacebook {
 	}
 
 	private void login(Collection<String> permissions, final GDXFacebookCallback<GDXFacebookLoginResult> callback, boolean withPublishPermissions) {
-		if (FBSDKAccessToken.getCurrentAccessToken() != null) {
+		if (FBSDKAccessToken.getCurrentAccessToken() != null && arePermissionsGranted(permissions)) {
 
 			GDXFacebookLoginResult result = new GDXFacebookLoginResult();
 			result.setAccessToken(FBSDKAccessToken.getCurrentAccessToken().getTokenString());

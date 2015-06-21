@@ -84,7 +84,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
 	private void login(Collection<String> permissions, final GDXFacebookCallback<GDXFacebookLoginResult> callback, boolean withPublishPermissions) {
 
-		if (AccessToken.getCurrentAccessToken() != null) {
+		if (AccessToken.getCurrentAccessToken() != null && arePermissionsGranted(permissions)) {
 
 			GDXFacebookLoginResult result = new GDXFacebookLoginResult();
 			result.setAccessToken(AccessToken.getCurrentAccessToken().getToken());

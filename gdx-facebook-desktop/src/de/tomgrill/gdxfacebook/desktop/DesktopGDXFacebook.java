@@ -57,15 +57,12 @@ public class DesktopGDXFacebook extends GDXFacebook {
 
 	private void verifiyAccessToken(GDXFacebookCallback<GDXFacebookGraphResult> callback) {
 		GDXFacebookGraphRequest request = new GDXFacebookGraphRequest().setNode("me").useCurrentAccessToken();
-
 		newGraphRequest(request, callback);
-
 	}
 
 	private void startGUILogin(final Collection<String> permissions, final GDXFacebookCallback<GDXFacebookLoginResult> callback) {
 
 		if (RunHelper.isStarted) {
-
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
@@ -98,7 +95,7 @@ public class DesktopGDXFacebook extends GDXFacebook {
 
 	}
 
-	public void setAccessToken(String accessToken) {
+	private void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 		if (accessToken == null) {
 			prefs.remove("access_token");
@@ -133,12 +130,12 @@ public class DesktopGDXFacebook extends GDXFacebook {
 
 			@Override
 			public void onFail(Throwable t) {
-
+				callback.onFail(t);
 			}
 
 		};
 
-		if ((getAccessToken() != null && getAccessToken().length() > 0)) {
+		if ((getAccessToken() != null && getAccessToken().length() > 0) && arePermissionsGranted(permissions)) {
 
 			verifiyAccessToken(new GDXFacebookCallbackAdapter<GDXFacebookGraphResult>() {
 
@@ -176,7 +173,7 @@ public class DesktopGDXFacebook extends GDXFacebook {
 
 	@Override
 	public void loginWithPublishPermissions(Collection<String> permissions, GDXFacebookCallback<GDXFacebookLoginResult> callback) {
-
+		loginWithReadPermissions(permissions, callback);
 	}
 
 	@Override
