@@ -18,16 +18,23 @@ package de.tomgrill.gdxfacebook.core;
 
 import java.util.Collection;
 
-public class NullGDXFacebook extends GDXFacebook {
+public class FallbackGDXFacebook extends GDXFacebook {
+
+	private GDXFacebookError error;
+
+	public FallbackGDXFacebook() {
+		error = new GDXFacebookError();
+		error.setErrorMessage("gdx-facebook not installed");
+	}
 
 	@Override
 	public void loginWithReadPermissions(Collection<String> permissions, GDXFacebookCallback<GDXFacebookLoginResult> callback) {
-
+		callback.onError(error);
 	}
 
 	@Override
 	public void loginWithPublishPermissions(Collection<String> permissions, GDXFacebookCallback<GDXFacebookLoginResult> callback) {
-
+		callback.onError(error);
 	}
 
 	@Override

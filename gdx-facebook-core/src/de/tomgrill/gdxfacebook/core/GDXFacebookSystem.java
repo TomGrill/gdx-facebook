@@ -48,7 +48,7 @@ public class GDXFacebookSystem {
 		// installGDXFacebookForHTML();
 
 		if (gdxFacebook == null) {
-			gdxFacebook = new NullGDXFacebook();
+			gdxFacebook = new FallbackGDXFacebook();
 		}
 	}
 
