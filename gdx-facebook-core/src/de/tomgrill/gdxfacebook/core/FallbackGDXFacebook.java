@@ -52,4 +52,9 @@ public class FallbackGDXFacebook extends GDXFacebook {
 		return null;
 	}
 
+	@Override
+	public void newGraphRequest(GDXFacebookGraphRequest request, GDXFacebookCallback<GDXFacebookGraphResult> callback) {
+		callback.onError(error);
+	}
+
 }

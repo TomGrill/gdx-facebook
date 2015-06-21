@@ -105,7 +105,7 @@ public abstract class GDXFacebook {
 	 */
 	abstract public void logOut();
 
-	final public void newGraphRequest(GDXFacebookGraphRequest request, final GDXFacebookCallback<GDXFacebookGraphResult> callback) {
+	public void newGraphRequest(GDXFacebookGraphRequest request, final GDXFacebookCallback<GDXFacebookGraphResult> callback) {
 
 		if (request.isUseCurrentAccessToken()) {
 			request.putField("access_token", getAccessToken());
