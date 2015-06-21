@@ -137,8 +137,9 @@ public class GDXFacebookGraphRequest {
 	 * 
 	 * @param method
 	 */
-	public void setMethod(String method) {
+	public GDXFacebookGraphRequest setMethod(String method) {
 		this.method = method;
+		return this;
 	}
 
 	protected String getContentAsString() {
@@ -162,7 +163,8 @@ public class GDXFacebookGraphRequest {
 	 * 
 	 * @param timeout
 	 */
-	public void setTimeout(int timeout) {
+	public GDXFacebookGraphRequest setTimeout(int timeout) {
 		this.timeout = timeout;
+		return this;
 	}
 }
