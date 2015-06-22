@@ -190,9 +190,7 @@ public class GDXFacebookSystem {
 	}
 
 	private static void setGDXFacebook(GDXFacebook facebook) {
-		if (instance == null) {
-			System.out.println("WTFFFFFFFFFFFFFFFFFFFf99");
-		}
+
 		instance.gdxFacebook = facebook;
 	}
 
