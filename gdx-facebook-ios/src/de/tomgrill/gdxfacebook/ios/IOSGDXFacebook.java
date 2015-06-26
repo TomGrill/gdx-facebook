@@ -109,7 +109,10 @@ public class IOSGDXFacebook extends GDXFacebook {
 
 	@Override
 	public String getAccessToken() {
-		return FBSDKAccessToken.getCurrentAccessToken().getTokenString();
+		if (FBSDKAccessToken.getCurrentAccessToken() != null) {
+			FBSDKAccessToken.getCurrentAccessToken().getTokenString();
+		}
+		return null;
 	}
 
 }

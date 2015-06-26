@@ -86,7 +86,7 @@ public abstract class GDXFacebook {
 	 * application retrieve the access tokens with this method and store them
 	 * accordingly.
 	 * 
-	 * @return
+	 * @return returns access token or null if no valid access token exists.
 	 */
 	abstract public String getAccessToken();
 
@@ -107,8 +107,9 @@ public abstract class GDXFacebook {
 
 	public void newGraphRequest(GDXFacebookGraphRequest request, final GDXFacebookCallback<GDXFacebookGraphResult> callback) {
 
-		if (request.isUseCurrentAccessToken()) {
-			request.putField("access_token", getAccessToken());
+		String accessToken = getAccessToken();
+		if (request.isUseCurrentAccessToken() && accessToken != null) {
+			request.putField("access_token", accessToken);
 		}
 
 		HttpRequestBuilder builder = new HttpRequestBuilder().newRequest();
