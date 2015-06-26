@@ -126,7 +126,6 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
 	@Override
 	public String getAccessToken() {
-		//
 		if (AccessToken.getCurrentAccessToken() != null) {
 			return AccessToken.getCurrentAccessToken().getToken();
 		}
