@@ -81,7 +81,7 @@ afterEvaluate { project ->
 
 
                 pom.project {
-                    name 'libGDX Facebook API'
+                    name 'gdx-facebook'
                     description 'Facebook API for libGDX'
                     url 'https://github.com/TomGrill/gdx-facebook'
 
