@@ -1,6 +1,7 @@
 ext {
 	GROUPID = 'de.tomgrill.gdxfacebook'
 	VERSION = '0.4.0-SNAPSHOT'
+	
 }
 
 buildscript {
