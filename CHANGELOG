@@ -1,3 +1,8 @@
+0.5.0
+	* facebook-android-sdk 4.4.0
+	* fixed bug on Android (Issued #2 and #3)
+	* upgrade ios robopods to 1.5.0 
+
 0.4.0
 	* facebook-android-sdk 4.3.0
 
