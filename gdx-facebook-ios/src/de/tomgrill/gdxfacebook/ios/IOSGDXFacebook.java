@@ -63,27 +63,22 @@ public class IOSGDXFacebook extends GDXFacebook {
 
 	private void login(Collection<String> permissions, final GDXFacebookCallback<GDXFacebookLoginResult> callback, boolean withPublishPermissions) {
 
-		if (FBSDKAccessToken.getCurrentAccessToken() == null) {
-			accessToken = loadAccessToken();
-			if (accessToken != null) {
-				FBSDKAccessToken reuseToken = fromGDXFacebookToken(accessToken);
-				FBSDKAccessToken.setCurrentAccessToken(reuseToken);
+		if (FBSDKAccessToken.getCurrentAccessToken() != null) { 
+			accessToken = toGDXFacebookToken(FBSDKAccessToken.getCurrentAccessToken());	
+			
+			if(arePermissionsGranted(permissions)) {
+
+				GDXFacebookLoginResult result = new GDXFacebookLoginResult();
+				accessToken = toGDXFacebookToken(FBSDKAccessToken.getCurrentAccessToken());
+				storeToken(accessToken);
+
+				result.setAccessToken(accessToken);
+				callback.onSuccess(result);
 			}
-		}
-
-		if (FBSDKAccessToken.getCurrentAccessToken() != null && arePermissionsGranted(permissions)) {
-
-			GDXFacebookLoginResult result = new GDXFacebookLoginResult();
-
-			accessToken = toGDXFacebookToken(FBSDKAccessToken.getCurrentAccessToken());
-			storeToken(accessToken);
-
-			result.setAccessToken(accessToken);
-			callback.onSuccess(result);
 
 		} else {
 
-			VoidBlock2<FBSDKLoginManagerLoginResult, NSError> bloack = new VoidBlock2<FBSDKLoginManagerLoginResult, NSError>() {
+			VoidBlock2<FBSDKLoginManagerLoginResult, NSError> result = new VoidBlock2<FBSDKLoginManagerLoginResult, NSError>() {
 
 				@Override
 				public void invoke(FBSDKLoginManagerLoginResult loginResult, NSError nsError) {
@@ -115,9 +110,9 @@ public class IOSGDXFacebook extends GDXFacebook {
 			List<String> listPermissions = (List<String>) permissions;
 
 			if (withPublishPermissions) {
-				loginManager.logInWithPublishPermissions(listPermissions, bloack);
+				loginManager.logInWithPublishPermissions(listPermissions, result);
 			} else {
-				loginManager.logInWithReadPermissions(listPermissions, bloack);
+				loginManager.logInWithReadPermissions(listPermissions, result);
 			}
 		}
 
@@ -145,10 +140,10 @@ public class IOSGDXFacebook extends GDXFacebook {
 				collectionToGdxArray(accessToken.getDeclinedPermissions()), accessToken.getExpirationDate().toDate().getTime(), accessToken.getRefreshDate().toDate().getTime());
 	}
 
-	private FBSDKAccessToken fromGDXFacebookToken(GDXFacebookAccessToken accessToken) {
-		return new FBSDKAccessToken(accessToken.getToken(), gdxArrayToCollection(accessToken.getPermissions()), gdxArrayToCollection(accessToken.getDeclinedPermissions()),
-				accessToken.getApplicationId(), accessToken.getUserId(), new NSDate(accessToken.getExpirationTime() / 1000L), new NSDate(accessToken.getLastRefreshTime() / 1000L));
-	}
+	//private FBSDKAccessToken fromGDXFacebookToken(GDXFacebookAccessToken accessToken) {
+	//	return new FBSDKAccessToken(accessToken.getToken(), gdxArrayToCollection(accessToken.getPermissions()), gdxArrayToCollection(accessToken.getDeclinedPermissions()),
+	//			accessToken.getApplicationId(), accessToken.getUserId(), new NSDate(accessToken.getExpirationTime() / 1000L), new NSDate(accessToken.getLastRefreshTime() / 1000L));
+	//}
 
 	private Array<String> collectionToGdxArray(Collection<String> col) {
 		String[] arr = new String[col.size()];
@@ -160,6 +155,9 @@ public class IOSGDXFacebook extends GDXFacebook {
 		Set<String> col = new TreeSet<String>();
 		for (int i = 0; i < array.size; i++) {
 			col.add(array.get(i));
+		}
+		if(col.size() == 0) {
+			return null;
 		}
 		return col;
 	}
