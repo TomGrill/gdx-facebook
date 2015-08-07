@@ -5,21 +5,12 @@ libGDX extension providing cross-platform support for Facebook Graph API.
 https://github.com/TomGrill/gdx-facebook/wiki
 
 ## Version
-Current snapshot: **0.4.0**
+Current snapshot: **0.5.0**
 
 Current stable: **not yet released**
 
 ##Supported Platforms
 Android, iOS, Desktop
-
-##Release History
-
-Release history for major milestones (available via Maven):
-
-* Version 0.1.0: Initial Release
-* Version 0.2.0: Upgrade to IOS Facebook SDK 4.x - uses robopods-facebook now https://github.com/robovm/robovm-robopods/tree/master/facebook
-* Version 0.3.0: Major changes to API.
-* Version 0.4.0: Switched to facebook-android-sdk 4.3.0
 
 ##Reporting Issues
 
