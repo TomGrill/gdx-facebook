@@ -107,32 +107,39 @@ public class DesktopGDXFacebook extends GDXFacebook {
 					public void onSuccess(GDXFacebookGraphResult result) {
 
 						String jsonResult = result.getResultAsJson();
-						JsonValue data = new JsonReader().parse(jsonResult).get("data");
 
-						if (data.get("is_valid").asBoolean()) {
+						JsonValue root = new JsonReader().parse(jsonResult);
 
-							String appId = data.get("app_id").asString();
-							String userId = data.get("user_id").asString();
-							long expiresAt = data.get("expires_at").asLong() * 1000;
-							long issuedAt = data.get("issued_at").asLong() * 1000;
+						if (root.has("data")) {
 
-							Array<String> scopes = new Array<String>(data.get("scopes").asStringArray());
-							Array<String> scopesDeclined = new Array<String>();
+							JsonValue data = root.get("data");
 
-							final GDXFacebookLoginResult loginresult = new GDXFacebookLoginResult();
+							if (data.has("is_valid") && data.get("is_valid").asBoolean()) {
 
-							accessToken = new GDXFacebookAccessToken(getAccessToken().getToken(), appId, userId, scopes, scopesDeclined, expiresAt, issuedAt);
-							storeToken(accessToken);
+								String appId = (data.has("app_id")) ? data.get("app_id").asString() : "n/a";
+								String userId = (data.has("user_id")) ? data.get("user_id").asString() : "n/a";
 
-							loginresult.setAccessToken(accessToken);
-							callback.onSuccess(loginresult);
+								long expiresAt = (data.has("expires_at")) ? data.get("expires_at").asLong() * 1000L : 0;
+								long issuedAt = (data.has("issued_at")) ? data.get("issued_at").asLong() * 1000L : 0;
 
-						} else {
-							logOut();
-							GDXFacebookError error = new GDXFacebookError();
-							error.setErrorCode("9119");
-							error.setErrorMessage("Invalid token after successfull login - this error should never occurr. TODO");
-							callback.onError(error);
+								Array<String> scopes = (data.has("scopes")) ? new Array<String>(data.get("scopes").asStringArray()) : new Array<String>();
+								Array<String> scopesDeclined = new Array<String>();
+
+								final GDXFacebookLoginResult loginresult = new GDXFacebookLoginResult();
+
+								accessToken = new GDXFacebookAccessToken(getAccessToken().getToken(), appId, userId, scopes, scopesDeclined, expiresAt, issuedAt);
+								storeToken(accessToken);
+
+								loginresult.setAccessToken(accessToken);
+								callback.onSuccess(loginresult);
+
+							} else {
+								logOut();
+								GDXFacebookError error = new GDXFacebookError();
+								error.setErrorCode("9119");
+								error.setErrorMessage("Invalid token");
+								callback.onError(error);
+							}
 						}
 					}
 
@@ -189,30 +196,38 @@ public class DesktopGDXFacebook extends GDXFacebook {
 				public void onSuccess(GDXFacebookGraphResult result) {
 
 					String jsonResult = result.getResultAsJson();
-					JsonValue data = new JsonReader().parse(jsonResult).get("data");
 
-					if (data.get("is_valid").asBoolean()) {
+					JsonValue root = new JsonReader().parse(jsonResult);
 
-						String appId = data.get("app_id").asString();
-						String userId = data.get("user_id").asString();
-						long expiresAt = data.get("expires_at").asLong() * 1000;
-						long issuedAt = data.get("issued_at").asLong() * 1000;
+					if (root.has("data")) {
 
-						Array<String> scopes = new Array<String>(data.get("scopes").asStringArray());
-						Array<String> scopesDeclined = new Array<String>();
+						JsonValue data = root.get("data");
 
-						final GDXFacebookLoginResult loginresult = new GDXFacebookLoginResult();
+						if (data.has("is_valid") && data.get("is_valid").asBoolean()) {
 
-						accessToken = new GDXFacebookAccessToken(getAccessToken().getToken(), appId, userId, scopes, scopesDeclined, expiresAt, issuedAt);
-						storeToken(accessToken);
+							String appId = (data.has("app_id")) ? data.get("app_id").asString() : "n/a";
+							String userId = (data.has("user_id")) ? data.get("user_id").asString() : "n/a";
 
-						loginresult.setAccessToken(accessToken);
-						callback.onSuccess(loginresult);
+							long expiresAt = (data.has("expires_at")) ? data.get("expires_at").asLong() * 1000L : 0;
+							long issuedAt = (data.has("issued_at")) ? data.get("issued_at").asLong() * 1000L : 0;
 
-					} else {
-						logOut();
-						startGUILogin(permissions, desktopCallback);
+							Array<String> scopes = (data.has("scopes")) ? new Array<String>(data.get("scopes").asStringArray()) : new Array<String>();
+							Array<String> scopesDeclined = new Array<String>();
+
+							final GDXFacebookLoginResult loginresult = new GDXFacebookLoginResult();
+
+							accessToken = new GDXFacebookAccessToken(getAccessToken().getToken(), appId, userId, scopes, scopesDeclined, expiresAt, issuedAt);
+							storeToken(accessToken);
+
+							loginresult.setAccessToken(accessToken);
+							callback.onSuccess(loginresult);
+
+						} else {
+							logOut();
+							startGUILogin(permissions, desktopCallback);
+						}
 					}
+
 				}
 
 				@Override

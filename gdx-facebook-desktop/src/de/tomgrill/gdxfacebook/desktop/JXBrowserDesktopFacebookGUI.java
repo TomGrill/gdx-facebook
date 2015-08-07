@@ -16,6 +16,9 @@
 
 package de.tomgrill.gdxfacebook.desktop;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -76,6 +79,8 @@ public class JXBrowserDesktopFacebookGUI extends Application {
 		primaryStage.setTitle("Facebook Signin");
 
 		browser = new WebView();
+
+		CookieHandler.setDefault(new CookieManager());
 
 		engine = browser.getEngine();
 
@@ -192,6 +197,8 @@ public class JXBrowserDesktopFacebookGUI extends Application {
 	}
 
 	public static void reuse() {
+		CookieHandler.setDefault(new CookieManager());
+		engine.loadContent("");
 		engine.load(url);
 		primaryStage.show();
 
