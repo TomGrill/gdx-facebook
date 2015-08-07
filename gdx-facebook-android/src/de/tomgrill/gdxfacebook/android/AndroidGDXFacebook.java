@@ -59,7 +59,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 		callbackManager = CallbackManager.Factory.create();
 
 		loginManager = LoginManager.getInstance();
-		loginManager.setLoginBehavior(LoginBehavior.SSO_WITH_FALLBACK);
+		loginManager.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK);
 	}
 
 	@Override
