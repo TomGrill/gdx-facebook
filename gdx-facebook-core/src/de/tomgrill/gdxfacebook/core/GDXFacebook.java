@@ -281,7 +281,7 @@ public abstract class GDXFacebook {
 		if (accessTokenAsJson == null) {
 			return null;
 		}
-		System.out.println("LOAD TOKEN:\n" + accessTokenAsJson);
+		// System.out.println("LOAD TOKEN:\n" + accessTokenAsJson);
 		Json json = new Json();
 		json.setOutputType(OutputType.json);
 		return json.fromJson(GDXFacebookAccessToken.class, accessTokenAsJson);
@@ -294,7 +294,7 @@ public abstract class GDXFacebook {
 			Json json = new Json();
 			json.setOutputType(OutputType.json);
 
-			System.out.println("STORE TOKEN:\n" + json.toJson(token));
+			// System.out.println("STORE TOKEN:\n" + json.toJson(token));
 			prefs.putString("accessTokenAsJson", json.toJson(token));
 		}
 
