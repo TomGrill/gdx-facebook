@@ -141,7 +141,6 @@ public abstract class GDXFacebook {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				String resultString = httpResponse.getResultAsString();
-				System.out.println(resultString);
 				int statusCode = httpResponse.getStatus().getStatusCode();
 
 				if (statusCode == -1) {
