@@ -141,7 +141,7 @@ public abstract class GDXFacebook {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				String resultString = httpResponse.getResultAsString();
-System.out.println(resultString);
+				System.out.println(resultString);
 				int statusCode = httpResponse.getStatus().getStatusCode();
 
 				if (statusCode == -1) {
@@ -281,7 +281,7 @@ System.out.println(resultString);
 		if (accessTokenAsJson == null) {
 			return null;
 		}
-		System.out.println("LOAD TOKEN:\n" + accessTokenAsJson);
+		// System.out.println("LOAD TOKEN:\n" + accessTokenAsJson);
 		Json json = new Json();
 		json.setOutputType(OutputType.json);
 		return json.fromJson(GDXFacebookAccessToken.class, accessTokenAsJson);
@@ -294,7 +294,7 @@ System.out.println(resultString);
 			Json json = new Json();
 			json.setOutputType(OutputType.json);
 
-			System.out.println("STORE TOKEN:\n" + json.toJson(token));
+			// System.out.println("STORE TOKEN:\n" + json.toJson(token));
 			prefs.putString("accessTokenAsJson", json.toJson(token));
 		}
 
