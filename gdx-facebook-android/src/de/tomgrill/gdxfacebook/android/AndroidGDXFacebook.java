@@ -16,12 +16,15 @@
 
 package de.tomgrill.gdxfacebook.android;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
 
 import com.badlogic.gdx.backends.android.AndroidEventListener;
+import com.badlogic.gdx.utils.Array;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -32,6 +35,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
+import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
 import de.tomgrill.gdxfacebook.core.GDXFacebookError;
@@ -40,15 +44,16 @@ import de.tomgrill.gdxfacebook.core.GDXFacebookLoginResult;
 public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListener {
 
 	private final Activity activity;
-	private final GDXFacebookConfig config;
 
 	private CallbackManager callbackManager;
 
 	private LoginManager loginManager;
 
+	private GDXFacebookAccessToken currentFacebookAccessToken;
+
 	public AndroidGDXFacebook(final Activity activity, final GDXFacebookConfig config) {
+		super(config);
 		this.activity = activity;
-		this.config = config;
 
 		FacebookSdk.sdkInitialize(activity.getApplicationContext());
 		callbackManager = CallbackManager.Factory.create();
@@ -59,11 +64,12 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
 	@Override
 	public boolean isLoggedIn() {
-		return AccessToken.getCurrentAccessToken() != null;
+		return currentFacebookAccessToken != null;
 	}
 
 	@Override
 	public void logOut() {
+		currentFacebookAccessToken = null;
 		loginManager.logOut();
 	}
 
@@ -84,10 +90,30 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
 	private void login(Collection<String> permissions, final GDXFacebookCallback<GDXFacebookLoginResult> callback, boolean withPublishPermissions) {
 
+		/**
+		 * Check whether we can reuse an existing token:
+		 * 
+		 * If the user has Facebook App installed
+		 * AccessToken.getCurrentAccessToken() will not be NULL
+		 * 
+		 * Only when the Facebook App is not installed we need to load the token
+		 * manually.
+		 * */
+
+		if (AccessToken.getCurrentAccessToken() == null) {
+			currentFacebookAccessToken = loadAccessToken();
+			if (currentFacebookAccessToken != null) {
+				AccessToken reuseToken = fromGDXFacebookToken(currentFacebookAccessToken);
+				AccessToken.setCurrentAccessToken(reuseToken);
+			}
+		}
+
 		if (AccessToken.getCurrentAccessToken() != null && arePermissionsGranted(permissions)) {
 
 			GDXFacebookLoginResult result = new GDXFacebookLoginResult();
-			result.setAccessToken(AccessToken.getCurrentAccessToken().getToken());
+			currentFacebookAccessToken = toGDXFacebookToken(AccessToken.getCurrentAccessToken());
+			result.setAccessToken(currentFacebookAccessToken);
+			storeToken(currentFacebookAccessToken);
 			callback.onSuccess(result);
 
 		} else {
@@ -98,17 +124,22 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 				public void onSuccess(LoginResult loginResult) {
 
 					GDXFacebookLoginResult result = new GDXFacebookLoginResult();
-					result.setAccessToken(AccessToken.getCurrentAccessToken().getToken());
+					currentFacebookAccessToken = toGDXFacebookToken(AccessToken.getCurrentAccessToken());
+					storeToken(currentFacebookAccessToken);
+
+					result.setAccessToken(currentFacebookAccessToken);
 					callback.onSuccess(result);
 				}
 
 				@Override
 				public void onCancel() {
+					currentFacebookAccessToken = null;
 					callback.onCancel();
 				}
 
 				@Override
 				public void onError(FacebookException e) {
+					currentFacebookAccessToken = null;
 					GDXFacebookError error = new GDXFacebookError();
 					error.setErrorMessage(e.getMessage());
 					callback.onError(error);
@@ -125,11 +156,32 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 	}
 
 	@Override
-	public String getAccessToken() {
-		if (AccessToken.getCurrentAccessToken() != null) {
-			return AccessToken.getCurrentAccessToken().getToken();
+	public GDXFacebookAccessToken getAccessToken() {
+		return currentFacebookAccessToken;
+	}
+
+	private GDXFacebookAccessToken toGDXFacebookToken(AccessToken accessToken) {
+		return new GDXFacebookAccessToken(accessToken.getToken(), accessToken.getApplicationId(), accessToken.getUserId(), collectionToGdxArray(accessToken.getPermissions()),
+				collectionToGdxArray(accessToken.getDeclinedPermissions()), accessToken.getExpires().getTime(), accessToken.getLastRefresh().getTime());
+	}
+
+	private AccessToken fromGDXFacebookToken(GDXFacebookAccessToken accessToken) {
+		return new AccessToken(accessToken.getToken(), accessToken.getApplicationId(), accessToken.getUserId(), gdxArrayToCollection(accessToken.getPermissions()),
+				gdxArrayToCollection(accessToken.getDeclinedPermissions()), null, new Date(accessToken.getExpirationTime()), new Date(accessToken.getLastRefreshTime()));
+	}
+
+	private Collection<String> gdxArrayToCollection(Array<String> array) {
+		Collection<String> col = new ArrayList<String>();
+		for (int i = 0; i < array.size; i++) {
+			col.add(array.get(i));
 		}
-		return null;
+		return col;
+	}
+
+	private Array<String> collectionToGdxArray(Collection<String> col) {
+		String[] arr = new String[col.size()];
+		col.toArray(arr);
+		return new Array<String>(arr);
 	}
 
 }

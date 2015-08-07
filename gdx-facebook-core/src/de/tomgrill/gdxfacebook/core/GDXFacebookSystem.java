@@ -40,6 +40,15 @@ public class GDXFacebookSystem {
 	}
 
 	private void installSystem() {
+
+		if (config.PREF_FILENAME == null || config.PREF_FILENAME.length() == 0) {
+			throw new RuntimeException("GDXFacebookConfig value PREF_FILENAME is empty or null.");
+		}
+
+		if (config.APP_ID == null || config.APP_ID.length() == 0) {
+			throw new RuntimeException("GDXFacebookConfig value APP_ID is empty or null.");
+		}
+
 		installGDXReflections();
 
 		installGDXFacebookForAndroid();
@@ -48,7 +57,7 @@ public class GDXFacebookSystem {
 		// installGDXFacebookForHTML();
 
 		if (gdxFacebook == null) {
-			gdxFacebook = new FallbackGDXFacebook();
+			gdxFacebook = new FallbackGDXFacebook(null);
 		}
 	}
 

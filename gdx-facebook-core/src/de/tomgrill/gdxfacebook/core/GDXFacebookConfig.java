@@ -18,7 +18,7 @@ package de.tomgrill.gdxfacebook.core;
 
 public class GDXFacebookConfig {
 
-	public String PREF_FILENAME = null;
+	public String PREF_FILENAME = ".gdxFacebookTokenData";
 
 	public String APP_ID = "";
 

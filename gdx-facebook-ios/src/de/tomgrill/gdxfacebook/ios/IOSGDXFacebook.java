@@ -26,7 +26,10 @@ import org.robovm.pods.facebook.login.FBSDKLoginBehavior;
 import org.robovm.pods.facebook.login.FBSDKLoginManager;
 import org.robovm.pods.facebook.login.FBSDKLoginManagerLoginResult;
 
+import com.badlogic.gdx.utils.Array;
+
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
+import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
 import de.tomgrill.gdxfacebook.core.GDXFacebookError;
@@ -34,12 +37,12 @@ import de.tomgrill.gdxfacebook.core.GDXFacebookLoginResult;
 
 public class IOSGDXFacebook extends GDXFacebook {
 
-	private GDXFacebookConfig config;
-
 	private FBSDKLoginManager loginManager;
 
+	private GDXFacebookAccessToken accessToken;
+
 	public IOSGDXFacebook(GDXFacebookConfig config) {
-		this.config = config;
+		super(config);
 
 		loginManager = new FBSDKLoginManager();
 		loginManager.setLoginBehavior(FBSDKLoginBehavior.Native);
@@ -56,10 +59,19 @@ public class IOSGDXFacebook extends GDXFacebook {
 	}
 
 	private void login(Collection<String> permissions, final GDXFacebookCallback<GDXFacebookLoginResult> callback, boolean withPublishPermissions) {
+
+		/**
+		 * Note: ios facebook SDK does not check for installed Facebook App.
+		 */
+
 		if (FBSDKAccessToken.getCurrentAccessToken() != null && arePermissionsGranted(permissions)) {
 
 			GDXFacebookLoginResult result = new GDXFacebookLoginResult();
-			result.setAccessToken(FBSDKAccessToken.getCurrentAccessToken().getTokenString());
+
+			accessToken = toGDXFacebookToken(FBSDKAccessToken.getCurrentAccessToken());
+			storeToken(accessToken);
+
+			result.setAccessToken(accessToken);
 			callback.onSuccess(result);
 
 		} else {
@@ -70,15 +82,22 @@ public class IOSGDXFacebook extends GDXFacebook {
 				public void invoke(FBSDKLoginManagerLoginResult loginResult, NSError nsError) {
 
 					if (nsError != null) {
+						accessToken = null;
+						storeToken(accessToken);
 						GDXFacebookError error = new GDXFacebookError();
 						error.setErrorMessage(nsError.getLocalizedDescription());
 						callback.onError(error);
 
 					} else if (loginResult.isCancelled()) {
+						accessToken = null;
+						storeToken(accessToken);
 						callback.onCancel();
 					} else {
 						GDXFacebookLoginResult result = new GDXFacebookLoginResult();
-						result.setAccessToken(FBSDKAccessToken.getCurrentAccessToken().getTokenString());
+
+						accessToken = toGDXFacebookToken(FBSDKAccessToken.getCurrentAccessToken());
+						storeToken(accessToken);
+						result.setAccessToken(accessToken);
 						callback.onSuccess(result);
 					}
 
@@ -99,20 +118,49 @@ public class IOSGDXFacebook extends GDXFacebook {
 
 	@Override
 	public boolean isLoggedIn() {
-		return FBSDKAccessToken.getCurrentAccessToken() != null;
+		return accessToken != null;
 	}
 
 	@Override
 	public void logOut() {
+		accessToken = null;
+		storeToken(accessToken);
 		loginManager.logOut();
 	}
 
 	@Override
-	public String getAccessToken() {
-		if (FBSDKAccessToken.getCurrentAccessToken() != null) {
-			FBSDKAccessToken.getCurrentAccessToken().getTokenString();
-		}
-		return null;
+	public GDXFacebookAccessToken getAccessToken() {
+		return accessToken;
+	}
+
+	private GDXFacebookAccessToken toGDXFacebookToken(FBSDKAccessToken accessToken) {
+		return new GDXFacebookAccessToken(accessToken.getTokenString(), accessToken.getAppID(), accessToken.getUserID(), collectionToGdxArray(accessToken.getPermissions()),
+				collectionToGdxArray(accessToken.getDeclinedPermissions()), accessToken.getExpirationDate().toDate().getTime(), accessToken.getRefreshDate().toDate().getTime());
+	}
+
+	// private GDXFacebookAccessToken loadAccessToken() {
+	// String accessTokenAsJson = prefs.getString("accessTokenAsJson", null);
+	// if (accessTokenAsJson == null) {
+	// return null;
+	// }
+	// System.out.println(accessTokenAsJson);
+	// Json json = new Json();
+	// json.setOutputType(OutputType.json);
+	// return json.fromJson(GDXFacebookAccessToken.class, accessTokenAsJson);
+	// }
+
+	// private Collection<String> gdxArrayToCollection(Array<String> array) {
+	// Collection<String> col = new ArrayList<String>();
+	// for (int i = 0; i < array.size; i++) {
+	// col.add(array.get(i));
+	// }
+	// return col;
+	// }
+
+	private Array<String> collectionToGdxArray(Collection<String> col) {
+		String[] arr = new String[col.size()];
+		col.toArray(arr);
+		return new Array<String>(arr);
 	}
 
 }

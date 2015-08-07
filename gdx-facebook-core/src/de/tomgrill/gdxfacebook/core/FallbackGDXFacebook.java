@@ -22,7 +22,8 @@ public class FallbackGDXFacebook extends GDXFacebook {
 
 	private GDXFacebookError error;
 
-	public FallbackGDXFacebook() {
+	public FallbackGDXFacebook(final GDXFacebookConfig config) {
+		super(config);
 		error = new GDXFacebookError();
 		error.setErrorMessage("gdx-facebook not installed");
 	}
@@ -48,7 +49,7 @@ public class FallbackGDXFacebook extends GDXFacebook {
 	}
 
 	@Override
-	public String getAccessToken() {
+	public GDXFacebookAccessToken getAccessToken() {
 		return null;
 	}
 
@@ -57,4 +58,12 @@ public class FallbackGDXFacebook extends GDXFacebook {
 		callback.onError(error);
 	}
 
+	@Override
+	protected GDXFacebookAccessToken loadAccessToken() {
+		return null;
+	}
+
+	@Override
+	protected void storeToken(GDXFacebookAccessToken token) {
+	}
 }

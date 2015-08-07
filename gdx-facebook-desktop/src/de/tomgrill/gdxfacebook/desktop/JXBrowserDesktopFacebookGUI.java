@@ -27,6 +27,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookError;
 import de.tomgrill.gdxfacebook.core.GDXFacebookLoginResult;
@@ -86,6 +87,7 @@ public class JXBrowserDesktopFacebookGUI extends Application {
 
 				String token_identifier = "access_token=";
 				if (newLocation.contains("https://www.facebook.com/connect/login_success.html#access_token=")) {
+
 					access_token = newLocation.substring(newLocation.lastIndexOf(token_identifier) + token_identifier.length(), newLocation.lastIndexOf('&'));
 					String expires_in = newLocation.substring(newLocation.lastIndexOf('=') + 1);
 					expirationTimeMillis = System.currentTimeMillis() + (Integer.parseInt(expires_in) * 1000);
@@ -155,7 +157,10 @@ public class JXBrowserDesktopFacebookGUI extends Application {
 
 	private void passValuesToListener(String accessToken, long expirationTimeMillis) {
 		GDXFacebookLoginResult result = new GDXFacebookLoginResult();
-		result.setAccessToken(accessToken);
+
+		GDXFacebookAccessToken gdxAccessToken = new GDXFacebookAccessToken(accessToken, null, null, null, null, 0, 0);
+
+		result.setAccessToken(gdxAccessToken);
 		JXBrowserDesktopFacebookGUI.listener.onSuccess(result);
 	}
 

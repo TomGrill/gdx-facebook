@@ -17,13 +17,13 @@
 package de.tomgrill.gdxfacebook.core;
 
 public class GDXFacebookLoginResult {
-	private String accessToken;
+	private GDXFacebookAccessToken accessToken;
 
-	public String getAccessToken() {
+	public GDXFacebookAccessToken getAccessToken() {
 		return accessToken;
 	}
 
-	public void setAccessToken(String accessToken) {
+	public void setAccessToken(GDXFacebookAccessToken accessToken) {
 		this.accessToken = accessToken;
 	}
 

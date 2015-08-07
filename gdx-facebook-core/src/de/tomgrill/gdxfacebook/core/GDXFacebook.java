@@ -23,10 +23,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
 /**
  * 
@@ -37,6 +40,15 @@ public abstract class GDXFacebook {
 
 	private boolean waitingForResponse = false;
 	private boolean permissionsGranted = false;
+
+	protected Preferences prefs;
+	protected GDXFacebookConfig config;
+
+	public GDXFacebook(final GDXFacebookConfig config) {
+		this.config = config;
+
+		prefs = Gdx.app.getPreferences(config.PREF_FILENAME);
+	}
 
 	/**
 	 * This will start a login process. The login process is usually done
@@ -88,7 +100,7 @@ public abstract class GDXFacebook {
 	 * 
 	 * @return returns access token or null if no valid access token exists.
 	 */
-	abstract public String getAccessToken();
+	abstract public GDXFacebookAccessToken getAccessToken();
 
 	// /**
 	// * Sets the accessToken. This is useful if you have a multiuser Facebook
@@ -106,8 +118,11 @@ public abstract class GDXFacebook {
 	abstract public void logOut();
 
 	public void newGraphRequest(GDXFacebookGraphRequest request, final GDXFacebookCallback<GDXFacebookGraphResult> callback) {
+		String accessToken = null;
+		if (getAccessToken() != null) {
+			accessToken = getAccessToken().getToken();
+		}
 
-		String accessToken = getAccessToken();
 		if (request.isUseCurrentAccessToken() && accessToken != null) {
 			request.putField("access_token", accessToken);
 		}
@@ -126,6 +141,7 @@ public abstract class GDXFacebook {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				String resultString = httpResponse.getResultAsString();
+
 				int statusCode = httpResponse.getStatus().getStatusCode();
 
 				if (statusCode == -1) {
@@ -260,4 +276,28 @@ public abstract class GDXFacebook {
 		return permissionsGranted;
 	}
 
+	protected GDXFacebookAccessToken loadAccessToken() {
+		String accessTokenAsJson = prefs.getString("accessTokenAsJson", null);
+		if (accessTokenAsJson == null) {
+			return null;
+		}
+		System.out.println("LOAD TOKEN:\n" + accessTokenAsJson);
+		Json json = new Json();
+		json.setOutputType(OutputType.json);
+		return json.fromJson(GDXFacebookAccessToken.class, accessTokenAsJson);
+	}
+
+	protected void storeToken(GDXFacebookAccessToken token) {
+		if (token == null) {
+			prefs.remove("accessTokenAsJson");
+		} else {
+			Json json = new Json();
+			json.setOutputType(OutputType.json);
+
+			System.out.println("STORE TOKEN:\n" + json.toJson(token));
+			prefs.putString("accessTokenAsJson", json.toJson(token));
+		}
+
+		prefs.flush();
+	}
 }
