@@ -47,7 +47,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
 	private CallbackManager callbackManager;
 
-	private LoginManager loginManager;
+	// private LoginManager loginManager;
 
 	private GDXFacebookAccessToken accessToken;
 
@@ -58,8 +58,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 		FacebookSdk.sdkInitialize(activity.getApplicationContext());
 		callbackManager = CallbackManager.Factory.create();
 
-		loginManager = LoginManager.getInstance();
-		loginManager.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK);
+		LoginManager.getInstance().setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK);
 	}
 
 	@Override
@@ -70,7 +69,9 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 	@Override
 	public void logOut() {
 		accessToken = null;
-		loginManager.logOut();
+		storeToken(accessToken);
+		FacebookSdk.sdkInitialize(activity.getApplicationContext());
+		LoginManager.getInstance().logOut();
 	}
 
 	@Override
@@ -100,6 +101,8 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 		 * manually.
 		 * */
 
+		// System.out.println(loginManager.);
+
 		if (AccessToken.getCurrentAccessToken() == null) {
 
 			accessToken = loadAccessToken();
@@ -124,7 +127,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 			}
 		} else {
 
-			loginManager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+			LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
 				@Override
 				public void onSuccess(LoginResult loginResult) {
@@ -153,9 +156,9 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 			});
 
 			if (withPublishPermissions) {
-				loginManager.logInWithPublishPermissions(activity, permissions);
+				LoginManager.getInstance().logInWithPublishPermissions(activity, permissions);
 			} else {
-				loginManager.logInWithReadPermissions(activity, permissions);
+				LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
 			}
 
 		}
