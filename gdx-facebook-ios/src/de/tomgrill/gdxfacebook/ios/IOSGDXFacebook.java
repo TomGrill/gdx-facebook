@@ -18,7 +18,10 @@ package de.tomgrill.gdxfacebook.ios;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+import org.robovm.apple.foundation.NSDate;
 import org.robovm.apple.foundation.NSError;
 import org.robovm.objc.block.VoidBlock2;
 import org.robovm.pods.facebook.core.FBSDKAccessToken;
@@ -60,9 +63,13 @@ public class IOSGDXFacebook extends GDXFacebook {
 
 	private void login(Collection<String> permissions, final GDXFacebookCallback<GDXFacebookLoginResult> callback, boolean withPublishPermissions) {
 
-		/**
-		 * Note: ios facebook SDK does not check for installed Facebook App.
-		 */
+		if (FBSDKAccessToken.getCurrentAccessToken() == null) {
+			accessToken = loadAccessToken();
+			if (accessToken != null) {
+				FBSDKAccessToken reuseToken = fromGDXFacebookToken(accessToken);
+				FBSDKAccessToken.setCurrentAccessToken(reuseToken);
+			}
+		}
 
 		if (FBSDKAccessToken.getCurrentAccessToken() != null && arePermissionsGranted(permissions)) {
 
@@ -138,29 +145,23 @@ public class IOSGDXFacebook extends GDXFacebook {
 				collectionToGdxArray(accessToken.getDeclinedPermissions()), accessToken.getExpirationDate().toDate().getTime(), accessToken.getRefreshDate().toDate().getTime());
 	}
 
-	// private GDXFacebookAccessToken loadAccessToken() {
-	// String accessTokenAsJson = prefs.getString("accessTokenAsJson", null);
-	// if (accessTokenAsJson == null) {
-	// return null;
-	// }
-	// System.out.println(accessTokenAsJson);
-	// Json json = new Json();
-	// json.setOutputType(OutputType.json);
-	// return json.fromJson(GDXFacebookAccessToken.class, accessTokenAsJson);
-	// }
-
-	// private Collection<String> gdxArrayToCollection(Array<String> array) {
-	// Collection<String> col = new ArrayList<String>();
-	// for (int i = 0; i < array.size; i++) {
-	// col.add(array.get(i));
-	// }
-	// return col;
-	// }
+	private FBSDKAccessToken fromGDXFacebookToken(GDXFacebookAccessToken accessToken) {
+		return new FBSDKAccessToken(accessToken.getToken(), gdxArrayToCollection(accessToken.getPermissions()), gdxArrayToCollection(accessToken.getDeclinedPermissions()),
+				accessToken.getApplicationId(), accessToken.getUserId(), new NSDate(accessToken.getExpirationTime() / 1000L), new NSDate(accessToken.getLastRefreshTime() / 1000L));
+	}
 
 	private Array<String> collectionToGdxArray(Collection<String> col) {
 		String[] arr = new String[col.size()];
 		col.toArray(arr);
 		return new Array<String>(arr);
+	}
+
+	private Set<String> gdxArrayToCollection(Array<String> array) {
+		Set<String> col = new TreeSet<String>();
+		for (int i = 0; i < array.size; i++) {
+			col.add(array.get(i));
+		}
+		return col;
 	}
 
 }
