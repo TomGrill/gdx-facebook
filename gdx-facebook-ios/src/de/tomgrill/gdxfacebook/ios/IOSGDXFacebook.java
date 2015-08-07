@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.robovm.apple.foundation.NSDate;
 import org.robovm.apple.foundation.NSError;
 import org.robovm.objc.block.VoidBlock2;
 import org.robovm.pods.facebook.core.FBSDKAccessToken;
@@ -63,10 +62,10 @@ public class IOSGDXFacebook extends GDXFacebook {
 
 	private void login(Collection<String> permissions, final GDXFacebookCallback<GDXFacebookLoginResult> callback, boolean withPublishPermissions) {
 
-		if (FBSDKAccessToken.getCurrentAccessToken() != null) { 
-			accessToken = toGDXFacebookToken(FBSDKAccessToken.getCurrentAccessToken());	
-			
-			if(arePermissionsGranted(permissions)) {
+		if (FBSDKAccessToken.getCurrentAccessToken() != null) {
+			accessToken = toGDXFacebookToken(FBSDKAccessToken.getCurrentAccessToken());
+
+			if (arePermissionsGranted(permissions)) {
 
 				GDXFacebookLoginResult result = new GDXFacebookLoginResult();
 				accessToken = toGDXFacebookToken(FBSDKAccessToken.getCurrentAccessToken());
@@ -140,10 +139,15 @@ public class IOSGDXFacebook extends GDXFacebook {
 				collectionToGdxArray(accessToken.getDeclinedPermissions()), accessToken.getExpirationDate().toDate().getTime(), accessToken.getRefreshDate().toDate().getTime());
 	}
 
-	//private FBSDKAccessToken fromGDXFacebookToken(GDXFacebookAccessToken accessToken) {
-	//	return new FBSDKAccessToken(accessToken.getToken(), gdxArrayToCollection(accessToken.getPermissions()), gdxArrayToCollection(accessToken.getDeclinedPermissions()),
-	//			accessToken.getApplicationId(), accessToken.getUserId(), new NSDate(accessToken.getExpirationTime() / 1000L), new NSDate(accessToken.getLastRefreshTime() / 1000L));
-	//}
+	// private FBSDKAccessToken fromGDXFacebookToken(GDXFacebookAccessToken
+	// accessToken) {
+	// return new FBSDKAccessToken(accessToken.getToken(),
+	// gdxArrayToCollection(accessToken.getPermissions()),
+	// gdxArrayToCollection(accessToken.getDeclinedPermissions()),
+	// accessToken.getApplicationId(), accessToken.getUserId(), new
+	// NSDate(accessToken.getExpirationTime() / 1000L), new
+	// NSDate(accessToken.getLastRefreshTime() / 1000L));
+	// }
 
 	private Array<String> collectionToGdxArray(Collection<String> col) {
 		String[] arr = new String[col.size()];
@@ -156,7 +160,7 @@ public class IOSGDXFacebook extends GDXFacebook {
 		for (int i = 0; i < array.size; i++) {
 			col.add(array.get(i));
 		}
-		if(col.size() == 0) {
+		if (col.size() == 0) {
 			return null;
 		}
 		return col;

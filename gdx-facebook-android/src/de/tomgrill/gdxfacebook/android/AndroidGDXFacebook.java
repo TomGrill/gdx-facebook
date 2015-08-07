@@ -49,7 +49,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
 	private LoginManager loginManager;
 
-	private GDXFacebookAccessToken currentFacebookAccessToken;
+	private GDXFacebookAccessToken accessToken;
 
 	public AndroidGDXFacebook(final Activity activity, final GDXFacebookConfig config) {
 		super(config);
@@ -64,12 +64,12 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
 	@Override
 	public boolean isLoggedIn() {
-		return currentFacebookAccessToken != null;
+		return accessToken != null;
 	}
 
 	@Override
 	public void logOut() {
-		currentFacebookAccessToken = null;
+		accessToken = null;
 		loginManager.logOut();
 	}
 
@@ -101,21 +101,27 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 		 * */
 
 		if (AccessToken.getCurrentAccessToken() == null) {
-			currentFacebookAccessToken = loadAccessToken();
-			if (currentFacebookAccessToken != null) {
-				AccessToken reuseToken = fromGDXFacebookToken(currentFacebookAccessToken);
+
+			accessToken = loadAccessToken();
+
+			if (accessToken != null) {
+				AccessToken reuseToken = fromGDXFacebookToken(accessToken);
 				AccessToken.setCurrentAccessToken(reuseToken);
 			}
 		}
 
-		if (AccessToken.getCurrentAccessToken() != null && arePermissionsGranted(permissions)) {
+		if (AccessToken.getCurrentAccessToken() != null) {
 
-			GDXFacebookLoginResult result = new GDXFacebookLoginResult();
-			currentFacebookAccessToken = toGDXFacebookToken(AccessToken.getCurrentAccessToken());
-			result.setAccessToken(currentFacebookAccessToken);
-			storeToken(currentFacebookAccessToken);
-			callback.onSuccess(result);
+			accessToken = toGDXFacebookToken(AccessToken.getCurrentAccessToken());
 
+			if (arePermissionsGranted(permissions)) {
+
+				GDXFacebookLoginResult result = new GDXFacebookLoginResult();
+				accessToken = toGDXFacebookToken(AccessToken.getCurrentAccessToken());
+				result.setAccessToken(accessToken);
+				storeToken(accessToken);
+				callback.onSuccess(result);
+			}
 		} else {
 
 			loginManager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -124,22 +130,22 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 				public void onSuccess(LoginResult loginResult) {
 
 					GDXFacebookLoginResult result = new GDXFacebookLoginResult();
-					currentFacebookAccessToken = toGDXFacebookToken(AccessToken.getCurrentAccessToken());
-					storeToken(currentFacebookAccessToken);
+					accessToken = toGDXFacebookToken(AccessToken.getCurrentAccessToken());
+					storeToken(accessToken);
 
-					result.setAccessToken(currentFacebookAccessToken);
+					result.setAccessToken(accessToken);
 					callback.onSuccess(result);
 				}
 
 				@Override
 				public void onCancel() {
-					currentFacebookAccessToken = null;
+					accessToken = null;
 					callback.onCancel();
 				}
 
 				@Override
 				public void onError(FacebookException e) {
-					currentFacebookAccessToken = null;
+					accessToken = null;
 					GDXFacebookError error = new GDXFacebookError();
 					error.setErrorMessage(e.getMessage());
 					callback.onError(error);
@@ -157,7 +163,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
 	@Override
 	public GDXFacebookAccessToken getAccessToken() {
-		return currentFacebookAccessToken;
+		return accessToken;
 	}
 
 	private GDXFacebookAccessToken toGDXFacebookToken(AccessToken accessToken) {
