@@ -83,19 +83,17 @@ public class IOSGDXFacebook extends GDXFacebook {
 				public void invoke(FBSDKLoginManagerLoginResult loginResult, NSError nsError) {
 
 					if (nsError != null) {
-						accessToken = null;
-						storeToken(accessToken);
+						logOut();
 						GDXFacebookError error = new GDXFacebookError();
 						error.setErrorMessage(nsError.getLocalizedDescription());
+
 						callback.onError(error);
 
 					} else if (loginResult.isCancelled()) {
-						accessToken = null;
-						storeToken(accessToken);
+						logOut();
 						callback.onCancel();
 					} else {
 						GDXFacebookLoginResult result = new GDXFacebookLoginResult();
-
 						accessToken = toGDXFacebookToken(FBSDKAccessToken.getCurrentAccessToken());
 						storeToken(accessToken);
 						result.setAccessToken(accessToken);
