@@ -1,6 +1,6 @@
 ext {
 	GROUPID = 'de.tomgrill.gdxfacebook'
-	VERSION = '0.4.0-SNAPSHOT'
+	VERSION = '0.5.0-SNAPSHOT'
 	
 }
 
@@ -23,7 +23,7 @@ allprojects {
 
     ext {
         appName = 'gdx-facebook'
-        gdxVersion = '1.6.3'
+        gdxVersion = '1.6.4'
         roboVMVersion = '1.4.0'
     }
 
