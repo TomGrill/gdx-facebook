@@ -124,6 +124,44 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 				result.setAccessToken(accessToken);
 				storeToken(accessToken);
 				callback.onSuccess(result);
+			} else {
+				/**
+				 * quickfix issue #5 - TODO replace with proper code
+				 * 
+				 * */
+				LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+					@Override
+					public void onSuccess(LoginResult loginResult) {
+
+						GDXFacebookLoginResult result = new GDXFacebookLoginResult();
+						accessToken = toGDXFacebookToken(AccessToken.getCurrentAccessToken());
+						storeToken(accessToken);
+
+						result.setAccessToken(accessToken);
+						callback.onSuccess(result);
+					}
+
+					@Override
+					public void onCancel() {
+						accessToken = null;
+						callback.onCancel();
+					}
+
+					@Override
+					public void onError(FacebookException e) {
+						accessToken = null;
+						GDXFacebookError error = new GDXFacebookError();
+						error.setErrorMessage(e.getMessage());
+						callback.onError(error);
+					}
+				});
+
+				if (withPublishPermissions) {
+					LoginManager.getInstance().logInWithPublishPermissions(activity, permissions);
+				} else {
+					LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
+				}
 			}
 		} else {
 
