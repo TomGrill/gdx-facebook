@@ -181,6 +181,26 @@ project(":gdx-facebook-tests-android") {
 }
 
 
+project(":gdx-facebook-tests-core") {
+    apply plugin : 'java'
+    
+	dependencies {
+		compile project(':gdx-facebook-core')
+
+		compile "junit:junit:4.+"
+        compile "org.mockito:mockito-all:1.9.+"
+
+		testCompile 'junit:junit:4.+'
+        testCompile "org.mockito:mockito-all:1.9.+"
+	}
+
+
+	eclipse {
+		project {
+		    name = appName + "-tests-core"
+		}
+	}
+}
 
 
 tasks.eclipse.doLast {
