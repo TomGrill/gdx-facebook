@@ -33,8 +33,6 @@ public class GDXFacebookSystem {
 
 	private static GDXFacebookSystem instance;
 
-	private static boolean isInstalled = false;
-
 	private GDXFacebookSystem(GDXFacebookConfig config) {
 		this.config = config;
 	}
@@ -62,10 +60,6 @@ public class GDXFacebookSystem {
 	}
 
 	public static GDXFacebook install(GDXFacebookConfig config) {
-		if (isInstalled) {
-			throw new RuntimeException(GDXFacebookSystem.class.getSimpleName() + " has already been installed. You may not call install() more than once.");
-		}
-		isInstalled = true;
 		instance = new GDXFacebookSystem(config);
 		instance.installSystem();
 		return GDXFacebookSystem.getGDXFacebook();
