@@ -14,21 +14,42 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.tests.android;
+package de.tomgrill.gdxfacebook.untested.core;
 
-import org.junit.Before;
-import org.junit.Test;
+/**
+ * Callback interface for graph request.
+ * 
+ * @author Thomas Pronold (TomGrill) mail@tomgrill.de
+ *
+ * @param <T>
+ */
+public interface GDXFacebookCallback<T> {
 
-public class GDXFacebookTests {
+	/**
+	 * Called when the request returned successfully.
+	 * 
+	 * @param result
+	 */
+	public void onSuccess(T result);
 
-	@Before
-	public void setup() {
+	/**
+	 * Called on error. Causes by a invalid graph request or when making a
+	 * request without the required permissions.
+	 * 
+	 * @param error
+	 */
+	public void onError(GDXFacebookError error);
 
-	}
+	/**
+	 * Called when a technical error with the connection occurs.
+	 * 
+	 * @param t
+	 */
+	public void onFail(Throwable t);
 
-	@Test
-	public void canLoginWithReadPermission_NoFacebookAppInstalled() {
-
-	}
+	/**
+	 * Called when the request is canceled by the user or anything else.
+	 */
+	public void onCancel();
 
 }

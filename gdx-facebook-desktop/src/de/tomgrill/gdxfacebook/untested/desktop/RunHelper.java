@@ -14,17 +14,8 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.core;
+package de.tomgrill.gdxfacebook.untested.desktop;
 
-public class GDXFacebookLoginResult {
-	private GDXFacebookAccessToken accessToken;
-
-	public GDXFacebookAccessToken getAccessToken() {
-		return accessToken;
-	}
-
-	public void setAccessToken(GDXFacebookAccessToken accessToken) {
-		this.accessToken = accessToken;
-	}
-
+public class RunHelper {
+	public static boolean isStarted = false;
 }

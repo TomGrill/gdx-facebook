@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.ios;
+package de.tomgrill.gdxfacebook.untested.ios;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,12 +30,12 @@ import org.robovm.pods.facebook.login.FBSDKLoginManagerLoginResult;
 
 import com.badlogic.gdx.utils.Array;
 
-import de.tomgrill.gdxfacebook.core.GDXFacebook;
-import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
-import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
-import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.GDXFacebookError;
-import de.tomgrill.gdxfacebook.core.GDXFacebookLoginResult;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebook;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookAccessToken;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookCallback;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookConfig;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookError;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookLoginResult;
 
 public class IOSGDXFacebook extends GDXFacebook {
 

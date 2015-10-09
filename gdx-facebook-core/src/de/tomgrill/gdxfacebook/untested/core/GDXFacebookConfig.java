@@ -14,12 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.core;
+package de.tomgrill.gdxfacebook.untested.core;
 
-class GDXFacebookVars {
+public class GDXFacebookConfig {
 
-	public static final String VERSION = "0.5.0-SNAPSHOT";
+	public String PREF_FILENAME = ".gdxFacebookTokenData";
 
-	public static final String LOG_TAG = "gdx-facebook";
+	public String APP_ID = "";
 
 }

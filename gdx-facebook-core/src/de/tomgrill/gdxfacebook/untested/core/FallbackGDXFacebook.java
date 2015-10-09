@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.core;
+package de.tomgrill.gdxfacebook.untested.core;
 
 import java.util.Collection;
 

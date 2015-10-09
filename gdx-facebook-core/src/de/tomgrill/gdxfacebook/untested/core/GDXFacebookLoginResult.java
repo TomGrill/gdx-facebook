@@ -14,42 +14,17 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.core;
+package de.tomgrill.gdxfacebook.untested.core;
 
-/**
- * Callback interface for graph request.
- * 
- * @author Thomas Pronold (TomGrill) mail@tomgrill.de
- *
- * @param <T>
- */
-public interface GDXFacebookCallback<T> {
+public class GDXFacebookLoginResult {
+	private GDXFacebookAccessToken accessToken;
 
-	/**
-	 * Called when the request returned successfully.
-	 * 
-	 * @param result
-	 */
-	public void onSuccess(T result);
+	public GDXFacebookAccessToken getAccessToken() {
+		return accessToken;
+	}
 
-	/**
-	 * Called on error. Causes by a invalid graph request or when making a
-	 * request without the required permissions.
-	 * 
-	 * @param error
-	 */
-	public void onError(GDXFacebookError error);
-
-	/**
-	 * Called when a technical error with the connection occurs.
-	 * 
-	 * @param t
-	 */
-	public void onFail(Throwable t);
-
-	/**
-	 * Called when the request is canceled by the user or anything else.
-	 */
-	public void onCancel();
+	public void setAccessToken(GDXFacebookAccessToken accessToken) {
+		this.accessToken = accessToken;
+	}
 
 }

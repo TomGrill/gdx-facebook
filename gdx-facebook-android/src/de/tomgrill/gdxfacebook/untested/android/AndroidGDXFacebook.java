@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.android;
+package de.tomgrill.gdxfacebook.untested.android;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,12 +34,12 @@ import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
-import de.tomgrill.gdxfacebook.core.GDXFacebook;
-import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
-import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
-import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.GDXFacebookError;
-import de.tomgrill.gdxfacebook.core.GDXFacebookLoginResult;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebook;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookAccessToken;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookCallback;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookConfig;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookError;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookLoginResult;
 
 public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListener {
 

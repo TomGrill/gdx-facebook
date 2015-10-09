@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.desktop;
+package de.tomgrill.gdxfacebook.untested.desktop;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,15 +25,15 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
-import de.tomgrill.gdxfacebook.core.GDXFacebook;
-import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
-import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
-import de.tomgrill.gdxfacebook.core.GDXFacebookCallbackAdapter;
-import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.GDXFacebookError;
-import de.tomgrill.gdxfacebook.core.GDXFacebookGraphRequest;
-import de.tomgrill.gdxfacebook.core.GDXFacebookGraphResult;
-import de.tomgrill.gdxfacebook.core.GDXFacebookLoginResult;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebook;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookAccessToken;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookCallback;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookCallbackAdapter;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookConfig;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookError;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookGraphRequest;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookGraphResult;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookLoginResult;
 
 public class DesktopGDXFacebook extends GDXFacebook {
 
@@ -45,8 +45,8 @@ public class DesktopGDXFacebook extends GDXFacebook {
 	}
 
 	private void debugAccessToken(GDXFacebookCallback<GDXFacebookGraphResult> callback) {
-		GDXFacebookGraphRequest request = new GDXFacebookGraphRequest().setNode("debug_token").useCurrentAccessToken();
-		request.putField("input_token", accessToken.getToken());
+		GDXFacebookGraphRequest request = new GDXFacebookGraphRequest().setNode("me").useCurrentAccessToken();
+		// request.putField("input_token", accessToken.getToken());
 		newGraphRequest(request, callback);
 	}
 
@@ -107,6 +107,8 @@ public class DesktopGDXFacebook extends GDXFacebook {
 					public void onSuccess(GDXFacebookGraphResult result) {
 
 						String jsonResult = result.getResultAsJson();
+
+						System.out.println(jsonResult);
 
 						JsonValue root = new JsonReader().parse(jsonResult);
 
