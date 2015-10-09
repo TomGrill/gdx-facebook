@@ -10,5 +10,5 @@ public class GDXFacebookConfig {
     /**
      * Put you Facebook App ID here. Get it from: https://developers.facebook.com/
      */
-    public String APP_ID = "";
+    public String APP_ID = "0123456789";
 }

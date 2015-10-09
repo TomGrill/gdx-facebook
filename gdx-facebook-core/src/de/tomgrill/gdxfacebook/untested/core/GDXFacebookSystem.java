@@ -148,21 +148,21 @@ public class GDXFacebookSystem {
 		}
 
 		try {
-			Class<?> gdxAndroidEventListenerClazz = ClassReflection.forName("com.badlogic.gdx.backends.android.AndroidEventListener");
-			Class<?> activityClazz = ClassReflection.forName("android.app.Activity");
-			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.android.AndroidGDXFacebook");
+			Class<?> gdxAndroidEventListenerClazz = ClassReflection.forName("com.badlogic.gdx.backends.core.AndroidEventListener");
+			Class<?> activityClazz = ClassReflection.forName("core.app.Activity");
+			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.core.AndroidGDXFacebook");
 
 			Object activity = null;
 			if (ClassReflection.isAssignableFrom(activityClazz, gdxAppObject.getClass())) {
 				activity = gdxAppObject;
 			} else {
-				Class<?> supportFragmentClass = findClass("android.support.v4.app.Fragment");
+				Class<?> supportFragmentClass = findClass("core.support.v4.app.Fragment");
 				if (supportFragmentClass != null && ClassReflection.isAssignableFrom(supportFragmentClass, gdxAppObject.getClass())) {
 					activity = ClassReflection.getMethod(supportFragmentClass, "getActivity").invoke(gdxAppObject);
 
 				} else {
 
-					Class<?> fragmentClass = findClass("android.app.Fragment");
+					Class<?> fragmentClass = findClass("core.app.Fragment");
 
 					if (fragmentClass != null && ClassReflection.isAssignableFrom(fragmentClass, gdxAppObject.getClass())) {
 						activity = ClassReflection.getMethod(fragmentClass, "getActivity").invoke(gdxAppObject);
@@ -186,7 +186,7 @@ public class GDXFacebookSystem {
 			showDebugInstallSuccessful(ApplicationType.Android.name());
 
 		} catch (ReflectionException e) {
-			showErrorInstall(ApplicationType.Android.name(), "android");
+			showErrorInstall(ApplicationType.Android.name(), "core");
 			e.printStackTrace();
 		}
 

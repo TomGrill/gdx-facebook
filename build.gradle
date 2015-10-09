@@ -56,7 +56,7 @@ project(":gdx-facebook-android") {
 	dependencies {
 		
 		compile project(':gdx-facebook-core')
-		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"		
+		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 		
 		compile fileTree(dir: 'libs', include: '*.jar')
 	}
@@ -125,6 +125,10 @@ project(":gdx-facebook-html") {
 		    name = appName + "-html"
 		}
 	}
+
+	dependencies {
+		compile project(':gdx-facebook-core')
+	}
 }
 
 
@@ -187,6 +191,10 @@ project(":gdx-facebook-tests-core") {
     
 	dependencies {
 		compile project(':gdx-facebook-core')
+		compile project(':gdx-facebook-android')
+		compile project(':gdx-facebook-desktop')
+		compile project(':gdx-facebook-ios')
+		compile project(':gdx-facebook-html')
 
 		compile "junit:junit:4.+"
         compile "org.mockito:mockito-all:1.9.+"
