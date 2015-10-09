@@ -1,6 +1,6 @@
 ext {
 	GROUPID = 'de.tomgrill.gdxfacebook'
-	VERSION = '0.5.0-SNAPSHOT'
+	VERSION = '0.6.0-SNAPSHOT'
 	
 }
 
@@ -13,7 +13,7 @@ buildscript {
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'org.robovm:robovm-gradle-plugin:1.4.0'
+        classpath 'org.robovm:robovm-gradle-plugin:1.8.0'
     }
 }
 
@@ -23,8 +23,9 @@ allprojects {
 
     ext {
         appName = 'gdx-facebook'
-        gdxVersion = '1.6.4'
-        roboVMVersion = '1.4.0'
+        gdxVersion = '1.7.0'
+        roboVMVersion = '1.8.0'
+		powerMockVersion = '1.6.3'
     }
 
     repositories {
@@ -189,9 +190,11 @@ project(":gdx-facebook-tests-core") {
 
 		compile "junit:junit:4.+"
         compile "org.mockito:mockito-all:1.9.+"
+		compile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
 
 		testCompile 'junit:junit:4.+'
         testCompile "org.mockito:mockito-all:1.9.+"
+		testCompile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
 	}
 
 
