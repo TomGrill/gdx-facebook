@@ -17,11 +17,20 @@
 
 package de.tomgrill.gdxfacebook.ios;
 
+import com.badlogic.gdx.utils.Array;
+
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
+import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
+import de.tomgrill.gdxfacebook.core.SignInMode;
 
 public class IOSGDXFacebook extends GDXFacebook {
     public IOSGDXFacebook(GDXFacebookConfig config) {
         super(config);
+    }
+
+    @Override
+    public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback callback) {
+
     }
 }

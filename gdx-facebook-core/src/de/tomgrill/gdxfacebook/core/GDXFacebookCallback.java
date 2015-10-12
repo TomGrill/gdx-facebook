@@ -14,23 +14,42 @@
  * limitations under the License.
  ******************************************************************************/
 
+package de.tomgrill.gdxfacebook.core;
 
-package de.tomgrill.gdxfacebook.tests.core.stubs;
+/**
+ * Callback interface for graph request.
+ *
+ * @author Thomas Pronold (TomGrill) mail@tomgrill.de
+ *
+ * @param <T>
+ */
+public interface GDXFacebookCallback<T extends Result> {
 
-import com.badlogic.gdx.utils.Array;
+	/**
+	 * Called when the request returned successfully.
+	 *
+	 * @param result
+	 */
+	void onSuccess(T result);
 
-import de.tomgrill.gdxfacebook.core.GDXFacebook;
-import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
-import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.SignInMode;
+	/**
+	 * Called on error. Causes by a invalid graph request or when making a
+	 * request without the required permissions.
+	 *
+	 * @param error
+	 */
+	void onError(GraphError error);
 
-public class GDXFacebookStub extends GDXFacebook {
-    public GDXFacebookStub(GDXFacebookConfig config) {
-        super(config);
-    }
+	/**
+	 * Called when a technical error with the connection occurs.
+	 *
+	 * @param t
+	 */
+	void onFail(Throwable t);
 
-    @Override
-    public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback callback) {
+	/**
+	 * Called when the request is canceled by the user or anything else.
+	 */
+	void onCancel();
 
-    }
 }

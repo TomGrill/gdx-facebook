@@ -90,6 +90,8 @@ public class JXBrowserDesktopFacebookGUI extends Application {
 			@Override
 			public void changed(ObservableValue<? extends String> arg0, String oldloc, String newLocation) {
 
+				System.out.println(newLocation);
+
 				String token_identifier = "access_token=";
 				if (newLocation.contains("https://www.facebook.com/connect/login_success.html#access_token=")) {
 

@@ -22,9 +22,12 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.badlogic.gdx.backends.android.AndroidEventListener;
+import com.badlogic.gdx.utils.Array;
 
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
+import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
+import de.tomgrill.gdxfacebook.core.SignInMode;
 
 public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListener {
     public AndroidGDXFacebook(final Activity activity, final GDXFacebookConfig config) {
@@ -33,6 +36,11 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    }
+
+    @Override
+    public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback callback) {
 
     }
 }

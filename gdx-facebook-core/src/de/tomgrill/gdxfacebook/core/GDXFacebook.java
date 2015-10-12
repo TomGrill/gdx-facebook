@@ -15,15 +15,18 @@
  ******************************************************************************/
 
 
-
-
 package de.tomgrill.gdxfacebook.core;
+
+import com.badlogic.gdx.utils.Array;
+
 
 public abstract class GDXFacebook {
 
-    private GDXFacebookConfig config;
+    protected GDXFacebookConfig config;
 
     public GDXFacebook(GDXFacebookConfig config) {
         this.config = config;
     }
+
+    abstract public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback callback);
 }

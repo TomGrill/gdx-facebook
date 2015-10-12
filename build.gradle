@@ -1,6 +1,6 @@
 ext {
 	GROUPID = 'de.tomgrill.gdxfacebook'
-	VERSION = '0.6.0-SNAPSHOT'
+	VERSION = '0.8.0-SNAPSHOT'
 	
 }
 
@@ -209,6 +209,30 @@ project(":gdx-facebook-tests-core") {
 	eclipse {
 		project {
 		    name = appName + "-tests-core"
+		}
+	}
+}
+
+
+project(":gdx-facebook-tests-desktop") {
+    apply plugin : 'java'
+    
+	dependencies {
+		compile project(':gdx-facebook-desktop')
+
+		compile "junit:junit:4.+"
+        compile "org.mockito:mockito-all:1.9.+"
+		compile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
+
+		testCompile 'junit:junit:4.+'
+        testCompile "org.mockito:mockito-all:1.9.+"
+		testCompile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
+	}
+
+
+	eclipse {
+		project {
+		    name = appName + "-tests-desktop"
 		}
 	}
 }

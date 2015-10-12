@@ -105,7 +105,7 @@ public class GDXFacebookSystem {
 		}
 		try {
 
-			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.desktop.DesktopGDXFacebook");
+			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.untested.desktop.DesktopGDXFacebook");
 			Object facebook = ClassReflection.getConstructor(facebookClazz, GDXFacebookConfig.class).newInstance(config);
 
 			gdxFacebook = (GDXFacebook) facebook;

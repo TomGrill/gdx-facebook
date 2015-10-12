@@ -17,9 +17,16 @@
 
 package de.tomgrill.gdxfacebook.core;
 
+import com.badlogic.gdx.utils.Array;
+
 public class FallbackGDXFacebook extends GDXFacebook {
 
     public FallbackGDXFacebook(GDXFacebookConfig config) {
         super(config);
+    }
+
+    @Override
+    public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback callback) {
+        callback.onError(new GraphError(GDXFacebookVars.LOG_TAG + " is not installed."));
     }
 }
