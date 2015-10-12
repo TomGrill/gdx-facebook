@@ -99,7 +99,6 @@ public class JXBrowser extends Application {
                 if (Utils.isValidSuccessfulLoginURL(newLocation) || Utils.isValidErrorLoginURL(newLocation)) {
                     callbackHandler.handleURL(newLocation);
                     closeBrowser();
-                    return;
                 }
             }
 
@@ -117,7 +116,7 @@ public class JXBrowser extends Application {
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
-                JXBrowser.callbackHandler.onCancel();
+                JXBrowser.callbackHandler.handleCancel();
             }
         });
     }

@@ -10,7 +10,7 @@ public class JsonResult extends Result {
     private JsonReader jsonReader = new JsonReader();
 
     public JsonResult(JsonValue jsonValue) {
-        super(jsonValue.asString());
+        super(jsonValue.toString());
         this.jsonValue = jsonValue;
     }
 

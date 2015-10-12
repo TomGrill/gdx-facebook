@@ -15,7 +15,6 @@
  ******************************************************************************/
 
 
-
 package de.tomgrill.gdxfacebook.core;
 
 public class GDXFacebookConfig {
@@ -29,4 +28,10 @@ public class GDXFacebookConfig {
      * Put you Facebook App ID here. Get it from: https://developers.facebook.com/
      */
     public String APP_ID = "0123456789";
+
+    /**
+     * The Graph API version to use for graph request.
+     */
+    public String FACEBOOK_GRAPH_API = "v2.4";
+
 }

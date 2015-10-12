@@ -17,7 +17,11 @@
 
 package de.tomgrill.gdxfacebook.core;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pools;
 
 
 public abstract class GDXFacebook {
@@ -28,5 +32,66 @@ public abstract class GDXFacebook {
         this.config = config;
     }
 
-    abstract public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback callback);
+    abstract public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback<SignInResult> callback);
+
+    /**
+     * Currently used accessToken. May be null.
+     *
+     * @return accessToken
+     */
+    abstract public AccessToken getAccessToken();
+
+    abstract public void signOut();
+
+    abstract public boolean isSignedIn();
+
+    public void newGraphRequest(GDXFacebookGraphRequest request, final GDXFacebookCallback<JsonResult> callback) {
+        String accessToken = null;
+        if (getAccessToken() != null) {
+            accessToken = getAccessToken().getToken();
+        }
+
+        if (request.isUseCurrentAccessToken() && accessToken != null) {
+            request.putField("access_token", accessToken);
+        }
+
+
+        HttpRequestBuilder builder = new HttpRequestBuilder().newRequest();
+        builder.method(request.getMethod());
+
+        String url = request.getUrl() + config.FACEBOOK_GRAPH_API + "/" + request.getNode();
+        builder.url(url);
+        builder.content(request.getContentAsString());
+        builder.timeout(request.getTimeout());
+        Net.HttpRequest httpRequest = builder.build();
+        Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
+
+            @Override
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                String resultString = httpResponse.getResultAsString();
+                int statusCode = httpResponse.getStatus().getStatusCode();
+
+                if (statusCode == -1) {
+                    GraphError error = new GraphError("Connection time out. Consider increasing timeout value by using setTimeout()");
+                    callback.onError(error);
+                } else if (statusCode >= 200 && statusCode < 300) {
+                    callback.onSuccess(new JsonResult(resultString));
+                } else {
+                    GraphError error = new GraphError("Error: " + resultString);
+                    callback.onError(error);
+                }
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                callback.onFail(t);
+            }
+
+            @Override
+            public void cancelled() {
+                callback.onCancel();
+            }
+        });
+
+    }
 }

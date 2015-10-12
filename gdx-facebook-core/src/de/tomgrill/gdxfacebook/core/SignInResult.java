@@ -1,10 +1,10 @@
 package de.tomgrill.gdxfacebook.core;
 
-public class LoginResult extends Result {
+public class SignInResult extends Result {
 
     private AccessToken accessToken;
 
-    public LoginResult(AccessToken accessToken, String message) {
+    public SignInResult(AccessToken accessToken, String message) {
         super(message);
         setAccessToken(accessToken);
     }

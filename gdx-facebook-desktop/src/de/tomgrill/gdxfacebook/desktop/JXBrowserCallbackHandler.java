@@ -4,5 +4,5 @@ public interface JXBrowserCallbackHandler {
 
     void handleURL(String url);
 
-    void onCancel();
+    void handleCancel();
 }

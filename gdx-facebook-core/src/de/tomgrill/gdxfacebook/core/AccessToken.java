@@ -3,12 +3,12 @@ package de.tomgrill.gdxfacebook.core;
 public class AccessToken {
 
     private String token;
-    private int expiresIn;
+    private long expiresAt;
 
 
-    public AccessToken(String token, int expiresIn) {
+    public AccessToken(String token, long expiresIn) {
         setToken(token);
-        setExpiresIn(expiresIn);
+        setExpiresAt(expiresIn);
     }
 
     public String getToken() {
@@ -16,15 +16,18 @@ public class AccessToken {
     }
 
     public void setToken(String token) {
+        if (token == null) {
+            throw new NullPointerException("token may not be null.");
+        }
         this.token = token;
     }
 
 
-    public int getExpiresIn() {
-        return expiresIn;
+    public long getExpiresAt() {
+        return expiresAt;
     }
 
-    public void setExpiresIn(int expiresIn) {
-        this.expiresIn = expiresIn;
+    public void setExpiresAt(long expiresAt) {
+        this.expiresAt = expiresAt;
     }
 }

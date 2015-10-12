@@ -17,12 +17,16 @@
 
 package de.tomgrill.gdxfacebook.tests.core;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
+
 import org.junit.Before;
-import org.junit.Test;
 
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
 import de.tomgrill.gdxfacebook.tests.core.stubs.GDXFacebookStub;
+
+import static org.mockito.Mockito.mock;
 
 
 public class GDXFacebookUnitTests {
@@ -30,13 +34,8 @@ public class GDXFacebookUnitTests {
 
     @Before
     public void setup() {
-
-
         fixture = new GDXFacebookStub(new GDXFacebookConfig());
+        Gdx.net = mock(Net.class);
     }
 
-    @Test
-    public void abc() {
-
-    }
 }

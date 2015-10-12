@@ -51,10 +51,7 @@ public class Utils {
                 return false;
             }
 
-            if (!ref.contains("expires_in=")) {
-                return false;
-            }
-            return true;
+            return ref.contains("expires_in=");
         } catch (MalformedURLException e) {
         }
         return false;
@@ -108,11 +105,8 @@ public class Utils {
                 return false;
             }
 
-            if (!query.contains("error_reason=")) {
-                return false;
-            }
+            return query.contains("error_reason=");
 
-            return true;
         } catch (MalformedURLException e) {
         }
         return false;
