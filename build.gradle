@@ -169,18 +169,45 @@ project(":gdx-facebook-tests-android") {
     
 	dependencies {
 		compile project(':gdx-facebook-android')
-
-		compile "junit:junit:4.+"
-        compile "org.mockito:mockito-all:1.9.+"
-
-		testCompile 'junit:junit:4.+'
-        testCompile "org.mockito:mockito-all:1.9.+"
+		
 	}
 
 
 	eclipse {
 		project {
 		    name = appName + "-tests-android"
+		}
+	}
+}
+
+project(":gdx-facebook-tests-ios") {
+    apply plugin : 'java'
+    
+	dependencies {
+		compile project(':gdx-facebook-ios')
+		
+	}
+
+
+	eclipse {
+		project {
+		    name = appName + "-tests-ios"
+		}
+	}
+}
+
+project(":gdx-facebook-tests-html") {
+    apply plugin : 'java'
+    
+	dependencies {
+		compile project(':gdx-facebook-html')
+		
+	}
+
+
+	eclipse {
+		project {
+		    name = appName + "-tests-html"
 		}
 	}
 }
