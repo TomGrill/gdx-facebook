@@ -32,6 +32,6 @@ public class GDXFacebookConfig {
     /**
      * The Graph API version to use for graph request.
      */
-    public String FACEBOOK_GRAPH_API = "v2.4";
+    public String GRAPH_API_VERSION = "v2.5";
 
 }

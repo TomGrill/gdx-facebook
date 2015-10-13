@@ -113,7 +113,7 @@ public class JXBrowser extends Application {
                  *  Return to DesktopGDXFacebook when we receive a error or successful login in URL change.
                  *  (not unit tested)
                  * */
-                if (Utils.isValidSuccessfulLoginURL(newLocation) || Utils.isValidErrorLoginURL(newLocation)) {
+                if (Utils.isValidSuccessfulSignInURL(newLocation) || Utils.isValidErrorSignInURL(newLocation)) {
                     callbackHandler.handleURL(newLocation);
                     closeBrowser();
                 }

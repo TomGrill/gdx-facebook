@@ -41,7 +41,7 @@ public class Utils {
         return stringBuilder.toString();
     }
 
-    public static boolean isValidSuccessfulLoginURL(String url) {
+    public static boolean isValidSuccessfulSignInURL(String url) {
         try {
             URL urlObj = new URL(url);
             if (!urlObj.getProtocol().equals("https")) {
@@ -87,7 +87,7 @@ public class Utils {
         return params;
     }
 
-    public static boolean isValidErrorLoginURL(String url) {
+    public static boolean isValidErrorSignInURL(String url) {
         try {
             URL urlObj = new URL(url);
             if (!urlObj.getProtocol().equals("https")) {

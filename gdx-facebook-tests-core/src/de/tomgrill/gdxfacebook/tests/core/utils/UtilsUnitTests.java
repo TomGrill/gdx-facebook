@@ -45,13 +45,13 @@ public class UtilsUnitTests {
     @Test
     public void isValidSuccessfulLoginURL() {
         String testURL = "https://www.facebook.com/connect/login_success.html#access_token=CAAqyZEeY&expires_in=5182959";
-        assertTrue(Utils.isValidSuccessfulLoginURL(testURL));
+        assertTrue(Utils.isValidSuccessfulSignInURL(testURL));
     }
 
     @Test
     public void isValidErrorLoginURL() {
         String testURL = "https://www.facebook.com/connect/login_success.html?error=access_denied&error_code=200&error_description=Permissions+error&error_reason=user_denied#_=_";
-        assertTrue(Utils.isValidErrorLoginURL(testURL));
+        assertTrue(Utils.isValidErrorSignInURL(testURL));
     }
 
 

@@ -19,6 +19,9 @@ package de.tomgrill.gdxfacebook.core;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.utils.ArrayMap;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /**
  * Build a proper Facebook Graph API request with this class.
  *
@@ -29,122 +32,148 @@ import com.badlogic.gdx.utils.ArrayMap;
  */
 public class GDXFacebookGraphRequest {
 
-    private String url = "https://graph.facebook.com/";
+	private String url = "https://graph.facebook.com/";
 
-    private String node = null;
+	private String node = "";
 
-    private ArrayMap<String, String> fields;
+	private ArrayMap<String, String> fields;
 
-    private boolean useCurrentAccessToken = false;
+	private boolean useCurrentAccessToken = false;
 
-    private String method = HttpMethods.GET;
+	private String method = HttpMethods.GET;
 
-    private int timeout = 10000;
+	private int timeout = 10000;
 
-    public GDXFacebookGraphRequest() {
-        fields = new ArrayMap<String, String>();
-    }
+	public GDXFacebookGraphRequest() {
+		fields = new ArrayMap<String, String>();
+	}
 
-    /**
-     * Sets the node. F.e. "me", "bgolub" @see <a
-     * href="https://developers.facebook.com/docs/graph-api/reference"
-     * >https://developers.facebook.com/docs/graph-api/reference</a>
-     *
-     * @param node
-     */
-    public GDXFacebookGraphRequest setNode(String node) {
+	/**
+	 * Sets the node. F.e. "me", "bgolub" @see <a
+	 * href="https://developers.facebook.com/docs/graph-api/reference"
+	 * >https://developers.facebook.com/docs/graph-api/reference</a>
+	 *
+	 * @param node
+	 */
+	public GDXFacebookGraphRequest setNode(String node) {
 
-        this.node = node.trim();
-        if (this.node.startsWith("/")) {
-            this.node.replaceFirst("/", "");
-        }
+		this.node = node.trim();
+		if (this.node.startsWith("/")) {
+			this.node.replaceFirst("/", "");
+		}
 
-        return this;
-    }
+		return this;
+	}
 
-    /**
-     * Add a field to the request.
-     *
-     * @param key
-     * @param value
-     * @return this
-     */
-    public GDXFacebookGraphRequest putField(String key, String value) {
-        fields.put(key, value);
-        return this;
-    }
+	/**
+	 * Add a field to the request.
+	 *
+	 * @param key
+	 * @param value
+	 * @return this
+	 */
+	public GDXFacebookGraphRequest putField(String key, String value) {
+		fields.put(key, value);
+		return this;
+	}
 
-    /**
-     * Add multiple fields to the request.
-     *
-     * @param fields
-     * @return this
-     */
-    public GDXFacebookGraphRequest putFields(ArrayMap<String, String> fields) {
-        fields.putAll(fields);
-        return this;
-    }
+	/**
+	 * Add multiple fields to the request.
+	 *
+	 * @param fields
+	 * @return this
+	 */
+	public GDXFacebookGraphRequest putFields(ArrayMap<String, String> fields) {
+		fields.putAll(fields);
+		return this;
+	}
 
-    /**
-     * Call this method when your request requires an access_token field. The
-     * field will be set with the current available access token.
-     *
-     * @return this
-     */
-    public GDXFacebookGraphRequest useCurrentAccessToken() {
-        this.useCurrentAccessToken = true;
-        return this;
-    }
+	/**
+	 * Call this method when your request requires an access_token field. The
+	 * field will be set with the current available access token.
+	 *
+	 * @return this
+	 */
+	public GDXFacebookGraphRequest useCurrentAccessToken() {
+		this.useCurrentAccessToken = true;
+		return this;
+	}
 
-    protected boolean isUseCurrentAccessToken() {
-        return useCurrentAccessToken;
-    }
+	protected boolean isUseCurrentAccessToken() {
+		return useCurrentAccessToken;
+	}
 
-    protected String getUrl() {
-        return url;
-    }
+	protected String getUrl() {
+		return url;
+	}
 
-    protected String getNode() {
-        return node;
-    }
+	protected String getNode() {
+		return node;
+	}
 
-    protected String getMethod() {
-        return this.method;
-    }
+	protected String getMethod() {
+		return this.method;
+	}
 
-    /**
-     * Set the HTTP request method. Default is GET
-     *
-     * @param method
-     */
-    public GDXFacebookGraphRequest setMethod(String method) {
-        this.method = method;
-        return this;
-    }
+	/**
+	 * Set the HTTP request method. Default is GET
+	 *
+	 * @param method
+	 */
+	public GDXFacebookGraphRequest setMethod(String method) {
+		this.method = method;
+		return this;
+	}
 
-    protected String getContentAsString() {
-        String content = "";
+	public static String defaultEncoding = "UTF-8";
+	public static String nameValueSeparator = "=";
+	public static String parameterSeparator = "&";
 
-        for (int i = 0; i < fields.size; i++) {
-            content += fields.getKeyAt(i) + "=" + fields.getValueAt(i);
-            if (i + 1 < fields.size) {
-                content += "&";
-            }
-        }
-        return content;
-    }
+	protected String getContentAsString() {
+//        String content = "";
+//
+//        for (int i = 0; i < fields.size; i++) {
+//            content += fields.getKeyAt(i) + "=" + fields.getValueAt(i);
+//            if (i + 1 < fields.size) {
+//                content += "&";
+//            }
+//        }
+//        return content;
 
-    protected int getTimeout() {
-        return timeout;
-    }
+		StringBuffer convertedParameters = new StringBuffer();
+		for (int i = 0; i < fields.size; i++) {
 
-    /**
-     * Set the timeout in msec. Default is 10000 ~ 10 seconds
-     *
-     * @param timeout
-     */
-    public GDXFacebookGraphRequest setTimeout(int timeout) {
-        this.timeout = timeout;
-        return this;
-    }
+
+			convertedParameters.append(encode(fields.getKeyAt(i), defaultEncoding));
+			convertedParameters.append(nameValueSeparator);
+			convertedParameters.append(encode(fields.getValueAt(i), defaultEncoding));
+			convertedParameters.append(parameterSeparator);
+		}
+		if (convertedParameters.length() > 0)
+			convertedParameters.deleteCharAt(convertedParameters.length() - 1);
+		return convertedParameters.toString();
+
+	}
+
+	private static String encode(String content, String encoding) {
+		try {
+			return URLEncoder.encode(content, encoding);
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+
+	protected int getTimeout() {
+		return timeout;
+	}
+
+	/**
+	 * Set the timeout in msec. Default is 10000 ~ 10 seconds
+	 *
+	 * @param timeout
+	 */
+	public GDXFacebookGraphRequest setTimeout(int timeout) {
+		this.timeout = timeout;
+		return this;
+	}
 }

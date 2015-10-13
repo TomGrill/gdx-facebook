@@ -34,7 +34,7 @@ public abstract class GDXFacebook {
     abstract public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback<SignInResult> callback);
 
     /**
-     * Currently used accessToken. May be null.
+     * Currently used accessToken. Null if user is not signed in.
      *
      * @return accessToken
      */
@@ -54,15 +54,16 @@ public abstract class GDXFacebook {
             request.putField("access_token", accessToken);
         }
 
+        Net.HttpRequest httpRequest = new Net.HttpRequest(request.getMethod());
+        String url = request.getUrl() + config.GRAPH_API_VERSION + "/" + request.getNode();
+        httpRequest.setUrl(url);
+        httpRequest.setContent(request.getContentAsString());
+        httpRequest.setTimeOut(request.getTimeout());
+
 
         HttpRequestBuilder builder = new HttpRequestBuilder().newRequest();
         builder.method(request.getMethod());
 
-        String url = request.getUrl() + config.FACEBOOK_GRAPH_API + "/" + request.getNode();
-        builder.url(url);
-        builder.content(request.getContentAsString());
-        builder.timeout(request.getTimeout());
-        Net.HttpRequest httpRequest = builder.build();
         Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
 
             @Override
@@ -83,6 +84,7 @@ public abstract class GDXFacebook {
 
             @Override
             public void failed(Throwable t) {
+                t.printStackTrace();
                 callback.onFail(t);
             }
 
