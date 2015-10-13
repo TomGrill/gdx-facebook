@@ -21,8 +21,8 @@ public class GraphError {
 
     private String errorMessage;
 
-    public GraphError(String errorMesssage) {
-        setErrorMessage(errorMesssage);
+    public GraphError(String errorMessage) {
+        setErrorMessage(errorMessage);
     }
 
 
