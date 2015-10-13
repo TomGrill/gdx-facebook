@@ -14,8 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.desktop;
+package de.tomgrill.gdxfacebook.untested.core;
 
-public class RunHelper {
-	public static boolean isStarted = false;
+public class GDXFacebookConfig {
+
+	public String PREF_FILENAME = ".gdxFacebookTokenData";
+
+	public String APP_ID = "";
+
 }

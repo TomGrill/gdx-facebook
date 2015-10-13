@@ -14,17 +14,37 @@
  * limitations under the License.
  ******************************************************************************/
 
+
 package de.tomgrill.gdxfacebook.core;
 
-public class GDXFacebookLoginResult {
-	private GDXFacebookAccessToken accessToken;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 
-	public GDXFacebookAccessToken getAccessToken() {
-		return accessToken;
+public class JsonResult extends Result {
+
+	protected JsonValue jsonValue;
+
+	private JsonReader jsonReader = new JsonReader();
+
+	public JsonResult(JsonValue jsonValue) {
+		super(jsonValue.toString());
+		this.jsonValue = jsonValue;
 	}
 
-	public void setAccessToken(GDXFacebookAccessToken accessToken) {
-		this.accessToken = accessToken;
+	public JsonResult(String jsonString) {
+		super(jsonString);
+		setJsonString(jsonString);
 	}
 
+	public JsonValue getJsonValue() {
+		return jsonValue;
+	}
+
+	public void setJsonValue(JsonValue jsonValue) {
+		this.jsonValue = jsonValue;
+	}
+
+	public void setJsonString(String jsonString) {
+		this.jsonValue = jsonReader.parse(jsonString);
+	}
 }

@@ -14,12 +14,24 @@
  * limitations under the License.
  ******************************************************************************/
 
+
 package de.tomgrill.gdxfacebook.core;
 
 public class GDXFacebookConfig {
 
-	public String PREF_FILENAME = ".gdxFacebookTokenData";
+    /**
+     * gdx-facebook stores certain values and Facebook tokens in this file. (It's not secured)
+     */
+    public String PREF_FILENAME = ".gdxFacebookTokenData";
 
-	public String APP_ID = "";
+    /**
+     * Put you Facebook App ID here. Get it from: https://developers.facebook.com/
+     */
+    public String APP_ID = "0123456789";
+
+    /**
+     * The Graph API version to use for graph request.
+     */
+    public String GRAPH_API_VERSION = "v2.5";
 
 }

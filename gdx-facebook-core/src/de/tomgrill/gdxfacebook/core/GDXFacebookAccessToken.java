@@ -14,92 +14,37 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.core;
 
-import com.badlogic.gdx.utils.Array;
+package de.tomgrill.gdxfacebook.core;
 
 public class GDXFacebookAccessToken {
 
-	private String token;
-	private String userId;
-	private String applicationId;
+    private String token;
+    private long expiresAt;
 
-	private Array<String> permissions;
-	private Array<String> declinedPermissions;
 
-	private long expirationTime;
-	private long lastRefreshTime;
+    public GDXFacebookAccessToken(String token, long expiresIn) {
+        setToken(token);
+        setExpiresAt(expiresIn);
+    }
 
-	public GDXFacebookAccessToken() {
+    public String getToken() {
+        return token;
+    }
 
-	}
+    public void setToken(String token) {
+        if (token == null) {
+            throw new NullPointerException("token may not be null.");
+        }
+        this.token = token;
+    }
 
-	public GDXFacebookAccessToken(String token, String applicationId, String userId, Array<String> permissions, Array<String> declinedPermissions, long expirationTime,
-			long lastRefreshTime) {
 
-		setToken(token);
-		setUserId(userId);
-		setApplicationId(applicationId);
-		setPermissions(permissions);
-		setDeclinedPermissions(declinedPermissions);
-		setExpirationTime(expirationTime);
-		setLastRefreshTime(lastRefreshTime);
+    public long getExpiresAt() {
+        return expiresAt;
+    }
 
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String accessToken) {
-		this.token = accessToken;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public String getApplicationId() {
-		return applicationId;
-	}
-
-	public void setApplicationId(String applicationId) {
-		this.applicationId = applicationId;
-	}
-
-	public Array<String> getPermissions() {
-		return permissions;
-	}
-
-	public void setPermissions(Array<String> permissions) {
-		this.permissions = permissions;
-	}
-
-	public Array<String> getDeclinedPermissions() {
-		return declinedPermissions;
-	}
-
-	public void setDeclinedPermissions(Array<String> declinedPermissions) {
-		this.declinedPermissions = declinedPermissions;
-	}
-
-	public long getExpirationTime() {
-		return expirationTime;
-	}
-
-	public void setExpirationTime(long expirationTime) {
-		this.expirationTime = expirationTime;
-	}
-
-	public long getLastRefreshTime() {
-		return lastRefreshTime;
-	}
-
-	public void setLastRefreshTime(long lastRefreshTime) {
-		this.lastRefreshTime = lastRefreshTime;
-	}
+    public void setExpiresAt(long expiresAt) {
+        this.expiresAt = expiresAt;
+    }
 }
