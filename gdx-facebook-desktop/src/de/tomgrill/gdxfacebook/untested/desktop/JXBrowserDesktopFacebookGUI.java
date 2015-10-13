@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.tomgrill.gdxfacebook.desktop;
+package de.tomgrill.gdxfacebook.untested.desktop;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -30,10 +30,10 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
-import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
-import de.tomgrill.gdxfacebook.core.GDXFacebookError;
-import de.tomgrill.gdxfacebook.core.GDXFacebookLoginResult;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookAccessToken;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookCallback;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookError;
+import de.tomgrill.gdxfacebook.untested.core.GDXFacebookLoginResult;
 
 public class JXBrowserDesktopFacebookGUI extends Application {
 
@@ -89,6 +89,8 @@ public class JXBrowserDesktopFacebookGUI extends Application {
 
 			@Override
 			public void changed(ObservableValue<? extends String> arg0, String oldloc, String newLocation) {
+
+				System.out.println(newLocation);
 
 				String token_identifier = "access_token=";
 				if (newLocation.contains("https://www.facebook.com/connect/login_success.html#access_token=")) {

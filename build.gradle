@@ -1,6 +1,6 @@
 ext {
 	GROUPID = 'de.tomgrill.gdxfacebook'
-	VERSION = '0.5.0-SNAPSHOT'
+	VERSION = '0.8.0-SNAPSHOT'
 	
 }
 
@@ -13,7 +13,7 @@ buildscript {
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'org.robovm:robovm-gradle-plugin:1.4.0'
+        classpath 'org.robovm:robovm-gradle-plugin:1.8.0'
     }
 }
 
@@ -23,8 +23,9 @@ allprojects {
 
     ext {
         appName = 'gdx-facebook'
-        gdxVersion = '1.6.4'
-        roboVMVersion = '1.4.0'
+        gdxVersion = '1.7.0'
+        roboVMVersion = '1.8.0'
+		powerMockVersion = '1.6.3'
     }
 
     repositories {
@@ -55,7 +56,7 @@ project(":gdx-facebook-android") {
 	dependencies {
 		
 		compile project(':gdx-facebook-core')
-		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"		
+		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 		
 		compile fileTree(dir: 'libs', include: '*.jar')
 	}
@@ -124,6 +125,10 @@ project(":gdx-facebook-html") {
 		    name = appName + "-html"
 		}
 	}
+
+	dependencies {
+		compile project(':gdx-facebook-core')
+	}
 }
 
 
@@ -155,6 +160,107 @@ project(":gdx-facebook-ios") {
         compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
         
         compile "org.robovm:robopods-facebook-ios:1.5.0"
+	}
+}
+
+
+project(":gdx-facebook-tests-android") {
+    apply plugin : 'java'
+    
+	dependencies {
+		compile project(':gdx-facebook-android')
+		
+	}
+
+
+	eclipse {
+		project {
+		    name = appName + "-tests-android"
+		}
+	}
+}
+
+project(":gdx-facebook-tests-ios") {
+    apply plugin : 'java'
+    
+	dependencies {
+		compile project(':gdx-facebook-ios')
+		
+	}
+
+
+	eclipse {
+		project {
+		    name = appName + "-tests-ios"
+		}
+	}
+}
+
+project(":gdx-facebook-tests-html") {
+    apply plugin : 'java'
+    
+	dependencies {
+		compile project(':gdx-facebook-html')
+		
+	}
+
+
+	eclipse {
+		project {
+		    name = appName + "-tests-html"
+		}
+	}
+}
+
+
+project(":gdx-facebook-tests-core") {
+    apply plugin : 'java'
+    
+	dependencies {
+		compile project(':gdx-facebook-core')
+		compile project(':gdx-facebook-android')
+		compile project(':gdx-facebook-desktop')
+		compile project(':gdx-facebook-ios')
+		compile project(':gdx-facebook-html')
+
+		compile "junit:junit:4.+"
+        compile "org.mockito:mockito-all:1.9.+"
+		compile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
+
+		testCompile 'junit:junit:4.+'
+        testCompile "org.mockito:mockito-all:1.9.+"
+		testCompile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
+	}
+
+
+	eclipse {
+		project {
+		    name = appName + "-tests-core"
+		}
+	}
+}
+
+
+project(":gdx-facebook-tests-desktop") {
+    apply plugin : 'java'
+    
+	dependencies {
+		compile project(':gdx-facebook-desktop')
+
+		compile "junit:junit:4.+"
+        compile "org.mockito:mockito-all:1.9.+"
+		compile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
+
+		testCompile 'junit:junit:4.+'
+        testCompile "org.mockito:mockito-all:1.9.+"
+		testCompile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
+	}
+
+
+	eclipse {
+		project {
+		    name = appName + "-tests-desktop"
+		}
 	}
 }
 

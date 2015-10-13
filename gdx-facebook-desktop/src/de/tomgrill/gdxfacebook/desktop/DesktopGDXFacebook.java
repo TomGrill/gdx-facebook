@@ -16,266 +16,110 @@
 
 package de.tomgrill.gdxfacebook.desktop;
 
-import java.util.Collection;
-import java.util.List;
-
-import javafx.application.Platform;
-
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.TimeUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
-import de.tomgrill.gdxfacebook.core.GDXFacebookCallbackAdapter;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.GDXFacebookError;
-import de.tomgrill.gdxfacebook.core.GDXFacebookGraphRequest;
-import de.tomgrill.gdxfacebook.core.GDXFacebookGraphResult;
-import de.tomgrill.gdxfacebook.core.GDXFacebookLoginResult;
+import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
+import de.tomgrill.gdxfacebook.core.GraphError;
+import de.tomgrill.gdxfacebook.core.SignInMode;
+import de.tomgrill.gdxfacebook.core.SignInResult;
+import de.tomgrill.gdxfacebook.core.utils.Utils;
 
-public class DesktopGDXFacebook extends GDXFacebook {
+public class DesktopGDXFacebook extends GDXFacebook implements JXBrowserCallbackHandler {
 
-	private GDXFacebookAccessToken accessToken;
 
 	public DesktopGDXFacebook(GDXFacebookConfig config) {
 		super(config);
-		accessToken = loadAccessToken();
 	}
 
-	private void debugAccessToken(GDXFacebookCallback<GDXFacebookGraphResult> callback) {
-		GDXFacebookGraphRequest request = new GDXFacebookGraphRequest().setNode("debug_token").useCurrentAccessToken();
-		request.putField("input_token", accessToken.getToken());
-		newGraphRequest(request, callback);
-	}
 
-	private void startGUILogin(final Collection<String> permissions, final GDXFacebookCallback<GDXFacebookLoginResult> callback) {
+	@Override
+	public void signIn(SignInMode mode, final Array<String> permissions, final GDXFacebookCallback<SignInResult> callback) {
+		this.callback = callback;
+		this.permissions = permissions;
 
-		if (RunHelper.isStarted) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					JXBrowserDesktopFacebookGUI.reuse();
-				}
-			});
+		loadAccessToken();
 
+		if (accessToken != null) {
+			startSilentSignIn();
 		} else {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-
-					List<String> listPermissions = (List<String>) permissions;
-					String permissionString = "";
-
-					for (int i = 0; i < listPermissions.size(); i++) {
-						permissionString += listPermissions.get(i);
-						if (i + 1 < listPermissions.size()) {
-							permissionString += ",";
-						}
-					}
-
-					JXBrowserDesktopFacebookGUI.setAppId(config.APP_ID);
-					JXBrowserDesktopFacebookGUI.setPermissions(permissionString);
-					JXBrowserDesktopFacebookGUI.show(callback);
-
-				}
-			}).start();
+			startGUISignIn();
 		}
 
 	}
 
 	@Override
-	public void loginWithReadPermissions(final Collection<String> permissions, final GDXFacebookCallback<GDXFacebookLoginResult> callback) {
-
-		/**
-		 * Prepare a GUI login in case we need it.
-		 */
-		final GDXFacebookCallback<GDXFacebookLoginResult> desktopCallback = new GDXFacebookCallback<GDXFacebookLoginResult>() {
-
-			@Override
-			public void onSuccess(GDXFacebookLoginResult result) {
-				/**
-				 * GUI login done. Retrieve more info about the user and token.
-				 */
-				accessToken = result.getAccessToken();
-				storeToken(result.getAccessToken());
-
-				debugAccessToken(new GDXFacebookCallbackAdapter<GDXFacebookGraphResult>() {
-
-					@Override
-					public void onSuccess(GDXFacebookGraphResult result) {
-
-						String jsonResult = result.getResultAsJson();
-
-						JsonValue root = new JsonReader().parse(jsonResult);
-
-						if (root.has("data")) {
-
-							JsonValue data = root.get("data");
-
-							if (data.has("is_valid") && data.get("is_valid").asBoolean()) {
-
-								String appId = (data.has("app_id")) ? data.get("app_id").asString() : "n/a";
-								String userId = (data.has("user_id")) ? data.get("user_id").asString() : "n/a";
-
-								long expiresAt = (data.has("expires_at")) ? data.get("expires_at").asLong() * 1000L : 0;
-								long issuedAt = (data.has("issued_at")) ? data.get("issued_at").asLong() * 1000L : 0;
-
-								Array<String> scopes = (data.has("scopes")) ? new Array<String>(data.get("scopes").asStringArray()) : new Array<String>();
-								Array<String> scopesDeclined = new Array<String>();
-
-								final GDXFacebookLoginResult loginresult = new GDXFacebookLoginResult();
-
-								accessToken = new GDXFacebookAccessToken(getAccessToken().getToken(), appId, userId, scopes, scopesDeclined, expiresAt, issuedAt);
-								storeToken(accessToken);
-
-								loginresult.setAccessToken(accessToken);
-								callback.onSuccess(loginresult);
-
-							} else {
-								logOut();
-								GDXFacebookError error = new GDXFacebookError();
-								error.setErrorCode("9119");
-								error.setErrorMessage("Invalid token");
-								callback.onError(error);
-							}
-						}
-					}
-
-					@Override
-					public void onError(GDXFacebookError error) {
-						logOut();
-						callback.onError(error);
-					}
-
-					@Override
-					public void onFail(Throwable t) {
-						logOut();
-						callback.onFail(t);
-					}
-
-					@Override
-					public void onCancel() {
-						logOut();
-						callback.onCancel();
-					}
-
-				});
-
-			}
-
-			@Override
-			public void onError(GDXFacebookError error) {
-				logOut();
-				callback.onError(error);
-			}
-
-			@Override
-			public void onCancel() {
-				logOut();
-				callback.onCancel();
-			}
-
-			@Override
-			public void onFail(Throwable t) {
-				logOut();
-				callback.onFail(t);
-			}
-
-		};
-
-		/**
-		 * TRY SILENT LOGIN IF POSSIBLE
-		 */
-		if ((getAccessToken() != null && getAccessToken().getToken().length() > 0) && arePermissionsGranted(permissions)) {
-
-			debugAccessToken(new GDXFacebookCallbackAdapter<GDXFacebookGraphResult>() {
-
-				@Override
-				public void onSuccess(GDXFacebookGraphResult result) {
-
-					String jsonResult = result.getResultAsJson();
-
-					JsonValue root = new JsonReader().parse(jsonResult);
-
-					if (root.has("data")) {
-
-						JsonValue data = root.get("data");
-
-						if (data.has("is_valid") && data.get("is_valid").asBoolean()) {
-
-							String appId = (data.has("app_id")) ? data.get("app_id").asString() : "n/a";
-							String userId = (data.has("user_id")) ? data.get("user_id").asString() : "n/a";
-
-							long expiresAt = (data.has("expires_at")) ? data.get("expires_at").asLong() * 1000L : 0;
-							long issuedAt = (data.has("issued_at")) ? data.get("issued_at").asLong() * 1000L : 0;
-
-							Array<String> scopes = (data.has("scopes")) ? new Array<String>(data.get("scopes").asStringArray()) : new Array<String>();
-							Array<String> scopesDeclined = new Array<String>();
-
-							final GDXFacebookLoginResult loginresult = new GDXFacebookLoginResult();
-
-							accessToken = new GDXFacebookAccessToken(getAccessToken().getToken(), appId, userId, scopes, scopesDeclined, expiresAt, issuedAt);
-							storeToken(accessToken);
-
-							loginresult.setAccessToken(accessToken);
-							callback.onSuccess(loginresult);
-
-						} else {
-							logOut();
-							startGUILogin(permissions, desktopCallback);
-						}
-					}
-
-				}
-
-				@Override
-				public void onError(GDXFacebookError error) {
-					logOut();
-					startGUILogin(permissions, desktopCallback);
-				}
-
-				@Override
-				public void onFail(Throwable t) {
-					logOut();
-					callback.onFail(t);
-				}
-
-				@Override
-				public void onCancel() {
-					logOut();
-					callback.onCancel();
-				}
-
-			});
-
-		} else {
-
-			startGUILogin(permissions, desktopCallback);
+	protected void startGUISignIn() {
+		if (accessToken == null) {
+			JXBrowser.login(permissions, config, this);
+			Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Starting GUI sign in.");
 		}
-
 	}
 
-	@Override
-	public void loginWithPublishPermissions(Collection<String> permissions, GDXFacebookCallback<GDXFacebookLoginResult> callback) {
-		loginWithReadPermissions(permissions, callback);
-	}
+
 
 	@Override
-	public boolean isLoggedIn() {
+	public boolean isSignedIn() {
 		return accessToken != null;
 	}
 
-	@Override
-	public void logOut() {
-		accessToken = null;
-		storeToken(accessToken);
-	}
 
 	@Override
-	public GDXFacebookAccessToken getAccessToken() {
-		return accessToken;
+	public void handleURL(String url) {
+		if (Utils.isValidErrorSignInURL(url)) {
+			handleErrorSignIn(url);
+		} else if (Utils.isValidSuccessfulSignInURL(url)) {
+			handleSuccessSignIn(url);
+		}
+	}
+
+	private void handleSuccessSignIn(String url) {
+		try {
+			URL urlObj = new URL(url);
+			ArrayMap<String, String> params = Utils.parseQuery(urlObj.getRef());
+			accessToken = new GDXFacebookAccessToken(params.get("access_token"), Integer.parseInt(params.get("expires_in")) + TimeUtils.millis() / 1000L);
+			storeNewToken(accessToken);
+
+			Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign successful. User token: " + accessToken.getToken());
+
+			callback.onSuccess(new SignInResult(accessToken, "Sign in successful."));
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void handleErrorSignIn(String url) {
+		try {
+			URL urlObj = new URL(url);
+
+			String errorMessage = urlObj.getQuery();
+			if (errorMessage != null) {
+				Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + errorMessage);
+				callback.onError(new GraphError(errorMessage));
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	@Override
+	public void handleCancel() {
+		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign in has been cancelled");
+		callback.onCancel();
 	}
 
 }

@@ -14,213 +14,217 @@
  * limitations under the License.
  ******************************************************************************/
 
+
+
 package de.tomgrill.gdxfacebook.core;
 
-import com.badlogic.gdx.Application.ApplicationType;
+
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
+
 public class GDXFacebookSystem {
 
-	private GDXFacebookConfig config;
 
-	private Class<?> gdxClazz = null;
-	private Object gdxAppObject = null;
+    private static GDXFacebookSystem instance;
+    private GDXFacebook facebook;
+    private GDXFacebookConfig config;
 
-	private GDXFacebook gdxFacebook;
+    private GDXFacebookSystem(GDXFacebookConfig config) {
+        validateConfig(config);
+        this.config = config;
+    }
 
-	private static GDXFacebookSystem instance;
 
-	private GDXFacebookSystem(GDXFacebookConfig config) {
-		this.config = config;
-	}
+    public static GDXFacebook install(GDXFacebookConfig config) {
+        instance = new GDXFacebookSystem(config);
+        instance.installSystem();
+        return instance.getFacebook();
+    }
 
-	private void installSystem() {
+    private void installSystem() {
 
-		if (config.PREF_FILENAME == null || config.PREF_FILENAME.length() == 0) {
-			throw new RuntimeException("GDXFacebookConfig value PREF_FILENAME is empty or null.");
-		}
+        tryToLoadDesktopGDXFacebook();
+        tryToLoadHTMLGDXFacebook();
+        tryToLoadIOSGDXFacebook();
+        tryToLoadAndroidGDXFacebook();
 
-		if (config.APP_ID == null || config.APP_ID.length() == 0) {
-			throw new RuntimeException("GDXFacebookConfig value APP_ID is empty or null.");
-		}
+        if (facebook == null) {
+            facebook = new FallbackGDXFacebook(config);
+        }
+    }
 
-		installGDXReflections();
 
-		installGDXFacebookForAndroid();
-		installGDXFacebookForIOS();
-		installGDXFacebookForDesktop();
-		// installGDXFacebookForHTML();
+    private void tryToLoadAndroidGDXFacebook() {
+        if (Gdx.app.getType() != Application.ApplicationType.Android) {
+            showDebugSkipInstall(Application.ApplicationType.Android.name());
+            return;
+        }
 
-		if (gdxFacebook == null) {
-			gdxFacebook = new FallbackGDXFacebook(null);
-		}
-	}
+        Class<?> gdxClazz;
+        Object gdxAppObject;
 
-	public static GDXFacebook install(GDXFacebookConfig config) {
-		instance = new GDXFacebookSystem(config);
-		instance.installSystem();
-		return GDXFacebookSystem.getGDXFacebook();
-	}
+        try {
+            gdxClazz = ClassReflection.forName("com.badlogic.gdx.Gdx");
+            gdxAppObject = ClassReflection.getField(gdxClazz, "app").get(null);
 
-	private void installGDXReflections() {
-		try {
-			gdxClazz = ClassReflection.forName("com.badlogic.gdx.Gdx");
-			gdxAppObject = ClassReflection.getField(gdxClazz, "app").get(null);
+        } catch (ReflectionException e) {
+            throw new RuntimeException("No libGDX environment. \n");
+        }
 
-		} catch (ReflectionException e) {
-			throw new RuntimeException("No libGDX environment. \n");
-		}
-	}
+        try {
+            Class<?> gdxAndroidEventListenerClazz = ClassReflection.forName("com.badlogic.gdx.backends.android.AndroidEventListener");
+            Class<?> activityClazz = ClassReflection.forName("android.app.Activity");
+            final Class<?> facebookClazz = ClassReflection.forName(GDXFacebookVars.CLASSNAME_ANDROID);
 
-	private void installGDXFacebookForIOS() {
+            Object activity = null;
+            if (ClassReflection.isAssignableFrom(activityClazz, gdxAppObject.getClass())) {
+                activity = gdxAppObject;
+            } else {
+                Class<?> supportFragmentClass = findClass("android.support.v4.app.Fragment");
+                if (supportFragmentClass != null && ClassReflection.isAssignableFrom(supportFragmentClass, gdxAppObject.getClass())) {
+                    activity = ClassReflection.getMethod(supportFragmentClass, "getActivity").invoke(gdxAppObject);
 
-		if (Gdx.app.getType() != ApplicationType.iOS) {
-			showDebugSkipInstall(ApplicationType.iOS.name());
-			return;
-		}
-		try {
+                } else {
 
-			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.ios.IOSGDXFacebook");
+                    Class<?> fragmentClass = findClass("android.app.Fragment");
 
-			Object facebook = ClassReflection.getConstructor(facebookClazz, GDXFacebookConfig.class).newInstance(config);
+                    if (fragmentClass != null && ClassReflection.isAssignableFrom(fragmentClass, gdxAppObject.getClass())) {
+                        activity = ClassReflection.getMethod(fragmentClass, "getActivity").invoke(gdxAppObject);
+                    }
+                }
+            }
 
-			gdxFacebook = (GDXFacebook) facebook;
+            if (activity == null) {
+                throw new RuntimeException("Can't find your gdx activity to instantiate libGDX Facebook. " + "Looks like you have implemented AndroidApplication without using "
+                        + "Activity or Fragment classes or Activity is not available at the moment.");
+            }
 
-			showDebugInstallSuccessful(ApplicationType.iOS.name());
+            Object facebookObj = ClassReflection.getConstructor(facebookClazz, activityClazz, GDXFacebookConfig.class).newInstance(activity, config);
 
-		} catch (ReflectionException e) {
-			showErrorInstall(ApplicationType.iOS.name(), "ios");
-			e.printStackTrace();
-		}
+            Method gdxAppAddAndroidEventListenerMethod = ClassReflection.getMethod(gdxAppObject.getClass(), "addAndroidEventListener", gdxAndroidEventListenerClazz);
 
-	}
+            gdxAppAddAndroidEventListenerMethod.invoke(gdxAppObject, facebookObj);
 
-	private void installGDXFacebookForDesktop() {
-		if (Gdx.app.getType() != ApplicationType.Desktop) {
-			showDebugSkipInstall(ApplicationType.Desktop.name());
-			return;
-		}
-		try {
+            facebook = (GDXFacebook) facebookObj;
 
-			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.desktop.DesktopGDXFacebook");
-			Object facebook = ClassReflection.getConstructor(facebookClazz, GDXFacebookConfig.class).newInstance(config);
+            showDebugInstallSuccessful(Application.ApplicationType.Android.name());
 
-			gdxFacebook = (GDXFacebook) facebook;
+        } catch (ReflectionException e) {
+            showErrorInstall(Application.ApplicationType.Android.name(), "core");
+            e.printStackTrace();
+        }
+    }
 
-			showDebugInstallSuccessful(ApplicationType.Desktop.name());
+    private void tryToLoadIOSGDXFacebook() {
+        if (Gdx.app.getType() != Application.ApplicationType.iOS) {
+            showDebugSkipInstall(Application.ApplicationType.iOS.name());
+            return;
+        }
+        try {
 
-		} catch (ReflectionException e) {
-			showErrorInstall(ApplicationType.Desktop.name(), "desktop");
-			e.printStackTrace();
-		}
+            final Class<?> facebookClazz = ClassReflection.forName(GDXFacebookVars.CLASSNAME_IOS);
 
-	}
+            Object facebookObj = ClassReflection.getConstructor(facebookClazz, GDXFacebookConfig.class).newInstance(config);
 
-	private void installGDXFacebookForHTML() {
-		if (Gdx.app.getType() != ApplicationType.WebGL) {
-			showDebugSkipInstall(ApplicationType.WebGL.name());
-			return;
-		}
+            facebook = (GDXFacebook) facebookObj;
 
-		try {
+            showDebugInstallSuccessful(Application.ApplicationType.iOS.name());
 
-			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.html.HTMLGDXFacebook");
-			Object facebook = ClassReflection.getConstructor(facebookClazz, GDXFacebookConfig.class).newInstance(config);
+        } catch (ReflectionException e) {
+            showErrorInstall(Application.ApplicationType.iOS.name(), "ios");
+            e.printStackTrace();
+        }
+    }
 
-			gdxFacebook = (GDXFacebook) facebook;
+    private void tryToLoadHTMLGDXFacebook() {
+        if (Gdx.app.getType() != Application.ApplicationType.WebGL) {
+            showDebugSkipInstall(Application.ApplicationType.WebGL.name());
+            return;
+        }
 
-			showDebugInstallSuccessful(ApplicationType.WebGL.name());
+        try {
 
-		} catch (ReflectionException e) {
-			showErrorInstall(ApplicationType.WebGL.name(), "html");
-			e.printStackTrace();
-		}
+            final Class<?> facebookClazz = ClassReflection.forName(GDXFacebookVars.CLASSNAME_HTML);
+            Object facebookObj = ClassReflection.getConstructor(facebookClazz, GDXFacebookConfig.class).newInstance(config);
 
-	}
+            facebook = (GDXFacebook) facebookObj;
 
-	private void installGDXFacebookForAndroid() {
-		if (Gdx.app.getType() != ApplicationType.Android) {
-			showDebugSkipInstall(ApplicationType.Android.name());
-			return;
-		}
+            showDebugInstallSuccessful(Application.ApplicationType.WebGL.name());
 
-		try {
-			Class<?> gdxAndroidEventListenerClazz = ClassReflection.forName("com.badlogic.gdx.backends.android.AndroidEventListener");
-			Class<?> activityClazz = ClassReflection.forName("android.app.Activity");
-			final Class<?> facebookClazz = ClassReflection.forName("de.tomgrill.gdxfacebook.android.AndroidGDXFacebook");
+        } catch (ReflectionException e) {
+            showErrorInstall(Application.ApplicationType.WebGL.name(), "html");
+            e.printStackTrace();
+        }
+    }
 
-			Object activity = null;
-			if (ClassReflection.isAssignableFrom(activityClazz, gdxAppObject.getClass())) {
-				activity = gdxAppObject;
-			} else {
-				Class<?> supportFragmentClass = findClass("android.support.v4.app.Fragment");
-				if (supportFragmentClass != null && ClassReflection.isAssignableFrom(supportFragmentClass, gdxAppObject.getClass())) {
-					activity = ClassReflection.getMethod(supportFragmentClass, "getActivity").invoke(gdxAppObject);
+    private void tryToLoadDesktopGDXFacebook() {
+        if (Gdx.app.getType() != Application.ApplicationType.Desktop) {
+            showDebugSkipInstall(Application.ApplicationType.Desktop.name());
+            return;
+        }
 
-				} else {
 
-					Class<?> fragmentClass = findClass("android.app.Fragment");
+        try {
 
-					if (fragmentClass != null && ClassReflection.isAssignableFrom(fragmentClass, gdxAppObject.getClass())) {
-						activity = ClassReflection.getMethod(fragmentClass, "getActivity").invoke(gdxAppObject);
-					}
-				}
-			}
+            final Class<?> facebookClazz = ClassReflection.forName(GDXFacebookVars.CLASSNAME_DESKTOP);
+            Object facebookObj = ClassReflection.getConstructor(facebookClazz, GDXFacebookConfig.class).newInstance(config);
 
-			if (activity == null) {
-				throw new RuntimeException("Can't find your gdx activity to instantiate libGDX Facebook. " + "Looks like you have implemented AndroidApplication without using "
-						+ "Activity or Fragment classes or Activity is not available at the moment.");
-			}
+            facebook = (GDXFacebook) facebookObj;
 
-			Object facebook = ClassReflection.getConstructor(facebookClazz, activityClazz, GDXFacebookConfig.class).newInstance(activity, config);
+            showDebugInstallSuccessful(Application.ApplicationType.Desktop.name());
 
-			Method gdxAppAddAndroidEventListenerMethod = ClassReflection.getMethod(gdxAppObject.getClass(), "addAndroidEventListener", gdxAndroidEventListenerClazz);
+        } catch (ReflectionException e) {
+            showErrorInstall(Application.ApplicationType.Desktop.name(), "desktop");
+        }
+    }
 
-			gdxAppAddAndroidEventListenerMethod.invoke(gdxAppObject, facebook);
+    private void validateConfig(GDXFacebookConfig config) {
+        if (config == null) {
+            throw new NullPointerException(GDXFacebookConfig.class.getSimpleName() + "may not be null.");
+        }
 
-			setGDXFacebook((GDXFacebook) facebook);
+        if (config.PREF_FILENAME == null) {
+            throw new NullPointerException("GDXFacebookConfig.class.getSimpleName() + \": PREF_FILENAME may bot be null.");
+        }
 
-			showDebugInstallSuccessful(ApplicationType.Android.name());
+        if (config.PREF_FILENAME.length() == 0) {
+            throw new RuntimeException(GDXFacebookConfig.class.getSimpleName() + ": PREF_FILENAME is empty.");
+        }
 
-		} catch (ReflectionException e) {
-			showErrorInstall(ApplicationType.Android.name(), "android");
-			e.printStackTrace();
-		}
+        if (config.APP_ID == null) {
+            throw new NullPointerException("GDXFacebookConfig.class.getSimpleName() + \": APP_ID may bot be null.");
+        }
 
-	}
+        Long.valueOf(config.APP_ID);
+    }
 
-	private static void setGDXFacebook(GDXFacebook facebook) {
+    public GDXFacebook getFacebook() {
+        return facebook;
+    }
 
-		instance.gdxFacebook = facebook;
-	}
+    private void showDebugSkipInstall(String os) {
+        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Skip installing " + GDXFacebookVars.LOG_TAG + " for " + os + ". Not running " + os + ". \n");
+    }
 
-	private static Class<?> findClass(String name) {
-		try {
-			return ClassReflection.forName(name);
-		} catch (Exception e) {
-			return null;
-		}
-	}
+    private void showErrorInstall(String os, String artifact) {
+        Gdx.app.error(GDXFacebookVars.LOG_TAG, "Error installing " + GDXFacebookVars.LOG_TAG + " for " + os + "\n");
+        Gdx.app.error(GDXFacebookVars.LOG_TAG, "Did you add >> compile \"de.tomgrill.gdxfacebook:gdx-facebook-" + artifact + ":" + GDXFacebookVars.VERSION
+                + "\" << to your gradle dependencies? View https://github.com/TomGrill/gdx-facebook/wiki for more information.\n");
+    }
 
-	public static GDXFacebook getGDXFacebook() {
-		return instance.gdxFacebook;
-	}
+    private void showDebugInstallSuccessful(String os) {
+        Gdx.app.debug(GDXFacebookVars.LOG_TAG, GDXFacebookVars.LOG_TAG + " for " + os + " installed successfully.");
+    }
 
-	private void showDebugSkipInstall(String os) {
-		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Skip installing " + GDXFacebookVars.LOG_TAG + " for " + os + ". Not running " + os + ". \n");
-	}
-
-	private void showErrorInstall(String os, String artifact) {
-		Gdx.app.error(GDXFacebookVars.LOG_TAG, "Error installing " + GDXFacebookVars.LOG_TAG + " for " + os + "\n");
-		Gdx.app.error(GDXFacebookVars.LOG_TAG, "Did you add compile >> \"de.tomgrill.gdxfacebook:gdx-facebook-" + artifact + ":" + GDXFacebookVars.VERSION
-				+ "\" << to your gradle dependencies?\n");
-	}
-
-	private void showDebugInstallSuccessful(String os) {
-		Gdx.app.debug(GDXFacebookVars.LOG_TAG, GDXFacebookVars.LOG_TAG + " for " + os + " installed successfully.");
-	}
-
+    private static Class<?> findClass(String name) {
+        try {
+            return ClassReflection.forName(name);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

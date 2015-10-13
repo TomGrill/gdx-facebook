@@ -14,35 +14,27 @@
  * limitations under the License.
  ******************************************************************************/
 
+
 package de.tomgrill.gdxfacebook.core;
 
-/**
- * Convenient class for {@link GDXFacebookCallback}
- * 
- * @author Thomas Pronold (TomGrill) mail@tomgrill.de
- *
- * @param <T>
- */
-public class GDXFacebookCallbackAdapter<T> implements GDXFacebookCallback<T> {
+public class GDXFacebookCallbackAdapter<T extends Result> implements GDXFacebookCallback<T> {
+    @Override
+    public void onSuccess(T result) {
 
-	@Override
-	public void onSuccess(T result) {
+    }
 
-	}
+    @Override
+    public void onError(GraphError error) {
 
-	@Override
-	public void onError(GDXFacebookError error) {
+    }
 
-	}
+    @Override
+    public void onFail(Throwable t) {
 
-	@Override
-	public void onFail(Throwable t) {
+    }
 
-	}
+    @Override
+    public void onCancel() {
 
-	@Override
-	public void onCancel() {
-
-	}
-
+    }
 }
