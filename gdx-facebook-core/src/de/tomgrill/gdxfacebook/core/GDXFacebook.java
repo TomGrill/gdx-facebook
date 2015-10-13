@@ -41,6 +41,8 @@ public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
 
 	abstract public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback<SignInResult> callback);
 
+	abstract public void showGameRequest(String messageToPopup, GDXFacebookCallback<GameRequestResult> callback);
+
 	/**
 	 * Currently used accessToken. Null if user is not signed in.
 	 *
@@ -118,12 +120,12 @@ public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
 				int statusCode = httpResponse.getStatus().getStatusCode();
 
 				if (statusCode == -1) {
-					GraphError error = new GraphError("Connection time out. Consider increasing timeout value by using setTimeout()");
+					GDXFacebookError error = new GDXFacebookError("Connection time out. Consider increasing timeout value by using setTimeout()");
 					callback.onError(error);
 				} else if (statusCode >= 200 && statusCode < 300) {
 					callback.onSuccess(new JsonResult(resultString));
 				} else {
-					GraphError error = new GraphError("Error: " + resultString);
+					GDXFacebookError error = new GDXFacebookError("Error: " + resultString);
 					callback.onError(error);
 				}
 			}
@@ -177,7 +179,7 @@ public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
 				} else {
 					signOut();
 					Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Used access_token is valid but new permissions need to be granted. Need GUI sign in.");
-					callback.onError(new GraphError("Used access_token is valid but new permissions need to be granted. Need GUI sign in."));
+					callback.onError(new GDXFacebookError("Used access_token is valid but new permissions need to be granted. Need GUI sign in."));
 					startGUISignIn();
 				}
 
@@ -185,11 +187,11 @@ public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
 			} else {
 				signOut();
 				Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in error: " + value.toString());
-				callback.onError(new GraphError(value.toString()));
+				callback.onError(new GDXFacebookError(value.toString()));
 				startGUISignIn();
 			}
 		} else {
-			callback.onError(new GraphError("Unexpected error occurred while trying to sign in. Error unknown, possible timeout."));
+			callback.onError(new GDXFacebookError("Unexpected error occurred while trying to sign in. Error unknown, possible timeout."));
 		}
 	}
 
@@ -204,7 +206,7 @@ public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
 
 
 	@Override
-	public void onError(GraphError error) {
+	public void onError(GDXFacebookError error) {
 		signOut();
 		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in error: " + error.getErrorMessage());
 		callback.onError(error);

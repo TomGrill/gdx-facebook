@@ -20,21 +20,29 @@ package de.tomgrill.gdxfacebook.ios;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 
+import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSError;
+import org.robovm.apple.foundation.NSObject;
 import org.robovm.objc.block.VoidBlock2;
 import org.robovm.pods.facebook.core.FBSDKAccessToken;
 import org.robovm.pods.facebook.login.FBSDKLoginBehavior;
 import org.robovm.pods.facebook.login.FBSDKLoginManager;
 import org.robovm.pods.facebook.login.FBSDKLoginManagerLoginResult;
+import org.robovm.pods.facebook.share.FBSDKGameRequestContent;
+import org.robovm.pods.facebook.share.FBSDKGameRequestDialog;
+import org.robovm.pods.facebook.share.FBSDKGameRequestDialogDelegateAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
+import de.tomgrill.gdxfacebook.core.GDXFacebookError;
 import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
-import de.tomgrill.gdxfacebook.core.GraphError;
+import de.tomgrill.gdxfacebook.core.GameRequestResult;
 import de.tomgrill.gdxfacebook.core.SignInMode;
 import de.tomgrill.gdxfacebook.core.SignInResult;
 
@@ -71,6 +79,51 @@ public class IOSGDXFacebook extends GDXFacebook {
 	}
 
 	@Override
+	public void showGameRequest(String messageToPopup, final GDXFacebookCallback<GameRequestResult> gameRequestCallback) {
+
+		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Starting Game Request dialog.");
+
+		FBSDKGameRequestContent gameRequestContent = new FBSDKGameRequestContent();
+		gameRequestContent.setMessage(messageToPopup);
+
+		FBSDKGameRequestDialog.show(gameRequestContent, new FBSDKGameRequestDialogDelegateAdapter() {
+			@Override
+			public void didComplete(FBSDKGameRequestDialog gameRequestDialog, NSDictionary<?, ?> results) {
+				Array<String> recipients = new Array<String>();
+
+				String requestId = "";
+
+				for (Map.Entry<? extends NSObject, ? extends NSObject> entry: results.entrySet() ) {
+					String key = entry.getKey().toString();
+					String value = entry.getValue().toString();
+
+					if(key.equals("request")) {
+						requestId = value;
+					} else {
+						recipients.add(value);
+					}
+				}
+
+				Gdx.app.debug(GDXFacebookVars.LOG_TAG, "User finished Game Request dialog successful.");
+				gameRequestCallback.onSuccess(new GameRequestResult(requestId, recipients));
+			}
+
+			@Override
+			public void didFail(FBSDKGameRequestDialog gameRequestDialog, NSError error) {
+				Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request finished with error: " + error.getLocalizedDescription());
+				gameRequestCallback.onError(new GDXFacebookError(error.getLocalizedDescription()));
+			}
+
+			@Override
+			public void didCancel(FBSDKGameRequestDialog gameRequestDialog) {
+				Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request has been cancelled.");
+				gameRequestCallback.onCancel();
+			}
+		});
+
+	}
+
+	@Override
 	public void signOut() {
 		super.signOut();
 		loginManager.logOut();
@@ -87,7 +140,7 @@ public class IOSGDXFacebook extends GDXFacebook {
 				if (nsError != null) {
 					signOut();
 					Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + nsError.getLocalizedDescription());
-					callback.onError(new GraphError(nsError.getLocalizedDescription()));
+					callback.onError(new GDXFacebookError(nsError.getLocalizedDescription()));
 				} else if (loginResult.isCancelled()) {
 					Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign cancelled by user.");
 					signOut();
@@ -103,7 +156,12 @@ public class IOSGDXFacebook extends GDXFacebook {
 
 		};
 
-		List<String> listPermissions = (List<String>) permissions;
+		List<String> listPermissions = new ArrayList<String>();
+
+		for(int i = 0; i < permissions.size; i++) {
+			listPermissions.add(permissions.get(i));
+		}
+
 		if (this.signInMode == SignInMode.PUBLISH) {
 			loginManager.logInWithPublishPermissions(listPermissions, result);
 		} else {

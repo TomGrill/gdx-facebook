@@ -36,7 +36,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallbackAdapter;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.GraphError;
+import de.tomgrill.gdxfacebook.core.GDXFacebookError;
 import de.tomgrill.gdxfacebook.core.JsonResult;
 import de.tomgrill.gdxfacebook.core.SignInMode;
 import de.tomgrill.gdxfacebook.core.SignInResult;
@@ -149,7 +149,7 @@ public class DesktopGDXFacebookUnitTests {
 
 		fixture.signIn(SignInMode.READ, permissions, mockCallback);
 
-		verify(mockCallback).onError(any(GraphError.class));
+		verify(mockCallback).onError(any(GDXFacebookError.class));
 	}
 
 
@@ -159,7 +159,7 @@ public class DesktopGDXFacebookUnitTests {
 
 		GDXFacebookCallback callback = new GDXFacebookCallbackAdapter() {
 			@Override
-			public void onError(GraphError error) {
+			public void onError(GDXFacebookError error) {
 				if (error.getErrorMessage().equals("error=access_denied&error_code=200&error_description=Permissions+error&error_reason=user_denied")) {
 					testDidSucceed_1 = true;
 				}
