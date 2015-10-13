@@ -167,14 +167,10 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
 	@Override
 	public void signOut() {
-		accessToken = null;
+		super.signOut();
 		userId = null;
 		FacebookSdk.sdkInitialize(activity.getApplicationContext());
 		LoginManager.getInstance().logOut();
 	}
 
-	@Override
-	public boolean isSignedIn() {
-		return accessToken != null;
-	}
 }

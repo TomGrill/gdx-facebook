@@ -17,47 +17,100 @@
 
 package de.tomgrill.gdxfacebook.ios;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 
-import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
+import org.robovm.apple.foundation.NSError;
+import org.robovm.objc.block.VoidBlock2;
+import org.robovm.pods.facebook.core.FBSDKAccessToken;
+import org.robovm.pods.facebook.login.FBSDKLoginBehavior;
+import org.robovm.pods.facebook.login.FBSDKLoginManager;
+import org.robovm.pods.facebook.login.FBSDKLoginManagerLoginResult;
+
+import java.util.List;
+
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
+import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.SignInResult;
+import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
+import de.tomgrill.gdxfacebook.core.GraphError;
 import de.tomgrill.gdxfacebook.core.SignInMode;
+import de.tomgrill.gdxfacebook.core.SignInResult;
 
 public class IOSGDXFacebook extends GDXFacebook {
-    public IOSGDXFacebook(GDXFacebookConfig config) {
-        super(config);
-    }
 
-    @Override
-    public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback<SignInResult> callback) {
+	private FBSDKLoginManager loginManager;
+	private SignInMode signInMode;
 
-    }
+	public IOSGDXFacebook(GDXFacebookConfig config) {
+		super(config);
 
-    @Override
-    public GDXFacebookAccessToken getAccessToken() {
-        return null;
-    }
+		loginManager = new FBSDKLoginManager();
+		loginManager.setLoginBehavior(FBSDKLoginBehavior.Native);
+	}
 
-    @Override
-    public void signOut() {
+	@Override
+	public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback<SignInResult> callback) {
+		this.callback = callback;
+		this.permissions = permissions;
+		this.signInMode = mode;
 
-    }
+		loadAccessToken();
 
-    @Override
-    public boolean isSignedIn() {
-        return false;
-    }
+		if (accessToken == null && FBSDKAccessToken.getCurrentAccessToken() != null) {
+			accessToken = new GDXFacebookAccessToken(FBSDKAccessToken.getCurrentAccessToken().getTokenString(), FBSDKAccessToken.getCurrentAccessToken().getExpirationDate().toDate().getTime());
+		}
 
-    @Override
-    protected void startGUISignIn() {
 
-    }
+		if (accessToken != null) {
+			startSilentSignIn();
+		} else {
+			startGUISignIn();
+		}
+	}
 
-    @Override
-    protected void startSilentSignIn() {
+	@Override
+	public void signOut() {
+		super.signOut();
+		loginManager.logOut();
+	}
 
-    }
+	@Override
+	protected void startGUISignIn() {
+		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Starting GUI sign in.");
+
+		VoidBlock2<FBSDKLoginManagerLoginResult, NSError> result = new VoidBlock2<FBSDKLoginManagerLoginResult, NSError>() {
+
+			@Override
+			public void invoke(FBSDKLoginManagerLoginResult loginResult, NSError nsError) {
+				if (nsError != null) {
+					signOut();
+					Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + nsError.getLocalizedDescription());
+					callback.onError(new GraphError(nsError.getLocalizedDescription()));
+				} else if (loginResult.isCancelled()) {
+					Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign cancelled by user.");
+					signOut();
+					callback.onCancel();
+				} else {
+					accessToken = new GDXFacebookAccessToken(FBSDKAccessToken.getCurrentAccessToken().getTokenString(), FBSDKAccessToken.getCurrentAccessToken().getExpirationDate().toDate().getTime());
+					storeNewToken(accessToken);
+					Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign successful. User token: " + accessToken.getToken());
+					callback.onSuccess(new SignInResult(accessToken, "Sign in successful."));
+				}
+
+			}
+
+		};
+
+		List<String> listPermissions = (List<String>) permissions;
+		if (this.signInMode == SignInMode.PUBLISH) {
+			loginManager.logInWithPublishPermissions(listPermissions, result);
+		} else {
+			loginManager.logInWithReadPermissions(listPermissions, result);
+		}
+
+
+	}
+
 }

@@ -50,9 +50,6 @@ public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
 		return accessToken;
 	}
 
-	abstract public void signOut();
-
-	abstract public boolean isSignedIn();
 
 	abstract protected void startGUISignIn();
 
@@ -69,7 +66,9 @@ public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
 		} else {
 			Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in cancelled. No existing access token.");
 		}
-	};
+	}
+
+	;
 
 	protected void storeNewToken(GDXFacebookAccessToken token) {
 		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Storing new accessToken: " + token.getToken());
@@ -226,5 +225,14 @@ public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
 		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in cancelled");
 		callback.onCancel();
 		startGUISignIn();
+	}
+
+	public boolean isSignedIn() {
+		return accessToken != null;
+	}
+
+
+	public void signOut() {
+		accessToken = null;
 	}
 }

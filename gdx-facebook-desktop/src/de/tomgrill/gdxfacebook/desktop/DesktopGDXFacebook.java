@@ -66,10 +66,7 @@ public class DesktopGDXFacebook extends GDXFacebook implements JXBrowserCallback
 		}
 	}
 
-	@Override
-	public void signOut() {
-		accessToken = null;
-	}
+
 
 	@Override
 	public boolean isSignedIn() {
