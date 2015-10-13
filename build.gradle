@@ -1,7 +1,7 @@
 ext {
 	GROUPID = 'de.tomgrill.gdxfacebook'
-	VERSION = '0.8.0-SNAPSHOT'
-	
+	VERSION = '0.6.0-SNAPSHOT'
+
 }
 
 buildscript {
@@ -45,7 +45,7 @@ project(":gdx-facebook-android") {
     configurations {
         custom
         compile.extendsFrom custom
-	}  
+	}
 
 	eclipse {
 		project {
@@ -54,10 +54,10 @@ project(":gdx-facebook-android") {
 	}
 
 	dependencies {
-		
+
 		compile project(':gdx-facebook-core')
 		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-		
+
 		compile fileTree(dir: 'libs', include: '*.jar')
 	}
 }
@@ -65,13 +65,13 @@ project(":gdx-facebook-android") {
 
 project(":gdx-facebook-core") {
     apply plugin : 'java'
-    	
+
 	apply from : '../publish.gradle'
 
     configurations {
         custom
         compile.extendsFrom custom
-	} 
+	}
 
 	eclipse {
 		project {
@@ -80,7 +80,7 @@ project(":gdx-facebook-core") {
 	}
 
 	dependencies {
-		compile "com.badlogicgames.gdx:gdx:$gdxVersion"		
+		compile "com.badlogicgames.gdx:gdx:$gdxVersion"
 	}
 }
 
@@ -89,13 +89,13 @@ project(":gdx-facebook-core") {
 
 project(":gdx-facebook-desktop") {
     apply plugin : 'java'
-    	
+
 	apply from : '../publish.gradle'
 
     configurations {
         custom
         compile.extendsFrom custom
-	} 
+	}
 
 	eclipse {
 		project {
@@ -103,7 +103,7 @@ project(":gdx-facebook-desktop") {
 		}
 	}
 
-	dependencies {		
+	dependencies {
 		compile project(':gdx-facebook-core')
 	}
 }
@@ -111,14 +111,14 @@ project(":gdx-facebook-desktop") {
 
 project(":gdx-facebook-html") {
     apply plugin : 'java'
-    	
-    	
+
+
 	apply from : '../publish.gradle'
 
     configurations {
         custom
         compile.extendsFrom custom
-	} 
+	}
 
 	eclipse {
 		project {
@@ -136,14 +136,14 @@ project(":gdx-facebook-html") {
 project(":gdx-facebook-ios") {
     apply plugin : 'java'
     apply plugin : 'robovm'
-    	
-    	
+
+
 	apply from : '../publish.gradle'
 
     configurations {
         custom
         compile.extendsFrom custom
-	} 
+	}
 
 	eclipse {
 		project {
@@ -152,13 +152,13 @@ project(":gdx-facebook-ios") {
 	}
 
 	dependencies {
-		
+
 		compile project(':gdx-facebook-core')
-		
+
 		compile "org.robovm:robovm-rt:${roboVMVersion}"
         compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
         compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
-        
+
         compile "org.robovm:robopods-facebook-ios:1.5.0"
 	}
 }
@@ -166,10 +166,10 @@ project(":gdx-facebook-ios") {
 
 project(":gdx-facebook-tests-android") {
     apply plugin : 'java'
-    
+
 	dependencies {
 		compile project(':gdx-facebook-android')
-		
+
 	}
 
 
@@ -182,10 +182,10 @@ project(":gdx-facebook-tests-android") {
 
 project(":gdx-facebook-tests-ios") {
     apply plugin : 'java'
-    
+
 	dependencies {
 		compile project(':gdx-facebook-ios')
-		
+
 	}
 
 
@@ -198,10 +198,10 @@ project(":gdx-facebook-tests-ios") {
 
 project(":gdx-facebook-tests-html") {
     apply plugin : 'java'
-    
+
 	dependencies {
 		compile project(':gdx-facebook-html')
-		
+
 	}
 
 
@@ -215,7 +215,7 @@ project(":gdx-facebook-tests-html") {
 
 project(":gdx-facebook-tests-core") {
     apply plugin : 'java'
-    
+
 	dependencies {
 		compile project(':gdx-facebook-core')
 		compile project(':gdx-facebook-android')
@@ -243,7 +243,7 @@ project(":gdx-facebook-tests-core") {
 
 project(":gdx-facebook-tests-desktop") {
     apply plugin : 'java'
-    
+
 	dependencies {
 		compile project(':gdx-facebook-desktop')
 
