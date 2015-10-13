@@ -38,7 +38,7 @@ public interface GDXFacebookCallback<T extends Result> {
 	 *
 	 * @param error
 	 */
-	void onError(GraphError error);
+	void onError(GDXFacebookError error);
 
 	/**
 	 * Called when a technical error with the connection occurs.

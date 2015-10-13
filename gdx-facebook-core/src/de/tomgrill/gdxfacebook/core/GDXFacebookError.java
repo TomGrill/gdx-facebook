@@ -17,12 +17,12 @@
 
 package de.tomgrill.gdxfacebook.core;
 
-public class GraphError {
+public class GDXFacebookError {
 
     private String errorMessage;
 
-    public GraphError(String errorMesssage) {
-        setErrorMessage(errorMesssage);
+    public GDXFacebookError(String errorMessage) {
+        setErrorMessage(errorMessage);
     }
 
 

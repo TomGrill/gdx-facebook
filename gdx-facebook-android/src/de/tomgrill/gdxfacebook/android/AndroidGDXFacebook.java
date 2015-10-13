@@ -31,6 +31,8 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.share.model.GameRequestContent;
+import com.facebook.share.widget.GameRequestDialog;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +42,8 @@ import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
 import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
-import de.tomgrill.gdxfacebook.core.GraphError;
+import de.tomgrill.gdxfacebook.core.GameRequestResult;
+import de.tomgrill.gdxfacebook.core.GDXFacebookError;
 import de.tomgrill.gdxfacebook.core.SignInMode;
 import de.tomgrill.gdxfacebook.core.SignInResult;
 
@@ -89,7 +92,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 			@Override
 			public void onError(FacebookException e) {
 				Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + e.getMessage());
-				callback.onError(new GraphError(e.getMessage()));
+				callback.onError(new GDXFacebookError(e.getMessage()));
 			}
 		});
 
@@ -138,6 +141,43 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
 	}
 
+	@Override
+	public void showGameRequest(String messageToPopup, final GDXFacebookCallback<GameRequestResult> gameRequestCallback) {
+		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Starting Game Request dialog.");
+
+		GameRequestContent.Builder builder = new GameRequestContent.Builder();
+		builder.setMessage(messageToPopup);
+
+		GameRequestContent content = builder.build();
+
+
+		GameRequestDialog requestDialog = new GameRequestDialog(activity);
+
+		requestDialog.registerCallback(callbackManager, new FacebookCallback<GameRequestDialog.Result>() {
+			public void onSuccess(GameRequestDialog.Result result) {
+
+				Array<String> recipients = new Array<String>();
+				for (int i = 0; i < result.getRequestRecipients().size(); i++) {
+					recipients.add(result.getRequestRecipients().get(i));
+				}
+
+				Gdx.app.debug(GDXFacebookVars.LOG_TAG, "User finished Game Request dialog successful.");
+				gameRequestCallback.onSuccess(new GameRequestResult(result.getRequestId(), recipients));
+			}
+
+			public void onCancel() {
+				Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request has been cancelled.");
+				gameRequestCallback.onCancel();
+			}
+
+			public void onError(FacebookException error) {
+				Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request finished with error: " + error.getMessage());
+				gameRequestCallback.onError(new GDXFacebookError(error.getMessage()));
+			}
+		});
+		requestDialog.show(content);
+	}
+
 
 	@Override
 	protected void loadAccessToken() {
@@ -158,11 +198,6 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
 	private void loadUserId() {
 		userId = preferences.getString("user_id", null);
-	}
-
-	@Override
-	public GDXFacebookAccessToken getAccessToken() {
-		return accessToken;
 	}
 
 	@Override

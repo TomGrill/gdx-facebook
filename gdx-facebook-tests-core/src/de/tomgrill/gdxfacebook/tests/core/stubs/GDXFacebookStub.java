@@ -23,6 +23,7 @@ import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
+import de.tomgrill.gdxfacebook.core.GameRequestResult;
 import de.tomgrill.gdxfacebook.core.SignInResult;
 import de.tomgrill.gdxfacebook.core.SignInMode;
 
@@ -33,6 +34,11 @@ public class GDXFacebookStub extends GDXFacebook {
 
     @Override
     public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback<SignInResult> callback) {
+
+    }
+
+    @Override
+    public void showGameRequest(String messageToPopup, GDXFacebookCallback<GameRequestResult> callback) {
 
     }
 

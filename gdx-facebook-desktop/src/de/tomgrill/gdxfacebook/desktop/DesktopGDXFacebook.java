@@ -30,7 +30,8 @@ import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
 import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
-import de.tomgrill.gdxfacebook.core.GraphError;
+import de.tomgrill.gdxfacebook.core.GameRequestResult;
+import de.tomgrill.gdxfacebook.core.GDXFacebookError;
 import de.tomgrill.gdxfacebook.core.SignInMode;
 import de.tomgrill.gdxfacebook.core.SignInResult;
 import de.tomgrill.gdxfacebook.core.utils.Utils;
@@ -56,6 +57,11 @@ public class DesktopGDXFacebook extends GDXFacebook implements JXBrowserCallback
 			startGUISignIn();
 		}
 
+	}
+
+	@Override
+	public void showGameRequest(String messageToPopup, GDXFacebookCallback<GameRequestResult> callback) {
+		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request not supported on Desktop");
 	}
 
 	@Override
@@ -108,7 +114,7 @@ public class DesktopGDXFacebook extends GDXFacebook implements JXBrowserCallback
 			String errorMessage = urlObj.getQuery();
 			if (errorMessage != null) {
 				Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + errorMessage);
-				callback.onError(new GraphError(errorMessage));
+				callback.onError(new GDXFacebookError(errorMessage));
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

@@ -24,7 +24,7 @@ public class GDXFacebookCallbackAdapter<T extends Result> implements GDXFacebook
     }
 
     @Override
-    public void onError(GraphError error) {
+    public void onError(GDXFacebookError error) {
 
     }
 
