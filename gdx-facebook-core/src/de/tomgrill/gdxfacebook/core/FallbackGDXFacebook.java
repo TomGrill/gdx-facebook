@@ -33,7 +33,7 @@ public class FallbackGDXFacebook extends GDXFacebook {
     }
 
     @Override
-    public AccessToken getAccessToken() {
+    public GDXFacebookAccessToken getAccessToken() {
         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot return accessToken. " + GDXFacebookVars.LOG_TAG + " is not installed.");
         return null;
     }
@@ -47,5 +47,15 @@ public class FallbackGDXFacebook extends GDXFacebook {
     public boolean isSignedIn() {
         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "User is not signed in. " + GDXFacebookVars.LOG_TAG + " is not installed.");
         return false;
+    }
+
+    @Override
+    protected void startGUISignIn() {
+        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot start GUI sign in. " + GDXFacebookVars.LOG_TAG + " is not installed.");
+    }
+
+    @Override
+    protected void startSilentSignIn() {
+        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot start silent sign in. " + GDXFacebookVars.LOG_TAG + " is not installed.");
     }
 }

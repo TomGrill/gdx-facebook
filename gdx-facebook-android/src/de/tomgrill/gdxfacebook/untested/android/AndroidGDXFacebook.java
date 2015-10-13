@@ -16,10 +16,6 @@
 
 package de.tomgrill.gdxfacebook.untested.android;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-
 import android.app.Activity;
 import android.content.Intent;
 
@@ -33,6 +29,10 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 
 import de.tomgrill.gdxfacebook.untested.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.untested.core.GDXFacebookAccessToken;
@@ -93,10 +93,10 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
 		/**
 		 * Check whether we can reuse an existing token:
-		 * 
+		 *
 		 * If the user has Facebook App installed
 		 * AccessToken.getCurrentAccessToken() will not be NULL
-		 * 
+		 *
 		 * Only when the Facebook App is not installed we need to load the token
 		 * manually.
 		 * */
@@ -127,7 +127,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 			} else {
 				/**
 				 * quickfix issue #5 - TODO replace with proper code
-				 * 
+				 *
 				 * */
 				LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 

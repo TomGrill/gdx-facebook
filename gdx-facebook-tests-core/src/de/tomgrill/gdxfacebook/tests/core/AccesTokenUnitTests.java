@@ -20,19 +20,19 @@ package de.tomgrill.gdxfacebook.tests.core;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.tomgrill.gdxfacebook.core.AccessToken;
+import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 
 public class AccesTokenUnitTests {
-    AccessToken fixture;
+    GDXFacebookAccessToken fixture;
 
     @Before
     public void setup() {
-        fixture = new AccessToken("ABC", 123);
+        fixture = new GDXFacebookAccessToken("ABC", 123);
     }
 
     @Test(expected = NullPointerException.class)
     public void throwWhenConstructorTokenIsNull() {
-        new AccessToken(null, 123);
+        new GDXFacebookAccessToken(null, 123);
     }
 
     @Test(expected = NullPointerException.class)

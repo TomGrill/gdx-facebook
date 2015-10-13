@@ -26,21 +26,21 @@ import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 
-public class GDXFacebookLoader {
+public class GDXFacebookSystem {
 
 
-    private static GDXFacebookLoader instance;
+    private static GDXFacebookSystem instance;
     private GDXFacebook facebook;
     private GDXFacebookConfig config;
 
-    private GDXFacebookLoader(GDXFacebookConfig config) {
+    private GDXFacebookSystem(GDXFacebookConfig config) {
         validateConfig(config);
         this.config = config;
     }
 
 
     public static GDXFacebook install(GDXFacebookConfig config) {
-        instance = new GDXFacebookLoader(config);
+        instance = new GDXFacebookSystem(config);
         instance.installSystem();
         return instance.getFacebook();
     }
@@ -76,21 +76,21 @@ public class GDXFacebookLoader {
         }
 
         try {
-            Class<?> gdxAndroidEventListenerClazz = ClassReflection.forName("com.badlogic.gdx.backends.core.AndroidEventListener");
-            Class<?> activityClazz = ClassReflection.forName("core.app.Activity");
+            Class<?> gdxAndroidEventListenerClazz = ClassReflection.forName("com.badlogic.gdx.backends.android.AndroidEventListener");
+            Class<?> activityClazz = ClassReflection.forName("android.app.Activity");
             final Class<?> facebookClazz = ClassReflection.forName(GDXFacebookVars.CLASSNAME_ANDROID);
 
             Object activity = null;
             if (ClassReflection.isAssignableFrom(activityClazz, gdxAppObject.getClass())) {
                 activity = gdxAppObject;
             } else {
-                Class<?> supportFragmentClass = findClass("core.support.v4.app.Fragment");
+                Class<?> supportFragmentClass = findClass("android.support.v4.app.Fragment");
                 if (supportFragmentClass != null && ClassReflection.isAssignableFrom(supportFragmentClass, gdxAppObject.getClass())) {
                     activity = ClassReflection.getMethod(supportFragmentClass, "getActivity").invoke(gdxAppObject);
 
                 } else {
 
-                    Class<?> fragmentClass = findClass("core.app.Fragment");
+                    Class<?> fragmentClass = findClass("android.app.Fragment");
 
                     if (fragmentClass != null && ClassReflection.isAssignableFrom(fragmentClass, gdxAppObject.getClass())) {
                         activity = ClassReflection.getMethod(fragmentClass, "getActivity").invoke(gdxAppObject);

@@ -17,13 +17,13 @@
 
 package de.tomgrill.gdxfacebook.core;
 
-public class AccessToken {
+public class GDXFacebookAccessToken {
 
     private String token;
     private long expiresAt;
 
 
-    public AccessToken(String token, long expiresIn) {
+    public GDXFacebookAccessToken(String token, long expiresIn) {
         setToken(token);
         setExpiresAt(expiresIn);
     }

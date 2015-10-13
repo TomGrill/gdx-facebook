@@ -19,18 +19,18 @@ package de.tomgrill.gdxfacebook.core;
 
 public class GraphError {
 
-    private String errorMesssage;
+    private String errorMessage;
 
     public GraphError(String errorMesssage) {
-        setErrorMesssage(errorMesssage);
+        setErrorMessage(errorMesssage);
     }
 
 
-    public String getErrorMesssage() {
-        return errorMesssage;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
-    public void setErrorMesssage(String errorMesssage) {
-        this.errorMesssage = errorMesssage;
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

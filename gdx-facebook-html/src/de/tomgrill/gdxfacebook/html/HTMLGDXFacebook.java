@@ -18,7 +18,7 @@ package de.tomgrill.gdxfacebook.html;
 
 import com.badlogic.gdx.utils.Array;
 
-import de.tomgrill.gdxfacebook.core.AccessToken;
+import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
@@ -36,7 +36,7 @@ public class HTMLGDXFacebook extends GDXFacebook {
     }
 
     @Override
-    public AccessToken getAccessToken() {
+    public GDXFacebookAccessToken getAccessToken() {
         return null;
     }
 
@@ -48,5 +48,10 @@ public class HTMLGDXFacebook extends GDXFacebook {
     @Override
     public boolean isSignedIn() {
         return false;
+    }
+
+    @Override
+    protected void startGUISignIn() {
+
     }
 }

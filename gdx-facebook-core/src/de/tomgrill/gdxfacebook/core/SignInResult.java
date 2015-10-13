@@ -19,19 +19,19 @@ package de.tomgrill.gdxfacebook.core;
 
 public class SignInResult extends Result {
 
-	private AccessToken accessToken;
+	private GDXFacebookAccessToken accessToken;
 
-	public SignInResult(AccessToken accessToken, String message) {
+	public SignInResult(GDXFacebookAccessToken accessToken, String message) {
 		super(message);
 		setAccessToken(accessToken);
 	}
 
 
-	public AccessToken getAccessToken() {
+	public GDXFacebookAccessToken getAccessToken() {
 		return accessToken;
 	}
 
-	public void setAccessToken(AccessToken accessToken) {
+	public void setAccessToken(GDXFacebookAccessToken accessToken) {
 		this.accessToken = accessToken;
 	}
 }

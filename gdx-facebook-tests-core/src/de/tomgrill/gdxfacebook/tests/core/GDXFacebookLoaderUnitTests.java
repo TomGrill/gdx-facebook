@@ -40,7 +40,7 @@ import de.tomgrill.gdxfacebook.android.AndroidGDXFacebook;
 import de.tomgrill.gdxfacebook.core.FallbackGDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.GDXFacebookLoader;
+import de.tomgrill.gdxfacebook.core.GDXFacebookSystem;
 import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
 import de.tomgrill.gdxfacebook.desktop.DesktopGDXFacebook;
 import de.tomgrill.gdxfacebook.html.HTMLGDXFacebook;
@@ -78,7 +78,7 @@ public class GDXFacebookLoaderUnitTests {
         when(mockApplication.getType()).thenReturn(null);
         Gdx.app = mockApplication;
 
-        facebook = GDXFacebookLoader.install(new GDXFacebookConfig());
+        facebook = GDXFacebookSystem.install(new GDXFacebookConfig());
         assertTrue(facebook instanceof FallbackGDXFacebook);
     }
 
@@ -92,7 +92,7 @@ public class GDXFacebookLoaderUnitTests {
 
         androidPostmocking();
 
-        facebook = GDXFacebookLoader.install(new GDXFacebookConfig());
+        facebook = GDXFacebookSystem.install(new GDXFacebookConfig());
         assertTrue(facebook instanceof AndroidGDXFacebook);
     }
 
@@ -104,7 +104,7 @@ public class GDXFacebookLoaderUnitTests {
         when(ClassReflection.isAssignableFrom(Activity.class, mockObject.getClass())).thenReturn(false);
 
         try {
-            when(ClassReflection.forName("core.support.v4.app.Fragment")).thenReturn(Fragment.class);
+            when(ClassReflection.forName("android.support.v4.app.Fragment")).thenReturn(Fragment.class);
             when(ClassReflection.isAssignableFrom(Fragment.class, mockObject.getClass())).thenReturn(true);
             when(ClassReflection.getMethod(Fragment.class, "getActivity")).thenReturn(mockMethod);
             when(mockMethod.invoke(mockObject)).thenReturn(mockFacebook);
@@ -115,7 +115,7 @@ public class GDXFacebookLoaderUnitTests {
 
         androidPostmocking();
 
-        facebook = GDXFacebookLoader.install(new GDXFacebookConfig());
+        facebook = GDXFacebookSystem.install(new GDXFacebookConfig());
         assertTrue(facebook instanceof AndroidGDXFacebook);
     }
 
@@ -127,8 +127,8 @@ public class GDXFacebookLoaderUnitTests {
         when(ClassReflection.isAssignableFrom(Activity.class, mockObject.getClass())).thenReturn(false);
 
         try {
-            when(ClassReflection.forName("core.support.v4.app.Fragment")).thenReturn(null);
-            when(ClassReflection.forName("core.app.Fragment")).thenReturn(android.app.Fragment.class);
+            when(ClassReflection.forName("android.support.v4.app.Fragment")).thenReturn(null);
+            when(ClassReflection.forName("android.app.Fragment")).thenReturn(android.app.Fragment.class);
 
             when(ClassReflection.isAssignableFrom(android.app.Fragment.class, mockObject.getClass())).thenReturn(true);
             when(ClassReflection.getMethod(android.app.Fragment.class, "getActivity")).thenReturn(mockMethod);
@@ -140,7 +140,7 @@ public class GDXFacebookLoaderUnitTests {
 
         androidPostmocking();
 
-        facebook = GDXFacebookLoader.install(new GDXFacebookConfig());
+        facebook = GDXFacebookSystem.install(new GDXFacebookConfig());
         assertTrue(facebook instanceof AndroidGDXFacebook);
     }
 
@@ -167,8 +167,8 @@ public class GDXFacebookLoaderUnitTests {
             when(mockField.get(null)).thenReturn(mockObject);
 
 
-            when(ClassReflection.forName("com.badlogic.gdx.backends.core.AndroidEventListener")).thenReturn(AndroidEventListener.class);
-            when(ClassReflection.forName("core.app.Activity")).thenReturn(Activity.class);
+            when(ClassReflection.forName("com.badlogic.gdx.backends.android.AndroidEventListener")).thenReturn(AndroidEventListener.class);
+            when(ClassReflection.forName("android.app.Activity")).thenReturn(Activity.class);
 
         } catch (ReflectionException e) {
             e.printStackTrace();
@@ -206,7 +206,7 @@ public class GDXFacebookLoaderUnitTests {
             e.printStackTrace();
         }
 
-        facebook = GDXFacebookLoader.install(new GDXFacebookConfig());
+        facebook = GDXFacebookSystem.install(new GDXFacebookConfig());
         assertTrue(facebook instanceof IOSGDXFacebook);
     }
 
@@ -228,7 +228,7 @@ public class GDXFacebookLoaderUnitTests {
             e.printStackTrace();
         }
 
-        facebook = GDXFacebookLoader.install(new GDXFacebookConfig());
+        facebook = GDXFacebookSystem.install(new GDXFacebookConfig());
         assertTrue(facebook instanceof DesktopGDXFacebook);
     }
 
@@ -250,41 +250,41 @@ public class GDXFacebookLoaderUnitTests {
             e.printStackTrace();
         }
 
-        facebook = GDXFacebookLoader.install(new GDXFacebookConfig());
+        facebook = GDXFacebookSystem.install(new GDXFacebookConfig());
         assertTrue(facebook instanceof HTMLGDXFacebook);
     }
 
 
     @Test(expected = NullPointerException.class)
     public void throwsWhenGDXFacebookConfigInConstructorIsNull() {
-        GDXFacebookLoader.install(null);
+        GDXFacebookSystem.install(null);
     }
 
     @Test(expected = RuntimeException.class)
     public void throwsWhenPREF_FILENAMEIsEmpty() {
         GDXFacebookConfig config = new GDXFacebookConfig();
         config.PREF_FILENAME = "";
-        GDXFacebookLoader.install(config);
+        GDXFacebookSystem.install(config);
     }
 
     @Test(expected = NullPointerException.class)
     public void throwsWhenPREF_FILENAMEIsNull() {
         GDXFacebookConfig config = new GDXFacebookConfig();
         config.PREF_FILENAME = null;
-        GDXFacebookLoader.install(config);
+        GDXFacebookSystem.install(config);
     }
 
     @Test(expected = NullPointerException.class)
     public void throwsWhenAPP_IDEIsNull() {
         GDXFacebookConfig config = new GDXFacebookConfig();
         config.APP_ID = null;
-        GDXFacebookLoader.install(config);
+        GDXFacebookSystem.install(config);
     }
 
     @Test(expected = NumberFormatException.class)
     public void throwsWhenAPP_IDIsNotANumericValue() {
         GDXFacebookConfig config = new GDXFacebookConfig();
         config.APP_ID = "ABC";
-        GDXFacebookLoader.install(config);
+        GDXFacebookSystem.install(config);
     }
 }

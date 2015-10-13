@@ -160,7 +160,7 @@ public class DesktopGDXFacebookUnitTests {
 		GDXFacebookCallback callback = new GDXFacebookCallbackAdapter() {
 			@Override
 			public void onError(GraphError error) {
-				if (error.getErrorMesssage().equals("error=access_denied&error_code=200&error_description=Permissions+error&error_reason=user_denied")) {
+				if (error.getErrorMessage().equals("error=access_denied&error_code=200&error_description=Permissions+error&error_reason=user_denied")) {
 					testDidSucceed_1 = true;
 				}
 			}
