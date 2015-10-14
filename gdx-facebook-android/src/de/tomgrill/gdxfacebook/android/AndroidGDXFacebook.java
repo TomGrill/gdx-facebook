@@ -41,6 +41,7 @@ import de.tomgrill.gdxfacebook.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
+import de.tomgrill.gdxfacebook.core.GDXFacebookGameRequest;
 import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
 import de.tomgrill.gdxfacebook.core.GameRequestResult;
 import de.tomgrill.gdxfacebook.core.GDXFacebookError;
@@ -142,11 +143,60 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 	}
 
 	@Override
-	public void showGameRequest(String messageToPopup, final GDXFacebookCallback<GameRequestResult> gameRequestCallback) {
+	public void showGameRequest(GDXFacebookGameRequest request, final GDXFacebookCallback<GameRequestResult> gameRequestCallback) {
 		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Starting Game Request dialog.");
 
 		GameRequestContent.Builder builder = new GameRequestContent.Builder();
-		builder.setMessage(messageToPopup);
+
+		if (request.getMessage() != null) builder.setMessage(request.getMessage());
+		if (request.getData() != null) builder.setData(request.getData());
+		if (request.getTitle() != null) builder.setTitle(request.getTitle());
+		if (request.getObjectId() != null) builder.setObjectId(request.getObjectId());
+
+		Array<String> suggestions = request.getSuggestions();
+		if (suggestions != null && suggestions.size > 0) {
+			ArrayList<String> suggestionList = new ArrayList<String>();
+			for (int i = 0; i < suggestions.size; i++) {
+				suggestionList.add(suggestions.get(i));
+			}
+			builder.setSuggestions(suggestionList);
+		}
+
+		Array<String> recipients = request.getRecipients();
+		if (recipients != null && recipients.size > 0) {
+			ArrayList<String> recipientsList = new ArrayList<String>();
+			for (int i = 0; i < recipients.size; i++) {
+				recipientsList.add(recipients.get(i));
+			}
+			builder.setSuggestions(recipientsList);
+		}
+
+
+		if (request.getActionType() != null) {
+			switch (request.getActionType()) {
+				case ASKFOR:
+					builder.setActionType(GameRequestContent.ActionType.ASKFOR);
+					break;
+				case SEND:
+					builder.setActionType(GameRequestContent.ActionType.SEND);
+					break;
+				case TURN:
+					builder.setActionType(GameRequestContent.ActionType.TURN);
+					break;
+			}
+		}
+
+		if (request.getFilters() != null) {
+			switch (request.getFilters()) {
+				case APP_NON_USERS:
+					builder.setFilters(GameRequestContent.Filters.APP_NON_USERS);
+					break;
+				case APP_USERS:
+					builder.setFilters(GameRequestContent.Filters.APP_USERS);
+					break;
+			}
+		}
+
 
 		GameRequestContent content = builder.build();
 

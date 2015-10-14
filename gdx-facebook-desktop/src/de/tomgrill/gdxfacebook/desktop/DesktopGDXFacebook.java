@@ -29,6 +29,7 @@ import de.tomgrill.gdxfacebook.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
+import de.tomgrill.gdxfacebook.core.GDXFacebookGameRequest;
 import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
 import de.tomgrill.gdxfacebook.core.GameRequestResult;
 import de.tomgrill.gdxfacebook.core.GDXFacebookError;
@@ -60,7 +61,7 @@ public class DesktopGDXFacebook extends GDXFacebook implements JXBrowserCallback
 	}
 
 	@Override
-	public void showGameRequest(String messageToPopup, GDXFacebookCallback<GameRequestResult> callback) {
+	public void showGameRequest(GDXFacebookGameRequest request, GDXFacebookCallback<GameRequestResult> callback) {
 		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request not supported on Desktop");
 	}
 

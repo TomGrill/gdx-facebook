@@ -51,7 +51,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -107,21 +106,10 @@ public class DesktopGDXFacebookUnitTests {
 		fixture = new DesktopGDXFacebook(config);
 	}
 
-	private void callFixtureCancelToForceGUISignIn() {
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocation) throws Throwable {
-				System.out.println("§dfsdf§");
-				fixture.onCancel();
-				return null;
-			}
-		}).when(mockNet).sendHttpRequest(any(Net.HttpRequest.class), any(Net.HttpResponseListener.class));
-	}
+
 
 	@Test
 	public void signInAndCancel() {
-//        callFixtureCancelToForceGUISignIn();
-
 		PowerMockito.doAnswer(new Answer<Void>() {
 			@Override
 			public Void answer(InvocationOnMock invocation) throws Throwable {

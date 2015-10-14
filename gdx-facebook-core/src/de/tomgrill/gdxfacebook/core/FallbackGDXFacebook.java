@@ -33,10 +33,11 @@ public class FallbackGDXFacebook extends GDXFacebook {
 	}
 
 	@Override
-	public void showGameRequest(String messageToPopup, GDXFacebookCallback<GameRequestResult> callback) {
+	public void showGameRequest(GDXFacebookGameRequest request, GDXFacebookCallback<GameRequestResult> callback) {
 		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot show GameRequest. " + GDXFacebookVars.LOG_TAG + " is not installed.");
 		callback.onError(new GDXFacebookError("Cannot show GameRequest." + GDXFacebookVars.LOG_TAG + " is not installed."));
 	}
+
 
 	@Override
 	public GDXFacebookAccessToken getAccessToken() {

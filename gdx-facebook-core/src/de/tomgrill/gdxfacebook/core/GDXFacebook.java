@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
 
-public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
+public abstract class GDXFacebook {
 
 	protected GDXFacebookConfig config;
 	protected Preferences preferences;
@@ -39,9 +39,29 @@ public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
 		preferences = Gdx.app.getPreferences(config.PREF_FILENAME);
 	}
 
+	/**
+	 * Opens the sign in dialog of the underlaying Facebook SDK in the following cases:
+	 * - User has not authorized app
+	 * - User has authorized app but needs to grant permissions
+	 * - An exisitng access_token is no longer valid.
+	 *
+	 * Silently signs the user in when:
+	 * - A existing token is loaded and still valid.
+	 * - The underlaying Facebook SDK can handle the sign in silently.
+	 *
+	 * @param mode
+	 * @param permissions
+	 * @param callback
+	 */
 	abstract public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback<SignInResult> callback);
 
-	abstract public void showGameRequest(String messageToPopup, GDXFacebookCallback<GameRequestResult> callback);
+	/**
+	 * Make a Game Request which uses the underlaying Facebook SDK. More at: https://developers.facebook.com/docs/games/requests/
+	 *
+	 * @param request
+	 * @param callback
+	 */
+	abstract public void showGameRequest(GDXFacebookGameRequest request, GDXFacebookCallback<GameRequestResult> callback);
 
 	/**
 	 * Currently used accessToken. Null if user is not signed in.
@@ -64,7 +84,89 @@ public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
 			request.putField("batch", "[{\"method\":\"GET\", \"relative_url\":\"me\"},{\"method\":\"GET\", \"relative_url\":\"me/permissions\"}]");
 			request.putField("include_headers", "false");
 			request.useCurrentAccessToken();
-			newGraphRequest(request, this);
+			newGraphRequest(request, new GDXFacebookCallback<JsonResult>() {
+
+				@Override
+				public void onSuccess(JsonResult result) {
+					JsonValue value = result.getJsonValue();
+					if (value != null && value.isArray()) {
+
+						JsonValue meValue = value.get(0);
+						JsonValue permissionsValue = value.get(1);
+
+
+						if (jsonHasCode200AndBody(meValue) && jsonHasCode200AndBody(permissionsValue)) {
+
+							JsonReader reader = new JsonReader();
+							JsonValue permissionBodyValue = reader.parse(permissionsValue.getString("body"));
+							JsonValue permissionArray = permissionBodyValue.get("data");
+
+							Array<String> grantedPermissions = new Array<String>();
+							for (int i = 0; i < permissionArray.size; i++) {
+								JsonValue permission = permissionArray.get(i);
+
+								if (permission.getString("status").equals("granted")) {
+									grantedPermissions.add(permission.getString("permission").toLowerCase());
+								}
+							}
+
+
+							if (arePermissionsGranted(grantedPermissions)) {
+								Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in successful. Current token is still valid.");
+								callback.onSuccess(new SignInResult(accessToken, "Silent sign in successful. Current token is still valid."));
+							} else {
+								signOut();
+								Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Used access_token is valid but new permissions need to be granted. Need GUI sign in.");
+								callback.onError(new GDXFacebookError("Used access_token is valid but new permissions need to be granted. Need GUI sign in."));
+								startGUISignIn();
+							}
+
+
+						} else {
+							signOut();
+							Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in error: " + value.toString());
+							callback.onError(new GDXFacebookError(value.toString()));
+							startGUISignIn();
+						}
+					} else {
+						callback.onError(new GDXFacebookError("Unexpected error occurred while trying to sign in. Error unknown, possible timeout."));
+					}
+				}
+
+				private boolean arePermissionsGranted(Array<String> grantedPermissions) {
+					for (int i = 0; i < permissions.size; i++) {
+						if (!grantedPermissions.contains(permissions.get(i).toLowerCase(), false)) {
+							return false;
+						}
+					}
+					return true;
+				}
+
+
+				@Override
+				public void onError(GDXFacebookError error) {
+					signOut();
+					Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in error: " + error.getErrorMessage());
+					callback.onError(error);
+					startGUISignIn();
+				}
+
+				@Override
+				public void onFail(Throwable t) {
+					signOut();
+					Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in failed: " + t);
+					callback.onFail(t);
+					startGUISignIn();
+				}
+
+				@Override
+				public void onCancel() {
+					signOut();
+					Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in cancelled");
+					callback.onCancel();
+					startGUISignIn();
+				}
+			});
 		} else {
 			Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in cancelled. No existing access token.");
 		}
@@ -92,6 +194,12 @@ public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
 		}
 	}
 
+	/**
+	 * Make a new Graph Request. View: https://developers.facebook.com/docs/graph-api/reference/v2.4/request
+	 *
+	 * @param request
+	 * @param callback
+	 */
 	public void newGraphRequest(GDXFacebookGraphRequest request, final GDXFacebookCallback<JsonResult> callback) {
 		String accessToken = null;
 		if (getAccessToken() != null) {
@@ -148,92 +256,19 @@ public abstract class GDXFacebook implements GDXFacebookCallback<JsonResult> {
 		return jsonValue.has("code") && jsonValue.getInt("code") == 200 && jsonValue.has("body");
 	}
 
-	@Override
-	public void onSuccess(JsonResult result) {
-		JsonValue value = result.getJsonValue();
-		if (value != null && value.isArray()) {
-
-			JsonValue meValue = value.get(0);
-			JsonValue permissionsValue = value.get(1);
-
-
-			if (jsonHasCode200AndBody(meValue) && jsonHasCode200AndBody(permissionsValue)) {
-
-				JsonReader reader = new JsonReader();
-				JsonValue permissionBodyValue = reader.parse(permissionsValue.getString("body"));
-				JsonValue permissionArray = permissionBodyValue.get("data");
-
-				Array<String> grantedPermissions = new Array<String>();
-				for (int i = 0; i < permissionArray.size; i++) {
-					JsonValue permission = permissionArray.get(i);
-
-					if (permission.getString("status").equals("granted")) {
-						grantedPermissions.add(permission.getString("permission").toLowerCase());
-					}
-				}
-
-
-				if (arePermissionsGranted(grantedPermissions)) {
-					Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in successful. Current token is still valid.");
-					callback.onSuccess(new SignInResult(accessToken, "Silent sign in successful. Current token is still valid."));
-				} else {
-					signOut();
-					Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Used access_token is valid but new permissions need to be granted. Need GUI sign in.");
-					callback.onError(new GDXFacebookError("Used access_token is valid but new permissions need to be granted. Need GUI sign in."));
-					startGUISignIn();
-				}
-
-
-			} else {
-				signOut();
-				Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in error: " + value.toString());
-				callback.onError(new GDXFacebookError(value.toString()));
-				startGUISignIn();
-			}
-		} else {
-			callback.onError(new GDXFacebookError("Unexpected error occurred while trying to sign in. Error unknown, possible timeout."));
-		}
-	}
-
-	private boolean arePermissionsGranted(Array<String> grantedPermissions) {
-		for (int i = 0; i < permissions.size; i++) {
-			if (!grantedPermissions.contains(permissions.get(i).toLowerCase(), false)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-
-	@Override
-	public void onError(GDXFacebookError error) {
-		signOut();
-		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in error: " + error.getErrorMessage());
-		callback.onError(error);
-		startGUISignIn();
-	}
-
-	@Override
-	public void onFail(Throwable t) {
-		signOut();
-		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in failed: " + t);
-		callback.onFail(t);
-		startGUISignIn();
-	}
-
-	@Override
-	public void onCancel() {
-		signOut();
-		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in cancelled");
-		callback.onCancel();
-		startGUISignIn();
-	}
 
 	public boolean isSignedIn() {
 		return accessToken != null;
 	}
 
 
+	/**
+	 * Signs the user out. This does not cut the connection between the user and the app.
+	 * It just flags the user as signed out from the extensions point of view.
+	 * When you user signIn(..) again exisiting access_token will be reused.
+	 *
+	 * Note: User graph requests to disconnect a user from your app.
+	 */
 	public void signOut() {
 		accessToken = null;
 	}

@@ -28,9 +28,11 @@ import org.robovm.pods.facebook.core.FBSDKAccessToken;
 import org.robovm.pods.facebook.login.FBSDKLoginBehavior;
 import org.robovm.pods.facebook.login.FBSDKLoginManager;
 import org.robovm.pods.facebook.login.FBSDKLoginManagerLoginResult;
+import org.robovm.pods.facebook.share.FBSDKGameRequestActionType;
 import org.robovm.pods.facebook.share.FBSDKGameRequestContent;
 import org.robovm.pods.facebook.share.FBSDKGameRequestDialog;
 import org.robovm.pods.facebook.share.FBSDKGameRequestDialogDelegateAdapter;
+import org.robovm.pods.facebook.share.FBSDKGameRequestFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,7 @@ import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
 import de.tomgrill.gdxfacebook.core.GDXFacebookError;
+import de.tomgrill.gdxfacebook.core.GDXFacebookGameRequest;
 import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
 import de.tomgrill.gdxfacebook.core.GameRequestResult;
 import de.tomgrill.gdxfacebook.core.SignInMode;
@@ -79,12 +82,61 @@ public class IOSGDXFacebook extends GDXFacebook {
 	}
 
 	@Override
-	public void showGameRequest(String messageToPopup, final GDXFacebookCallback<GameRequestResult> gameRequestCallback) {
+	public void showGameRequest(GDXFacebookGameRequest request, final GDXFacebookCallback<GameRequestResult> gameRequestCallback) {
 
 		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Starting Game Request dialog.");
 
 		FBSDKGameRequestContent gameRequestContent = new FBSDKGameRequestContent();
-		gameRequestContent.setMessage(messageToPopup);
+
+
+		if (request.getMessage() != null) gameRequestContent.setMessage(request.getMessage());
+		if (request.getData() != null) gameRequestContent.setData(request.getData());
+		if (request.getTitle() != null) gameRequestContent.setTitle(request.getTitle());
+		if (request.getObjectId() != null) gameRequestContent.setObjectID(request.getObjectId());
+
+		Array<String> suggestions = request.getSuggestions();
+		if (suggestions != null && suggestions.size > 0) {
+			ArrayList<String> suggestionList = new ArrayList<String>();
+			for (int i = 0; i < suggestions.size; i++) {
+				suggestionList.add(suggestions.get(i));
+			}
+			gameRequestContent.setRecipientSuggestions(suggestionList);
+		}
+
+		Array<String> recipients = request.getRecipients();
+		if (recipients != null && recipients.size > 0) {
+			ArrayList<String> recipientsList = new ArrayList<String>();
+			for (int i = 0; i < recipients.size; i++) {
+				recipientsList.add(recipients.get(i));
+			}
+			gameRequestContent.setRecipients(recipientsList);
+		}
+
+
+		if (request.getActionType() != null) {
+			switch (request.getActionType()) {
+				case ASKFOR:
+					gameRequestContent.setActionType(FBSDKGameRequestActionType.AskFor);
+					break;
+				case SEND:
+					gameRequestContent.setActionType(FBSDKGameRequestActionType.Send);
+					break;
+				case TURN:
+					gameRequestContent.setActionType(FBSDKGameRequestActionType.Turn);
+					break;
+			}
+		}
+
+		if (request.getFilters() != null) {
+			switch (request.getFilters()) {
+				case APP_NON_USERS:
+					gameRequestContent.setFilters(FBSDKGameRequestFilter.AppNonUsers);
+					break;
+				case APP_USERS:
+					gameRequestContent.setFilters(FBSDKGameRequestFilter.AppUsers);
+					break;
+			}
+		}
 
 		FBSDKGameRequestDialog.show(gameRequestContent, new FBSDKGameRequestDialogDelegateAdapter() {
 			@Override
@@ -93,11 +145,11 @@ public class IOSGDXFacebook extends GDXFacebook {
 
 				String requestId = "";
 
-				for (Map.Entry<? extends NSObject, ? extends NSObject> entry: results.entrySet() ) {
+				for (Map.Entry<? extends NSObject, ? extends NSObject> entry : results.entrySet()) {
 					String key = entry.getKey().toString();
 					String value = entry.getValue().toString();
 
-					if(key.equals("request")) {
+					if (key.equals("request")) {
 						requestId = value;
 					} else {
 						recipients.add(value);
@@ -158,7 +210,7 @@ public class IOSGDXFacebook extends GDXFacebook {
 
 		List<String> listPermissions = new ArrayList<String>();
 
-		for(int i = 0; i < permissions.size; i++) {
+		for (int i = 0; i < permissions.size; i++) {
 			listPermissions.add(permissions.get(i));
 		}
 

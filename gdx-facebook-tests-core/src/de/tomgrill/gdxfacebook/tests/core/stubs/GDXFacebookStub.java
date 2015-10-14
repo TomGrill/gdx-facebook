@@ -23,46 +23,48 @@ import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
+import de.tomgrill.gdxfacebook.core.GDXFacebookGameRequest;
 import de.tomgrill.gdxfacebook.core.GameRequestResult;
 import de.tomgrill.gdxfacebook.core.SignInResult;
 import de.tomgrill.gdxfacebook.core.SignInMode;
 
 public class GDXFacebookStub extends GDXFacebook {
-    public GDXFacebookStub(GDXFacebookConfig config) {
-        super(config);
-    }
+	public GDXFacebookStub(GDXFacebookConfig config) {
+		super(config);
+	}
 
-    @Override
-    public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback<SignInResult> callback) {
+	@Override
+	public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback<SignInResult> callback) {
 
-    }
+	}
 
-    @Override
-    public void showGameRequest(String messageToPopup, GDXFacebookCallback<GameRequestResult> callback) {
+	@Override
+	public void showGameRequest(GDXFacebookGameRequest request, GDXFacebookCallback<GameRequestResult> callback) {
 
-    }
+	}
 
-    @Override
-    public GDXFacebookAccessToken getAccessToken() {
-        return null;
-    }
 
-    @Override
-    public void signOut() {
+	@Override
+	public GDXFacebookAccessToken getAccessToken() {
+		return null;
+	}
 
-    }
+	@Override
+	public void signOut() {
 
-    @Override
-    public boolean isSignedIn() {
-        return false;
-    }
+	}
 
-    @Override
-    protected void startGUISignIn() {
+	@Override
+	public boolean isSignedIn() {
+		return false;
+	}
 
-    }
+	@Override
+	protected void startGUISignIn() {
 
-    @Override
-    protected void startSilentSignIn() {
-    }
+	}
+
+	@Override
+	protected void startSilentSignIn() {
+	}
 }
