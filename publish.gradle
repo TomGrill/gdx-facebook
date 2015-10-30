@@ -77,7 +77,7 @@ afterEvaluate { project ->
                     }
                 }
 
-				
+
 
 
                 pom.project {
@@ -98,13 +98,14 @@ afterEvaluate { project ->
                             distribution 'repo'
                         }
                     }
-                    
+
                     developers {
                         developer {
                             id 'tomgrill'
                             name 'Thomas Pronold'
+							email 'mail@tomgrill.de'
                         }
-                    }                
+                    }
                 }
             }
         }
@@ -112,15 +113,15 @@ afterEvaluate { project ->
 
     signing {
         required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
-       // sign configurations.archives
+        sign configurations.archives
     }
-    
+
     task libraryJar(type: Jar, dependsOn:classes) {
         from sourceSets.main.output.classesDir
         from configurations.custom.collect { it.isDirectory() ? it : zipTree(it) }
         classifier = 'library'
     }
-     
+
     task sourcesJar(type: Jar, dependsOn:classes) {
         from sourceSets.main.allSource
         classifier = 'sources'
@@ -134,7 +135,7 @@ afterEvaluate { project ->
     artifacts {
         archives libraryJar
         archives sourcesJar
-//        archives javadocJar
+        archives javadocJar
     }
 
 }
