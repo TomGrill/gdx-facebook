@@ -77,8 +77,7 @@ local.properties
 .settings/
 /build/
 
-publishLocal.sh
-publishSnapshot.sh
-publishSnapshotTpronold.sh
+
+publish*
 
 .DS_Store

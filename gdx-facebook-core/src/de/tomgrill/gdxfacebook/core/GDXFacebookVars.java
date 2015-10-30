@@ -18,7 +18,7 @@
 package de.tomgrill.gdxfacebook.core;
 
 public class GDXFacebookVars {
-	public static final String VERSION = "0.6.0-SNAPSHOT";
+	public static final String VERSION = "1.0.0";
 	public static final String LOG_TAG = "gdx-facebook (" + VERSION + ")";
 
 	public static final String CLASSNAME_DESKTOP = "de.tomgrill.gdxfacebook.desktop.DesktopGDXFacebook";
