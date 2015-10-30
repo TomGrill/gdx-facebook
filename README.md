@@ -5,9 +5,11 @@ libGDX extension providing cross-platform support for Facebook Graph API.
 https://github.com/TomGrill/gdx-facebook/wiki
 
 ## Version
-Current snapshot: **0.6.0-SNAPSHOT**
+Current stable: **1.0.0**
 
-Current stable: **not yet released**
+Current snapshot: **1.0.1-SNAPSHOT**
+
+
 
 ##Supported Platforms
 Android, iOS, Desktop
