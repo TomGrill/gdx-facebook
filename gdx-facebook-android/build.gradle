@@ -1,12 +1,6 @@
-
 apply plugin: 'com.android.library'
 
-
-
 project.group = 'de.tomgrill.gdxfacebook.android'
-
-
-
 
 android {
 
@@ -32,19 +26,11 @@ android {
 		targetCompatibility JavaVersion.VERSION_1_7
 	}
 
-	lintOptions {
-		abortOnError false
-	}
-}
 
+}
 
 ext {
 	ARTIFACTID = 'gdx-facebook-android'
 }
 
 apply from : '../androidpublish.gradle'
-
-
-
-
-
