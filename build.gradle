@@ -1,6 +1,6 @@
 ext {
     GROUPID = 'de.tomgrill.gdxfacebook'
-    VERSION = '1.0.3-SNAPSHOT'
+    VERSION = '1.0.4-SNAPSHOT'
 
 }
 
@@ -41,7 +41,7 @@ allprojects {
     version = VERSION
 }
 
-project(":gdx-facebook-android") {
+project(":android") {
 
 
     configurations {
@@ -58,14 +58,14 @@ project(":gdx-facebook-android") {
 
     dependencies {
 
-        compile project(':gdx-facebook-core')
+        compile project(':core')
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         compile "com.facebook.android:facebook-android-sdk:$androidSDKVersion"
     }
 }
 
 
-project(":gdx-facebook-core") {
+project(":core") {
     apply plugin: 'java'
 
     apply from: '../publish.gradle'
@@ -89,7 +89,7 @@ project(":gdx-facebook-core") {
 
 
 
-project(":gdx-facebook-desktop") {
+project(":desktop") {
     apply plugin: 'java'
 
     apply from: '../publish.gradle'
@@ -106,12 +106,12 @@ project(":gdx-facebook-desktop") {
     }
 
     dependencies {
-        compile project(':gdx-facebook-core')
+        compile project(':core')
     }
 }
 
 
-project(":gdx-facebook-html") {
+project(":html") {
     apply plugin: 'java'
 
 
@@ -129,13 +129,13 @@ project(":gdx-facebook-html") {
     }
 
     dependencies {
-        compile project(':gdx-facebook-core')
+        compile project(':core')
     }
 }
 
 
 
-project(":gdx-facebook-ios") {
+project(":ios") {
     apply plugin: 'java'
     apply plugin: 'robovm'
 
@@ -155,7 +155,7 @@ project(":gdx-facebook-ios") {
 
     dependencies {
 
-        compile project(':gdx-facebook-core')
+        compile project(':core')
 
         compile "org.robovm:robovm-rt:${roboVMVersion}"
         compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
@@ -171,11 +171,11 @@ project(":gdx-facebook-ios") {
 
 
 
-project(":gdx-facebook-tests-core") {
+project(":tests-core") {
     apply plugin: 'java'
 
     dependencies {
-        compile project(':gdx-facebook-core')
+        compile project(':core')
 
         compile "junit:junit:4.+"
         compile "org.mockito:mockito-all:1.9.+"
