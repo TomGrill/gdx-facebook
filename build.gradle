@@ -1,6 +1,6 @@
 ext {
-	GROUPID = 'de.tomgrill.gdxfacebook'
-	VERSION = '1.0.0-SNAPSHOT'
+    GROUPID = 'de.tomgrill.gdxfacebook'
+    VERSION = '1.1.0'
 
 }
 
@@ -25,244 +25,176 @@ allprojects {
         appName = 'gdx-facebook'
         gdxVersion = '1.7.0'
         roboVMVersion = '1.8.0'
-		powerMockVersion = '1.6.3'
+        powerMockVersion = '1.6.3'
+        androidSDKVersion = '4.7.0'
+        facebookRoboPodsVersion = '1.8.0'
     }
 
     repositories {
         mavenCentral()
+        mavenLocal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
 
-	group = GROUPID
+    group = GROUPID
     version = VERSION
 }
 
-project(":gdx-facebook-android") {
-    apply plugin : 'java'
-	apply from : '../publish.gradle'
+project(":android") {
+
 
     configurations {
         custom
         compile.extendsFrom custom
-	}
+    }
 
-	eclipse {
-		project {
-		    name = appName + "-android"
-		}
-	}
+    eclipse {
+        project {
+            name = appName + "-android"
+        }
+    }
 
-	dependencies {
 
-		compile project(':gdx-facebook-core')
-		compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+    dependencies {
 
-		compile fileTree(dir: 'libs', include: '*.jar')
-	}
+        compile project(':core')
+        compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+        compile "com.facebook.android:facebook-android-sdk:$androidSDKVersion"
+    }
 }
 
 
-project(":gdx-facebook-core") {
-    apply plugin : 'java'
+project(":core") {
+    apply plugin: 'java'
 
-	apply from : '../publish.gradle'
-
-    configurations {
-        custom
-        compile.extendsFrom custom
-	}
-
-	eclipse {
-		project {
-		    name = appName + "-core"
-		}
-	}
-
-	dependencies {
-		compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-	}
-}
-
-
-
-
-project(":gdx-facebook-desktop") {
-    apply plugin : 'java'
-
-	apply from : '../publish.gradle'
+    apply from: '../publish.gradle'
 
     configurations {
         custom
         compile.extendsFrom custom
-	}
+    }
 
-	eclipse {
-		project {
-		    name = appName + "-desktop"
-		}
-	}
+    eclipse {
+        project {
+            name = appName + "-core"
+        }
+    }
 
-	dependencies {
-		compile project(':gdx-facebook-core')
-	}
-}
-
-
-project(":gdx-facebook-html") {
-    apply plugin : 'java'
-
-
-	apply from : '../publish.gradle'
-
-    configurations {
-        custom
-        compile.extendsFrom custom
-	}
-
-	eclipse {
-		project {
-		    name = appName + "-html"
-		}
-	}
-
-	dependencies {
-		compile project(':gdx-facebook-core')
-	}
+    dependencies {
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    }
 }
 
 
 
-project(":gdx-facebook-ios") {
-    apply plugin : 'java'
-    apply plugin : 'robovm'
 
+project(":desktop") {
+    apply plugin: 'java'
 
-	apply from : '../publish.gradle'
+    apply from: '../publish.gradle'
 
     configurations {
         custom
         compile.extendsFrom custom
-	}
+    }
 
-	eclipse {
-		project {
-		    name = appName + "-ios"
-		}
-	}
+    eclipse {
+        project {
+            name = appName + "-desktop"
+        }
+    }
 
-	dependencies {
+    dependencies {
+        compile project(':core')
+    }
+}
 
-		compile project(':gdx-facebook-core')
 
-		compile "org.robovm:robovm-rt:${roboVMVersion}"
+project(":html") {
+    apply plugin: 'java'
+
+
+    apply from: '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+    }
+
+    eclipse {
+        project {
+            name = appName + "-html"
+        }
+    }
+
+    dependencies {
+        compile project(':core')
+    }
+}
+
+
+
+project(":ios") {
+    apply plugin: 'java'
+    apply plugin: 'robovm'
+
+
+    apply from: '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+    }
+
+    eclipse {
+        project {
+            name = appName + "-ios"
+        }
+    }
+
+    dependencies {
+
+        compile project(':core')
+
+        compile "org.robovm:robovm-rt:${roboVMVersion}"
         compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
         compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
 
-        compile "org.robovm:robopods-facebook-ios:1.5.0"
-	}
+        compile "org.robovm:robopods-facebook-ios:$facebookRoboPodsVersion"
+    }
 }
 
 
-project(":gdx-facebook-tests-android") {
-    apply plugin : 'java'
-
-	dependencies {
-		compile project(':gdx-facebook-android')
-
-	}
 
 
-	eclipse {
-		project {
-		    name = appName + "-tests-android"
-		}
-	}
-}
-
-project(":gdx-facebook-tests-ios") {
-    apply plugin : 'java'
-
-	dependencies {
-		compile project(':gdx-facebook-ios')
-
-	}
 
 
-	eclipse {
-		project {
-		    name = appName + "-tests-ios"
-		}
-	}
-}
 
-project(":gdx-facebook-tests-html") {
-    apply plugin : 'java'
+project(":tests-core") {
+    apply plugin: 'java'
 
-	dependencies {
-		compile project(':gdx-facebook-html')
+    dependencies {
+        compile project(':core')
 
-	}
-
-
-	eclipse {
-		project {
-		    name = appName + "-tests-html"
-		}
-	}
-}
-
-
-project(":gdx-facebook-tests-core") {
-    apply plugin : 'java'
-
-	dependencies {
-		compile project(':gdx-facebook-core')
-		compile project(':gdx-facebook-android')
-		compile project(':gdx-facebook-desktop')
-		compile project(':gdx-facebook-ios')
-		compile project(':gdx-facebook-html')
-
-		compile "junit:junit:4.+"
+        compile "junit:junit:4.+"
         compile "org.mockito:mockito-all:1.9.+"
-		compile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
+        compile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
 
-		testCompile 'junit:junit:4.+'
+        testCompile 'junit:junit:4.+'
         testCompile "org.mockito:mockito-all:1.9.+"
-		testCompile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
-	}
+        testCompile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
+    }
 
 
-	eclipse {
-		project {
-		    name = appName + "-tests-core"
-		}
-	}
+    eclipse {
+        project {
+            name = appName + "-tests-core"
+        }
+    }
 }
 
 
-project(":gdx-facebook-tests-desktop") {
-    apply plugin : 'java'
-
-	dependencies {
-		compile project(':gdx-facebook-desktop')
-
-		compile "junit:junit:4.+"
-        compile "org.mockito:mockito-all:1.9.+"
-		compile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
-
-		testCompile 'junit:junit:4.+'
-        testCompile "org.mockito:mockito-all:1.9.+"
-		testCompile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
-	}
-
-
-	eclipse {
-		project {
-		    name = appName + "-tests-desktop"
-		}
-	}
-}
 
 
 tasks.eclipse.doLast {
