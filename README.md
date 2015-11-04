@@ -9,10 +9,11 @@ Current stable: **1.1.0**
 
 Current snapshot: **1.1.1-SNAPSHOT**
 
-
+## Requirements
+Java 7+, JavaFX (Desktop only), Android API 15
 
 ##Supported Platforms
-Android, iOS, Desktop
+Android (used Facebook SDK 4.7.0), iOS, Desktop
 
 ##Reporting Issues
 
