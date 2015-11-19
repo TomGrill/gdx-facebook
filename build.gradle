@@ -23,11 +23,11 @@ allprojects {
 
     ext {
         appName = 'gdx-facebook'
-        gdxVersion = '1.7.0'
-        roboVMVersion = '1.8.0'
+        gdxVersion = '1.7.1'
+        roboVMVersion = '1.9.0'
         powerMockVersion = '1.6.3'
         androidSDKVersion = '4.7.0'
-        facebookRoboPodsVersion = '1.8.0'
+        facebookRoboPodsVersion = '1.9.0'
     }
 
     repositories {
