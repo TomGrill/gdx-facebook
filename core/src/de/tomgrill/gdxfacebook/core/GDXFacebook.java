@@ -270,6 +270,17 @@ public abstract class GDXFacebook {
 	 * Note: User graph requests to disconnect a user from your app.
 	 */
 	public void signOut() {
+		signOut(true);
+	}
+
+	public void signOut(boolean keepUserData) {
 		accessToken = null;
 	}
+
+    public final void deleteTokenData() {
+        preferences.remove("access_token");
+        preferences.remove("expires_at");
+        preferences.flush();
+
+    }
 }
