@@ -17,9 +17,7 @@
 
 package de.tomgrill.gdxfacebook.ios;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
 import de.tomgrill.gdxfacebook.core.*;
@@ -50,25 +48,6 @@ public class IOSGDXFacebook extends GDXFacebook {
 		super(config);
 
 		loginManager = new FBSDKLoginManager();
-
-        switch(config.LOGIN_BEHAVIOR) {
-            case BROWSER:
-                loginManager.setLoginBehavior(FBSDKLoginBehavior.Browser);
-                break;
-
-            case WEB:
-                loginManager.setLoginBehavior(FBSDKLoginBehavior.Web);
-                break;
-
-            case SYSTEM_ACCOUNT:
-                loginManager.setLoginBehavior(FBSDKLoginBehavior.SystemAccount);
-                break;
-
-            case NATIVE:
-                loginManager.setLoginBehavior(FBSDKLoginBehavior.Native);
-                break;
-        }
-
 	}
 
 	@Override

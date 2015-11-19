@@ -273,7 +273,7 @@ public abstract class GDXFacebook {
 		signOut(true);
 	}
 
-	public void signOut(boolean keepUserData) {
+	public void signOut(boolean keepSessionData) {
 		accessToken = null;
 	}
 

@@ -37,16 +37,7 @@ import com.facebook.share.widget.GameRequestDialog;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import de.tomgrill.gdxfacebook.core.GDXFacebook;
-import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
-import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
-import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.GDXFacebookGameRequest;
-import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
-import de.tomgrill.gdxfacebook.core.GameRequestResult;
-import de.tomgrill.gdxfacebook.core.GDXFacebookError;
-import de.tomgrill.gdxfacebook.core.SignInMode;
-import de.tomgrill.gdxfacebook.core.SignInResult;
+import de.tomgrill.gdxfacebook.core.*;
 
 public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListener {
 
@@ -63,7 +54,6 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 		FacebookSdk.sdkInitialize(activity.getApplicationContext());
 		callbackManager = CallbackManager.Factory.create();
 
-		LoginManager.getInstance().setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK);
 	}
 
 	@Override
@@ -251,11 +241,17 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 	}
 
 	@Override
-	public void signOut() {
-		super.signOut();
+	public void signOut(boolean keepSessionData) {
+		super.signOut(keepSessionData);
 		userId = null;
 		FacebookSdk.sdkInitialize(activity.getApplicationContext());
 		LoginManager.getInstance().logOut();
-	}
 
+
+		if(keepSessionData == SignOutMode.DELETE_SESSION_DATA) {
+			AccessToken.setCurrentAccessToken(null);
+
+			deleteTokenData();
+		}
+	}
 }

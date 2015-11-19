@@ -131,4 +131,12 @@ public class DesktopGDXFacebook extends GDXFacebook implements JXBrowserCallback
         callback.onCancel();
     }
 
+    @Override
+    public void signOut(boolean keepSessionData) {
+        super.signOut(keepSessionData);
+
+        if(keepSessionData == SignOutMode.DELETE_SESSION_DATA) {
+            deleteTokenData();
+        }
+    }
 }

@@ -34,9 +34,4 @@ public class GDXFacebookConfig {
      */
     public String GRAPH_API_VERSION = "v2.5";
 
-    /**
-     * Login behavior.
-     */
-    public LoginBehavior LOGIN_BEHAVIOR = LoginBehavior.SYSTEM_ACCOUNT;
-
 }
