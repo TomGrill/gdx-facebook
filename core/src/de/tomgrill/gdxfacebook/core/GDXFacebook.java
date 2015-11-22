@@ -263,13 +263,29 @@ public abstract class GDXFacebook {
 
 
 	/**
-	 * Signs the user out. This does not cut the connection between the user and the app.
-	 * It just flags the user as signed out from the extensions point of view.
-	 * When you user signIn(..) again exisiting access_token will be reused.
-	 *
-	 * Note: User graph requests to disconnect a user from your app.
+	 * Convenient method for signOut(true);
 	 */
 	public void signOut() {
+		signOut(true);
+	}
+
+	/**
+	 * Signs the user out. When keepSessionData is false then all session data for the current user
+	 * will be deleted and the user needs to login and auth the app again. When keepSessionData is true
+	 * the session data is stored and reused with the next login.
+	 * NOTE: When the user has native Facebook App installed on his device keepSessionData = false does not always work.
+	 * In this cases you may want to give the user a hint that he needs to logout from Facebook App in order to be able to switch accounts.
+	 *
+	 * @param keepSessionData
+     */
+	public void signOut(boolean keepSessionData) {
 		accessToken = null;
 	}
+
+    public final void deleteTokenData() {
+        preferences.remove("access_token");
+        preferences.remove("expires_at");
+        preferences.flush();
+
+    }
 }

@@ -20,6 +20,7 @@ package de.tomgrill.gdxfacebook.ios;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 
+import de.tomgrill.gdxfacebook.core.*;
 import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSObject;
@@ -38,17 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import de.tomgrill.gdxfacebook.core.GDXFacebook;
-import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
-import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
-import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.GDXFacebookError;
-import de.tomgrill.gdxfacebook.core.GDXFacebookGameRequest;
-import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
-import de.tomgrill.gdxfacebook.core.GameRequestResult;
-import de.tomgrill.gdxfacebook.core.SignInMode;
-import de.tomgrill.gdxfacebook.core.SignInResult;
-
 public class IOSGDXFacebook extends GDXFacebook {
 
 	private FBSDKLoginManager loginManager;
@@ -58,7 +48,6 @@ public class IOSGDXFacebook extends GDXFacebook {
 		super(config);
 
 		loginManager = new FBSDKLoginManager();
-		loginManager.setLoginBehavior(FBSDKLoginBehavior.Native);
 	}
 
 	@Override
@@ -176,9 +165,15 @@ public class IOSGDXFacebook extends GDXFacebook {
 	}
 
 	@Override
-	public void signOut() {
-		super.signOut();
+	public void signOut(boolean keepSessionData) {
+		super.signOut(keepSessionData);
 		loginManager.logOut();
+
+		if(keepSessionData == SignOutMode.DELETE_SESSION_DATA) {
+            FBSDKAccessToken.setCurrentAccessToken(null);
+
+            deleteTokenData();
+		}
 	}
 
 	@Override
