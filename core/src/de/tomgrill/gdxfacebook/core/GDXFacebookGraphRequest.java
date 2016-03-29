@@ -18,6 +18,7 @@ package de.tomgrill.gdxfacebook.core;
 
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -130,25 +131,14 @@ public class GDXFacebookGraphRequest {
 	public static String parameterSeparator = "&";
 
 	protected String getContentAsString() {
-//        String content = "";
-//
-//        for (int i = 0; i < fields.size; i++) {
-//            content += fields.getKeyAt(i) + "=" + fields.getValueAt(i);
-//            if (i + 1 < fields.size) {
-//                content += "&";
-//            }
-//        }
-//        return content;
-
 		StringBuffer convertedParameters = new StringBuffer();
-		for (int i = 0; i < fields.size; i++) {
 
-
-			convertedParameters.append(encode(fields.getKeyAt(i), defaultEncoding));
-			convertedParameters.append(nameValueSeparator);
-			convertedParameters.append(encode(fields.getValueAt(i), defaultEncoding));
-			convertedParameters.append(parameterSeparator);
-		}
+        for(ObjectMap.Entry<String, String> entry : fields){
+            convertedParameters.append(encode(entry.key, defaultEncoding));
+            convertedParameters.append(nameValueSeparator);
+            convertedParameters.append(encode(fields.firstValue(), defaultEncoding));
+            convertedParameters.append(parameterSeparator);
+        }
 		if (convertedParameters.length() > 0)
 			convertedParameters.deleteCharAt(convertedParameters.length() - 1);
 		return convertedParameters.toString();
