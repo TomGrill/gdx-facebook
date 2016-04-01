@@ -17,6 +17,7 @@
 package de.tomgrill.gdxfacebook.core;
 
 import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,14 +56,14 @@ public class GDXFacebookGraphRequest extends AbstractRequest {
 
     public String getContent() {
         StringBuffer convertedParameters = new StringBuffer();
-        for (int i = 0; i < fields.size; i++) {
 
-
-            convertedParameters.append(encode(fields.getKeyAt(i), defaultEncoding));
+        for(ObjectMap.Entry<String, String> entry : fields){
+            convertedParameters.append(encode(entry.key, defaultEncoding));
             convertedParameters.append(nameValueSeparator);
-            convertedParameters.append(encode(fields.getValueAt(i), defaultEncoding));
+            convertedParameters.append(encode(entry.value, defaultEncoding));
             convertedParameters.append(parameterSeparator);
         }
+
         if (convertedParameters.length() > 0)
             convertedParameters.deleteCharAt(convertedParameters.length() - 1);
         return convertedParameters.toString();
