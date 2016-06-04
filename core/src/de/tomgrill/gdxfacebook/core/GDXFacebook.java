@@ -24,10 +24,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 
 public abstract class GDXFacebook {
@@ -43,45 +41,15 @@ public abstract class GDXFacebook {
         preferences = Gdx.app.getPreferences(config.PREF_FILENAME);
     }
 
-    private static String getStringFromInputStream(InputStream is) {
-
-        BufferedReader br = null;
-        StringBuilder sb = new StringBuilder();
-
-        String line;
-        try {
-
-            br = new BufferedReader(new InputStreamReader(is));
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-                sb.append("\n");
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return sb.toString();
-
-    }
-
     /**
-     * Opens the sign in dialog of the underlaying Facebook SDK in the following cases:
+     * Opens the sign in dialog of the underlying Facebook SDK in the following cases:
      * - User has not authorized app
      * - User has authorized app but needs to grant permissions
      * - An exisitng access_token is no longer valid.
-     *
+     * <p>
      * Silently signs the user in when:
      * - A existing token is loaded and still valid.
-     * - The underlaying Facebook SDK can handle the sign in silently.
+     * - The underlying Facebook SDK can handle the sign in silently.
      *
      * @param mode
      * @param permissions
@@ -228,10 +196,10 @@ public abstract class GDXFacebook {
     }
 
     /**
-     * Make a new Graph Request. View: https://developers.facebook.com/docs/graph-api/reference/v2.4/request
+     * Make a new Graph Request. View: https://developers.facebook.com/docs/graph-api/reference/request
      *
-     * @param request
-     * @param callback
+     * @param request  the request
+     * @param callback the callback
      */
     public void newGraphRequest(Request request, final GDXFacebookCallback<JsonResult> callback) {
         String accessToken = null;

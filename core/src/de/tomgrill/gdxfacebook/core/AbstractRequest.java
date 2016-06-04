@@ -72,7 +72,7 @@ public abstract class AbstractRequest implements Request {
     /**
      * Set the HTTP request method. Default is GET
      *
-     * @param method
+     * @param method HTTP method (POST,GET,..)
      */
     @Override
     public AbstractRequest setMethod(String method) {

@@ -62,6 +62,7 @@ afterEvaluate { project ->
                 pom.version = getVersion()
 				pom.artifactId = getArtifactId()
 
+
                 if (isLocalBuild()) {
                     repository(url: getLocalRepositoryUrl())
                 } else {

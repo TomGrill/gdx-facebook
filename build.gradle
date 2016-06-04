@@ -1,6 +1,6 @@
 ext {
     GROUPID = 'de.tomgrill.gdxfacebook'
-    VERSION = '1.1.2-SNAPSHOT'
+    VERSION = '1.2.0-SNAPSHOT'
 
 }
 
@@ -12,8 +12,8 @@ buildscript {
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'org.robovm:robovm-gradle-plugin:1.8.0'
+        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.2.0-SNAPSHOT'
     }
 }
 
@@ -23,10 +23,10 @@ allprojects {
 
     ext {
         appName = 'gdx-facebook'
-        gdxVersion = '1.7.1'
-        roboVMVersion = '1.9.0'
+        gdxVersion = '1.9.3'
+        roboVMVersion = '2.2.0-SNAPSHOT'
         powerMockVersion = '1.6.3'
-        androidSDKVersion = '4.7.0'
+        androidSDKVersion = '4.12.1'
         facebookRoboPodsVersion = '1.9.0'
     }
 
@@ -157,8 +157,8 @@ project(":ios") {
 
         compile project(':core')
 
-        compile "org.robovm:robovm-rt:${roboVMVersion}"
-        compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
+        compile "com.mobidevelop.robovm:robovm-rt:${roboVMVersion}"
+        compile "com.mobidevelop.robovm:robovm-cocoatouch:${roboVMVersion}"
         compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
 
         compile "org.robovm:robopods-facebook-ios:$facebookRoboPodsVersion"
