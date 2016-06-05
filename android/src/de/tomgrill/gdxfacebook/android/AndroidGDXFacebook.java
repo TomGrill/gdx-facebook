@@ -47,7 +47,7 @@ public class AndroidGDXFacebook extends GDXFacebookBasic implements AndroidEvent
         this.activity = activity;
 
         FacebookSdk.sdkInitialize(activity.getApplicationContext());
-        AppEventsLogger.activateApp(activity.getApplication());
+//        AppEventsLogger.activateApp(activity.getApplication());
         callbackManager = CallbackManager.Factory.create();
 
     }
