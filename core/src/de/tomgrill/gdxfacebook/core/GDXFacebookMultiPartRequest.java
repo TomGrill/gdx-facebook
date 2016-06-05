@@ -28,9 +28,8 @@ import java.io.*;
  * Build a proper mulitpart Facebook Graph API request with this class.
  *
  * @author Thomas Pronold (TomGrill) mail@tomgrill.de
- * @see <a
- * href="https://developers.facebook.com/docs/graph-api/using-graph-api/">https://developers.facebook.com/docs/graph-api/using-graph-api/</a>
- * for more information on how Facebook Graph API works.
+ * @see <a href="https://developers.facebook.com/docs/graph-api/using-graph-api/">https://developers.facebook.com/docs/graph-api/using-graph-api/</a>
+ *
  */
 public class GDXFacebookMultiPartRequest extends AbstractRequest {
 

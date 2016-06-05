@@ -23,6 +23,6 @@
 
 -keep class com.badlogic.gdx.Gdx { *; }
 -keep class com.badlogic.gdx.backends.android.AndroidEventListener { *; }
--keep class de.tomgrill.gdxfacebook.core.GDXFacebook { public protected *; }
+-keep class de.tomgrill.gdxfacebook.core.GDXFacebookBasic { public protected *; }
 -keep class de.tomgrill.gdxfacebook.core.FallbackGDXFacebook { public protected *; }
 -keep class de.tomgrill.gdxfacebook.android.AndroidGDXFacebook{ public protected *; }
