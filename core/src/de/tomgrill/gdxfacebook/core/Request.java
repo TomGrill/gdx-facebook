@@ -64,4 +64,5 @@ public interface Request {
     AbstractRequest putField(String key, String value);
 
     AbstractRequest putFields(ArrayMap<String, String> fields);
+
 }

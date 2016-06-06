@@ -63,6 +63,8 @@ project(":android") {
         compile project(':core')
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         compile "com.facebook.android:facebook-android-sdk:$androidSDKVersion"
+
+//        compile fileTree(dir: 'libs', include: '*.jar')
     }
 }
 
@@ -133,6 +135,14 @@ project(":html") {
     dependencies {
         compile project(':core')
     }
+    dependencies {
+
+        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
+        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+
+
+    }
 }
 
 
@@ -173,32 +183,26 @@ project(":ios") {
 
 
 
-project(":tests-core") {
-    apply plugin: 'java'
+//project(":tests-core") {
+//    apply plugin: 'java'
+//
+//    dependencies {
+//        compile project(':core')
+//
+//        compile "junit:junit:$jUnitVersion"
+//        compile "org.mockito:mockito-all:$mockitoVersion"
+//        compile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
+//
+//        testCompile "junit:junit:$jUnitVersion"
+//        testCompile "org.mockito:mockito-all:$mockitoVersion"
+//        testCompile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
+//    }
+//
+//
+//    eclipse {
+//        project {
+//            name = appName + "-tests-core"
+//        }
+//    }
+//}
 
-    dependencies {
-        compile project(':core')
-
-        compile "junit:junit:$jUnitVersion"
-        compile "org.mockito:mockito-all:$mockitoVersion"
-        compile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
-
-        testCompile "junit:junit:$jUnitVersion"
-        testCompile "org.mockito:mockito-all:$mockitoVersion"
-        testCompile "org.powermock:powermock-mockito-release-full:$powerMockVersion"
-    }
-
-
-    eclipse {
-        project {
-            name = appName + "-tests-core"
-        }
-    }
-}
-
-
-
-
-tasks.eclipse.doLast {
-    delete ".project"
-}

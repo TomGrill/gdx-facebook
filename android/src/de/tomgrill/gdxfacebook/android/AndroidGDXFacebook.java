@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2015 See AUTHORS file.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,8 @@ import de.tomgrill.gdxfacebook.core.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListener {
+
+public class AndroidGDXFacebook extends GDXFacebookBasic implements AndroidEventListener {
 
     private Activity activity;
     private CallbackManager callbackManager;
@@ -46,7 +47,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
         this.activity = activity;
 
         FacebookSdk.sdkInitialize(activity.getApplicationContext());
-        AppEventsLogger.activateApp(activity.getApplication());
+//        AppEventsLogger.activateApp(activity.getApplication());
         callbackManager = CallbackManager.Factory.create();
 
     }
@@ -71,7 +72,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
             @Override
             public void onCancel() {
-                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign cancelled by user.");
+                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign fail by user.");
                 callback.onCancel();
             }
 
@@ -109,7 +110,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
          * If the user has Facebook App installed
          * AccessToken.getCurrentAccessToken() will not be NULL
          *
-         * Only when the Facebook App is not installed we need to load the token
+         * Only when the Facebook App is not installed we need to setup the token
          * manually.
          * */
         loadAccessToken();
@@ -128,7 +129,13 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
     }
 
     @Override
-    public void showGameRequest(GDXFacebookGameRequest request, final GDXFacebookCallback<GameRequestResult> gameRequestCallback) {
+    @Deprecated
+    public void showGameRequest(final GDXFacebookGameRequest request, final GDXFacebookCallback<GameRequestResult> gameRequestCallback) {
+        gameRequest(request, gameRequestCallback);
+    }
+
+    @Override
+    public void gameRequest(final GDXFacebookGameRequest request, final GDXFacebookCallback<GameRequestResult> gameRequestCallback) {
         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Starting Game Request dialog.");
 
         GameRequestContent.Builder builder = new GameRequestContent.Builder();
@@ -201,7 +208,7 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
             }
 
             public void onCancel() {
-                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request has been cancelled.");
+                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request has been fail.");
                 gameRequestCallback.onCancel();
             }
 
@@ -212,7 +219,6 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
         });
         requestDialog.show(content);
     }
-
 
     @Override
     protected void loadAccessToken() {
@@ -248,5 +254,10 @@ public class AndroidGDXFacebook extends GDXFacebook implements AndroidEventListe
 
             deleteTokenData();
         }
+    }
+
+    @Override
+    public boolean isLoaded() {
+        return true;
     }
 }

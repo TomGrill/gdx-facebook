@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
+import de.tomgrill.gdxfacebook.core.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,11 +38,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.tomgrill.gdxfacebook.android.AndroidGDXFacebook;
-import de.tomgrill.gdxfacebook.core.FallbackGDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
-import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.GDXFacebookSystem;
-import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
 import de.tomgrill.gdxfacebook.desktop.DesktopGDXFacebook;
 import de.tomgrill.gdxfacebook.html.HTMLGDXFacebook;
 import de.tomgrill.gdxfacebook.ios.IOSGDXFacebook;
@@ -79,7 +76,7 @@ public class GDXFacebookLoaderUnitTests {
         Gdx.app = mockApplication;
 
         facebook = GDXFacebookSystem.install(new GDXFacebookConfig());
-        assertTrue(facebook instanceof FallbackGDXFacebook);
+        assertTrue(facebook instanceof FallbackGDXFacebookIF);
     }
 
 

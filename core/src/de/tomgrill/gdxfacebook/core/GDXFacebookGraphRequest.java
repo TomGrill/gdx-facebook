@@ -27,10 +27,8 @@ import java.net.URLEncoder;
 /**
  * Build a proper Facebook Graph API request with this class.
  *
- * @author Thomas Pronold (TomGrill) mail@tomgrill.de
- * @see <a
- * href="https://developers.facebook.com/docs/graph-api/using-graph-api/">https://developers.facebook.com/docs/graph-api/using-graph-api/</a>
- * for more information on how Facebook Graph API works.
+ * @author Thomas Pronold (TomGrill) mail@tomgrill.de *
+ * @see <a href="https://developers.facebook.com/docs/graph-api/using-graph-api/">https://developers.facebook.com/docs/graph-api/using-graph-api/</a>
  */
 public class GDXFacebookGraphRequest extends AbstractRequest {
 
@@ -57,7 +55,7 @@ public class GDXFacebookGraphRequest extends AbstractRequest {
     public String getContent() {
         StringBuffer convertedParameters = new StringBuffer();
 
-        for(ObjectMap.Entry<String, String> entry : fields){
+        for (ObjectMap.Entry<String, String> entry : fields) {
             convertedParameters.append(encode(entry.key, defaultEncoding));
             convertedParameters.append(nameValueSeparator);
             convertedParameters.append(encode(entry.value, defaultEncoding));
@@ -68,6 +66,23 @@ public class GDXFacebookGraphRequest extends AbstractRequest {
             convertedParameters.deleteCharAt(convertedParameters.length() - 1);
         return convertedParameters.toString();
 
+    }
+
+
+    public String getJavascriptObjectString() {
+        StringBuffer convertedParameters = new StringBuffer();
+
+        for (ObjectMap.Entry<String, String> entry : fields) {
+            convertedParameters.append(entry.key);
+            convertedParameters.append(":\"");
+            convertedParameters.append(entry.value.replace("\"", "\\\""));
+            convertedParameters.append("\",");
+        }
+        if (convertedParameters.length() > 0)
+            convertedParameters.deleteCharAt(convertedParameters.length() - 1);
+
+
+        return convertedParameters.toString();
     }
 
     @Override
