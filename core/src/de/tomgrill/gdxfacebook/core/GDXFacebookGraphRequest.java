@@ -68,6 +68,23 @@ public class GDXFacebookGraphRequest extends AbstractRequest {
 
     }
 
+
+    public String getJavascriptObjectString() {
+        StringBuffer convertedParameters = new StringBuffer();
+
+        for (ObjectMap.Entry<String, String> entry : fields) {
+            convertedParameters.append(entry.key);
+            convertedParameters.append(":\"");
+            convertedParameters.append(entry.value.replace("\"", "\\\""));
+            convertedParameters.append("\",");
+        }
+        if (convertedParameters.length() > 0)
+            convertedParameters.deleteCharAt(convertedParameters.length() - 1);
+
+
+        return convertedParameters.toString();
+    }
+
     @Override
     public final InputStream getContentStream() throws IOException {
         return null;

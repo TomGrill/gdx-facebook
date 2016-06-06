@@ -74,6 +74,11 @@ public class DesktopGDXFacebook extends GDXFacebookBasic implements JXBrowserCal
         return accessToken != null;
     }
 
+    @Override
+    public boolean isLoaded() {
+        return true;
+    }
+
 
     @Override
     public void handleURL(String url) {
@@ -132,7 +137,7 @@ public class DesktopGDXFacebook extends GDXFacebookBasic implements JXBrowserCal
 
     @Override
     public void handleCancel() {
-        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign in has been cancelled");
+        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign in has been fail");
         callback.onCancel();
     }
 

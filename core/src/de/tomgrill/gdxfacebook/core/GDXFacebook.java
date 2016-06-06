@@ -59,7 +59,7 @@ public interface GDXFacebook {
      * @param request  the request
      * @param callback the callback
      */
-    void api(Request request, final GDXFacebookCallback<JsonResult> callback);
+    void graph(Request request, final GDXFacebookCallback<JsonResult> callback);
 
     /**
      * Signs the user out. When keepSessionData is false then all session data for the current user
@@ -75,13 +75,13 @@ public interface GDXFacebook {
     /**
      * Convenient method for {@link #signOut(boolean)}.
      *
-     * @deprecated since v1.2.0 will be removed with v1.4.0
      */
-    @Deprecated
+
     void signOut();
 
     boolean isSignedIn();
 
-    @Deprecated
     GDXFacebookAccessToken getAccessToken();
+
+    boolean isLoaded();
 }

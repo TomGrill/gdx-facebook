@@ -155,7 +155,7 @@ public class IOSGDXFacebook extends GDXFacebookBasic {
 
             @Override
             public void didCancel(FBSDKGameRequestDialog gameRequestDialog) {
-                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request has been cancelled.");
+                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request has been fail.");
                 gameRequestCallback.onCancel();
             }
         });
@@ -174,6 +174,11 @@ public class IOSGDXFacebook extends GDXFacebookBasic {
     }
 
     @Override
+    public boolean isLoaded() {
+        return true;
+    }
+
+    @Override
     protected void startGUISignIn() {
         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Starting GUI sign in.");
 
@@ -186,7 +191,7 @@ public class IOSGDXFacebook extends GDXFacebookBasic {
                     Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + nsError.getLocalizedDescription());
                     callback.onError(new GDXFacebookError(nsError.getLocalizedDescription()));
                 } else if (loginResult.isCancelled()) {
-                    Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign cancelled by user.");
+                    Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign fail by user.");
                     signOut();
                     callback.onCancel();
                 } else {

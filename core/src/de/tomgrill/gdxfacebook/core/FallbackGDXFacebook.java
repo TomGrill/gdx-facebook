@@ -47,7 +47,7 @@ public class FallbackGDXFacebook implements GDXFacebook {
 	}
 
 	@Override
-	public void api(Request request, GDXFacebookCallback<JsonResult> callback) {
+	public void graph(Request request, GDXFacebookCallback<JsonResult> callback) {
 		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot do graph API request. " + GDXFacebookVars.LOG_TAG + " is not installed.");
 		callback.onError(new GDXFacebookError("Cannot do graph API request." + GDXFacebookVars.LOG_TAG + " is not installed."));
 	}
@@ -62,6 +62,11 @@ public class FallbackGDXFacebook implements GDXFacebook {
 	public GDXFacebookAccessToken getAccessToken() {
 		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot return accessToken. " + GDXFacebookVars.LOG_TAG + " is not installed.");
 		return null;
+	}
+
+	@Override
+	public boolean isLoaded() {
+		return true;
 	}
 
 	@Override

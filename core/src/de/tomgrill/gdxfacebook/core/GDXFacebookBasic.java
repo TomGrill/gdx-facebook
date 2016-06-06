@@ -47,6 +47,7 @@ public abstract class GDXFacebookBasic implements GDXFacebook {
      *
      * @return accessToken
      */
+    @Override
     public GDXFacebookAccessToken getAccessToken() {
         return accessToken;
     }
@@ -140,13 +141,13 @@ public abstract class GDXFacebookBasic implements GDXFacebook {
                 @Override
                 public void onCancel() {
                     signOut();
-                    Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in cancelled");
+                    Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in fail");
                     callback.onCancel();
                     startGUISignIn();
                 }
             });
         } else {
-            Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in cancelled. No existing access token.");
+            Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in fail. No existing access token.");
         }
     }
 
@@ -166,12 +167,12 @@ public abstract class GDXFacebookBasic implements GDXFacebook {
             Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Loaded existing accessToken: " + token);
             accessToken = new GDXFacebookAccessToken(token, expiresAt);
         } else {
-            Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Could not setup existing accessToken");
+            Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Could not load existing accessToken.");
         }
     }
 
     @Override
-    public void api(final Request request, final GDXFacebookCallback<JsonResult> callback) {
+    public void graph(final Request request, final GDXFacebookCallback<JsonResult> callback) {
         String accessToken = null;
         if (getAccessToken() != null) {
             accessToken = getAccessToken().getToken();
@@ -241,7 +242,7 @@ public abstract class GDXFacebookBasic implements GDXFacebook {
 
     @Override
     public void newGraphRequest(Request request, final GDXFacebookCallback<JsonResult> callback) {
-        api(request, callback);
+        graph(request, callback);
     }
 
     private boolean jsonHasCode200AndBody(JsonValue jsonValue) {

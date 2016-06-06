@@ -72,7 +72,7 @@ public class AndroidGDXFacebook extends GDXFacebookBasic implements AndroidEvent
 
             @Override
             public void onCancel() {
-                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign cancelled by user.");
+                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign fail by user.");
                 callback.onCancel();
             }
 
@@ -208,7 +208,7 @@ public class AndroidGDXFacebook extends GDXFacebookBasic implements AndroidEvent
             }
 
             public void onCancel() {
-                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request has been cancelled.");
+                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request has been fail.");
                 gameRequestCallback.onCancel();
             }
 
@@ -254,5 +254,10 @@ public class AndroidGDXFacebook extends GDXFacebookBasic implements AndroidEvent
 
             deleteTokenData();
         }
+    }
+
+    @Override
+    public boolean isLoaded() {
+        return true;
     }
 }
