@@ -22,4 +22,4 @@
 # gdx-facebook proguard settings Android
 
 -keep class com.badlogic.gdx.Gdx { *; }
--keep class de.tomgrill.gdxfacebook.android.AndroidFacebookLoader{ public protected *; }
+-keep class de.tomgrill.gdxfacebook.1android.AndroidFacebookLoader{ public protected *; }
