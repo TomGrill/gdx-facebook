@@ -27,7 +27,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class DesktopGDXFacebook extends GDXFacebook implements JXBrowserCallbackHandler {
+public class DesktopGDXFacebook extends GDXFacebookBasic implements JXBrowserCallbackHandler {
 
 
     public DesktopGDXFacebook(GDXFacebookConfig config) {
@@ -52,6 +52,11 @@ public class DesktopGDXFacebook extends GDXFacebook implements JXBrowserCallback
 
     @Override
     public void showGameRequest(GDXFacebookGameRequest request, GDXFacebookCallback<GameRequestResult> callback) {
+        gameRequest(request, callback);
+    }
+
+    @Override
+    public void gameRequest(GDXFacebookGameRequest request, GDXFacebookCallback<GameRequestResult> callback) {
         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request not supported on Desktop");
     }
 
@@ -67,6 +72,11 @@ public class DesktopGDXFacebook extends GDXFacebook implements JXBrowserCallback
     @Override
     public boolean isSignedIn() {
         return accessToken != null;
+    }
+
+    @Override
+    public boolean isLoaded() {
+        return true;
     }
 
 
@@ -127,7 +137,7 @@ public class DesktopGDXFacebook extends GDXFacebook implements JXBrowserCallback
 
     @Override
     public void handleCancel() {
-        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign in has been cancelled");
+        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign in has been fail");
         callback.onCancel();
     }
 

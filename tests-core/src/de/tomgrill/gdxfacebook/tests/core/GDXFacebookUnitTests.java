@@ -20,11 +20,11 @@ package de.tomgrill.gdxfacebook.tests.core;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 
+import de.tomgrill.gdxfacebook.core.GDXFacebook;
+import de.tomgrill.gdxfacebook.tests.core.stubs.GDXFacebookStub;
 import org.junit.Before;
 
-import de.tomgrill.gdxfacebook.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.tests.core.stubs.GDXFacebookStub;
 
 import static org.mockito.Mockito.mock;
 

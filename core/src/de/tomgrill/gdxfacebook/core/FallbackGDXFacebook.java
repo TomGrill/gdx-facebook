@@ -20,11 +20,7 @@ package de.tomgrill.gdxfacebook.core;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 
-public class FallbackGDXFacebook extends GDXFacebook {
-
-	public FallbackGDXFacebook(GDXFacebookConfig config) {
-		super(config);
-	}
+public class FallbackGDXFacebook implements GDXFacebook {
 
 	@Override
 	public void signIn(SignInMode mode, Array<String> permissions, GDXFacebookCallback<SignInResult> callback) {
@@ -38,31 +34,49 @@ public class FallbackGDXFacebook extends GDXFacebook {
 		callback.onError(new GDXFacebookError("Cannot show GameRequest." + GDXFacebookVars.LOG_TAG + " is not installed."));
 	}
 
+	@Override
+	public void gameRequest(GDXFacebookGameRequest request, GDXFacebookCallback<GameRequestResult> callback) {
+		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot show GameRequest. " + GDXFacebookVars.LOG_TAG + " is not installed.");
+		callback.onError(new GDXFacebookError("Cannot do graph API request." + GDXFacebookVars.LOG_TAG + " is not installed."));
+	}
 
 	@Override
+	public void newGraphRequest(Request request, GDXFacebookCallback<JsonResult> callback) {
+		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot do graph API request. " + GDXFacebookVars.LOG_TAG + " is not installed.");
+		callback.onError(new GDXFacebookError("Cannot show GameRequest." + GDXFacebookVars.LOG_TAG + " is not installed."));
+	}
+
+	@Override
+	public void graph(Request request, GDXFacebookCallback<JsonResult> callback) {
+		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot do graph API request. " + GDXFacebookVars.LOG_TAG + " is not installed.");
+		callback.onError(new GDXFacebookError("Cannot do graph API request." + GDXFacebookVars.LOG_TAG + " is not installed."));
+	}
+
+	@Override
+	public void signOut(boolean keepSessionData) {
+		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot sign out. " + GDXFacebookVars.LOG_TAG + " is not installed.");
+	}
+
+	@Override
+	@Deprecated
 	public GDXFacebookAccessToken getAccessToken() {
 		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot return accessToken. " + GDXFacebookVars.LOG_TAG + " is not installed.");
 		return null;
 	}
 
 	@Override
+	public boolean isLoaded() {
+		return true;
+	}
+
+	@Override
 	public void signOut() {
-		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot sign out. " + GDXFacebookVars.LOG_TAG + " is not installed.");
+		signOut(true);
 	}
 
 	@Override
 	public boolean isSignedIn() {
 		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "User is not signed in. " + GDXFacebookVars.LOG_TAG + " is not installed.");
 		return false;
-	}
-
-	@Override
-	protected void startGUISignIn() {
-		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot start GUI sign in. " + GDXFacebookVars.LOG_TAG + " is not installed.");
-	}
-
-	@Override
-	protected void startSilentSignIn() {
-		Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Cannot start silent sign in. " + GDXFacebookVars.LOG_TAG + " is not installed.");
 	}
 }

@@ -19,14 +19,8 @@ package de.tomgrill.gdxfacebook.tests.core.stubs;
 
 import com.badlogic.gdx.utils.Array;
 
-import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
+import de.tomgrill.gdxfacebook.core.*;
 import de.tomgrill.gdxfacebook.core.GDXFacebook;
-import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
-import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.GDXFacebookGameRequest;
-import de.tomgrill.gdxfacebook.core.GameRequestResult;
-import de.tomgrill.gdxfacebook.core.SignInResult;
-import de.tomgrill.gdxfacebook.core.SignInMode;
 
 public class GDXFacebookStub extends GDXFacebook {
 	public GDXFacebookStub(GDXFacebookConfig config) {
@@ -40,6 +34,11 @@ public class GDXFacebookStub extends GDXFacebook {
 
 	@Override
 	public void showGameRequest(GDXFacebookGameRequest request, GDXFacebookCallback<GameRequestResult> callback) {
+
+	}
+
+	@Override
+	public void gameRequest(GDXFacebookGameRequest request, GDXFacebookCallback<GameRequestResult> callback) {
 
 	}
 

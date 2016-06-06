@@ -15,7 +15,7 @@
  ******************************************************************************/
 
 
-package de.tomgrill.gdxfacebook.tests.core;
+package de.tomgrill.gdxfacebook.core;
 
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;

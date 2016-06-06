@@ -1,3 +1,10 @@
+1.2.0
+    * HTML/GWT support
+    * Android module comes with proguard settings included.
+    * minimum requirements are libGDX 1.9.3
+    * GDXFacebookSystem.install() and GDXFacebookSystem.getFacebook() return now GDXFacebookIF instances.
+    * GDXFacebookSystem.install() is now deprecated.
+
 0.5.0
 	* facebook-android-sdk 4.4.0
 	* fixed bug on Android (Issued #2 and #3)
