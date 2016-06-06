@@ -92,7 +92,6 @@ public class HTMLGDXFacebook implements GDXFacebook {
         JSNIFacebookSDK.FBLoginState(new StatusCallback() {
             @Override
             public void connected(String token, String expiresIn) {
-                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "connected");
                 isConnected = true;
                 long expiresInMillisFromNow = Long.valueOf(expiresIn) * 1000L;
                 long expiresInMillisTimestamp = expiresInMillisFromNow + TimeUtils.millis();
@@ -104,13 +103,11 @@ public class HTMLGDXFacebook implements GDXFacebook {
 
             @Override
             public void notAuthorized() {
-                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "notAuthorized");
                 guiLogin(permissions, callback);
             }
 
             @Override
             public void disconnected() {
-                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "disconnected");
                 guiLogin(permissions, callback);
             }
         });
@@ -149,7 +146,6 @@ public class HTMLGDXFacebook implements GDXFacebook {
                         }
                     }
                 }
-                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "validate not granted");
                 guiLogin(permissions, callback);
             }
 
@@ -206,7 +202,6 @@ public class HTMLGDXFacebook implements GDXFacebook {
 
             @Override
             public void fail() {
-                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "fail");
                 callback.onError(new GDXFacebookError("Error while trying to login. User cancelled or did not authorize."));
             }
 
@@ -224,6 +219,8 @@ public class HTMLGDXFacebook implements GDXFacebook {
             Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Facebook SDK not yet loaded. Try again later.");
             return;
         }
+
+        // TODO implement gameRequest
     }
 
     @Override
