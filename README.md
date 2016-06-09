@@ -13,7 +13,7 @@ Current snapshot: **1.2.1-SNAPSHOT**
 Java 7+, JavaFX (Desktop only), Android API 15
 
 ##Supported Platforms
-Android (uses Facebook SDK 4.12.1), iOS, Desktop, GWT/HTML (experimental)
+Android (uses Facebook SDK 4.12.1), iOS (7+), Desktop, GWT/HTML (experimental)
 
 ##Reporting Issues
 
