@@ -65,4 +65,6 @@ public interface Request {
 
     AbstractRequest putFields(ArrayMap<String, String> fields);
 
+    String getJavascriptObjectString();
+
 }
