@@ -22,14 +22,16 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.TimeUtils;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Build a proper mulitpart Facebook Graph API request with this class.
  *
  * @author Thomas Pronold (TomGrill) mail@tomgrill.de
  * @see <a href="https://developers.facebook.com/docs/graph-api/using-graph-api/">https://developers.facebook.com/docs/graph-api/using-graph-api/</a>
- *
  */
 public class GDXFacebookMultiPartRequest extends AbstractRequest {
 
@@ -47,10 +49,10 @@ public class GDXFacebookMultiPartRequest extends AbstractRequest {
         headers.put("Content-Type", "multipart/form-data; boundary=" + boundary);
     }
 
-    private static byte[] loadFile(File file) throws IOException {
-        InputStream is = new FileInputStream(file);
+    private static byte[] loadFile(FileHandle fileHandle) throws IOException {
+        InputStream is = fileHandle.read();
 
-        long length = file.length();
+        long length = fileHandle.length();
         if (length > Integer.MAX_VALUE) {
             throw new IOException("File size to large");
         }
@@ -64,7 +66,7 @@ public class GDXFacebookMultiPartRequest extends AbstractRequest {
         }
 
         if (offset < bytes.length) {
-            throw new IOException("Could not completely read file " + file.getName());
+            throw new IOException("Could not completely read file " + fileHandle.name());
         }
 
         is.close();
@@ -114,7 +116,7 @@ public class GDXFacebookMultiPartRequest extends AbstractRequest {
                 fileString += "\r\n";
 
                 op.write(fileString.getBytes());
-                op.write(loadFile(fileHandle.file()));
+                op.write(loadFile(fileHandle));
 
                 if (i + 1 == fileHandles.size) {
                     fileString = "\r\n" + "--" + groupBoundary + "--";
@@ -136,7 +138,8 @@ public class GDXFacebookMultiPartRequest extends AbstractRequest {
                 fileString += "\r\n";
 
                 op.write(fileString.getBytes());
-                op.write(loadFile(fileHandle.file()));
+                op.write(fileHandle.readBytes());
+
 
             }
         }
@@ -213,5 +216,9 @@ public class GDXFacebookMultiPartRequest extends AbstractRequest {
     @Override
     public GDXFacebookMultiPartRequest putFields(ArrayMap<String, String> fields) {
         return (GDXFacebookMultiPartRequest) super.putFields(fields);
+    }
+
+    public String getJavascriptObjectString() {
+        return "";
     }
 }

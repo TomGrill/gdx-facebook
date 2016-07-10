@@ -56,7 +56,7 @@ public class HTMLGDXFacebook implements GDXFacebook {
 
     @Override
     public void signIn(final SignInMode mode, final Array<String> permissions, final GDXFacebookCallback<SignInResult> callback) {
-        if(!loaded) {
+        if (!loaded) {
             Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Facebook SDK not yet loaded. Try again later.");
             return;
         }
@@ -75,12 +75,12 @@ public class HTMLGDXFacebook implements GDXFacebook {
 
     private boolean areSamePermissionsOrMore(Array<String> requiredPermissions, Array<String> allPermissions) {
 
-        for(String s : requiredPermissions) {
-            if(!allPermissions.contains(s, false)) {
+        for (String s : requiredPermissions) {
+            if (!allPermissions.contains(s, false)) {
                 return false;
             }
         }
-        return true   ;
+        return true;
     }
 
 
@@ -149,7 +149,7 @@ public class HTMLGDXFacebook implements GDXFacebook {
                 guiLogin(permissions, callback);
             }
 
-                     @Override
+            @Override
             public void onError(GDXFacebookError error) {
                 guiLogin(permissions, callback);
             }
@@ -182,11 +182,11 @@ public class HTMLGDXFacebook implements GDXFacebook {
 
                 grantedPermissions.clear();
 
-                for(String s : parts) {
+                for (String s : parts) {
                     grantedPermissions.add(s);
                 }
 
-                if(areSamePermissionsOrMore(permissions, grantedPermissions)) {
+                if (areSamePermissionsOrMore(permissions, grantedPermissions)) {
                     isConnected = true;
                     long expiresInMillisFromNow = Long.valueOf(expiresIn) * 1000L;
                     long expiresInMillisTimestamp = expiresInMillisFromNow + TimeUtils.millis();
@@ -215,7 +215,7 @@ public class HTMLGDXFacebook implements GDXFacebook {
 
     @Override
     public void gameRequest(GDXFacebookGameRequest request, GDXFacebookCallback<GameRequestResult> callback) {
-        if(!loaded) {
+        if (!loaded) {
             Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Facebook SDK not yet loaded. Try again later.");
             return;
         }
@@ -230,22 +230,101 @@ public class HTMLGDXFacebook implements GDXFacebook {
 
     @Override
     public void graph(final Request request, final GDXFacebookCallback<JsonResult> callback) {
-        if(!loaded) {
+        if (!loaded) {
             Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Facebook SDK not yet loaded. Try again later.");
             return;
         }
 
-        JSNIFacebookSDK.FBapi(request.getNode(), request.getMethod(), ((GDXFacebookGraphRequest)request).getJavascriptObjectString(), new JsonCallback() {
-            @Override
-            public void jsonResult(String jsonString) {
-                callback.onSuccess(new JsonResult(jsonString));
-            }
+        if (request instanceof GDXFacebookGraphRequest) {
 
-            @Override
-            public void error() {
-                callback.onError(new GDXFacebookError("graph API error. View Javascript log for further details."));
-            }
-        });
+            JSNIFacebookSDK.FBapi(request.getNode(), request.getMethod(), request.getJavascriptObjectString(), new JsonCallback() {
+                @Override
+                public void jsonResult(String jsonString) {
+                    callback.onSuccess(new JsonResult(jsonString));
+                }
+
+                @Override
+                public void error() {
+                    callback.onError(new GDXFacebookError("graph API error. View Javascript log for further details."));
+                }
+            });
+        }
+
+        if (request instanceof GDXFacebookMultiPartRequest) {
+
+            /*
+            libGDX currently does not allow reading image (and audio) files. That is why a multi-part requests cannot be done currently.
+             */
+
+            Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Multipart requests are not supported with GWT backend. See: https://github.com/TomGrill/gdx-facebook/issues/32");
+
+//            String accessToken = null;
+//            if (getAccessToken() != null) {
+//                accessToken = getAccessToken().getToken();
+//            }
+//
+//            if (request.isUseCurrentAccessToken() && accessToken != null) {
+//                request.putField("access_token", accessToken);
+//            }
+//
+//            Net.HttpRequest httpRequest = new Net.HttpRequest(request.getMethod());
+//
+//            String url = request.getUrl() + config.GRAPH_API_VERSION + "/" + request.getNode();
+//
+//            httpRequest.setUrl(url);
+//
+//            httpRequest.setTimeOut(request.getTimeout());
+//
+//            if (request.getHeaders() != null) {
+//                for (int i = 0; i < request.getHeaders().size; i++) {
+//                    httpRequest.setHeader(request.getHeaders().getKeyAt(i), request.getHeaders().getValueAt(i));
+//                }
+//            }
+//
+//            if (request.getContent() != null) {
+//                httpRequest.setContent(request.getContent());
+//            } else {
+//                try {
+//                    InputStream stream = request.getContentStream();
+////                System.out.println(getStringFromInputStream(stream));
+//                    Gdx.app.debug("TR", StreamUtils.copyStreamToString(stream));
+//                    httpRequest.setContent(stream, stream.available());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//
+//            Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
+//
+//                @Override
+//                public void handleHttpResponse(Net.HttpResponse httpResponse) {
+//                    String resultString = httpResponse.getResultAsString();
+//                    int statusCode = httpResponse.getStatus().getStatusCode();
+//
+//                    if (statusCode == -1) {
+//                        GDXFacebookError error = new GDXFacebookError("Connection time out. Consider increasing timeout value by using setTimeout()");
+//                        callback.onError(error);
+//                    } else if (statusCode >= 200 && statusCode < 300) {
+//                        callback.onSuccess(new JsonResult(resultString));
+//                    } else {
+//                        GDXFacebookError error = new GDXFacebookError("Error: " + resultString);
+//                        callback.onError(error);
+//                    }
+//                }
+//
+//                @Override
+//                public void failed(Throwable t) {
+//                    t.printStackTrace();
+//                    callback.onFail(t);
+//                }
+//
+//                @Override
+//                public void cancelled() {
+//                    callback.onCancel();
+//                }
+//            });
+        }
     }
 
     @Override
