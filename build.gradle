@@ -9,11 +9,13 @@ buildscript {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
+        maven { url uri(System.getenv("INTEL_MULTI_OS_ENGINE_HOME") + "/gradle") }
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.android.tools.build:gradle:1.5.0'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.2.0-SNAPSHOT'
+        classpath 'com.intel.gradle:moeGradlePlugin:1.1.0.final-1'
     }
 }
 
@@ -178,7 +180,35 @@ project(":ios") {
 }
 
 
+project(":ios-moe") {
+    apply plugin: 'java'
+    apply plugin: 'moe'
 
+
+    apply from: '../publish.gradle'
+
+    configurations {
+        custom
+        compile.extendsFrom custom
+        natives
+    }
+
+    eclipse {
+        project {
+            name = appName + "-ios-moe"
+        }
+    }
+
+    dependencies {
+
+        compile project(':core')
+
+        compile "com.badlogicgames.gdx:gdx-backend-moe:$gdxVersion"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+
+        compile "org.robovm:robopods-facebook-ios:$facebookRoboPodsVersion"
+    }
+}
 
 
 

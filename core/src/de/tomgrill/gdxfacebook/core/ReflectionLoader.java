@@ -37,7 +37,12 @@ public class ReflectionLoader {
             }
 
             if (Gdx.app.getType() == Application.ApplicationType.iOS) {
-                loaderCls = ClassReflection.forName("de.tomgrill.gdxfacebook.ios.IOSFacebookLoader");
+                // tell robovm and moe apart
+                try {
+                    loaderCls = ClassReflection.forName("de.tomgrill.gdxfacebook.ios.IOSFacebookLoader");
+                } catch (ReflectionException e) {
+                    loaderCls = ClassReflection.forName("de.tomgrill.gdxfacebook.ios.IOSMOEFacebookLoader");
+                }
             }
 
             if (loaderCls != null) {
@@ -52,6 +57,12 @@ public class ReflectionLoader {
             Gdx.app.error(GDXFacebookVars.LOG_TAG, "Error installing " + GDXFacebookVars.LOG_TAG + " for " + Gdx.app.getType() + "\n");
             Gdx.app.error(GDXFacebookVars.LOG_TAG, "Did you add >> compile \"de.tomgrill.gdxfacebook:gdx-facebook-" + artifactByAppType(Gdx.app.getType()) + ":" + GDXFacebookVars.VERSION
                     + "\" << to your gradle dependencies? View https://github.com/TomGrill/gdx-facebook/wiki for more information.\n");
+
+            if (Gdx.app.getType() == Application.ApplicationType.iOS) {
+                Gdx.app.error(GDXFacebookVars.LOG_TAG, "or in cas you use multi-os-engine >> compile \"de.tomgrill.gdxfacebook:gdx-facebook-ios-moe:" + GDXFacebookVars.VERSION
+                        + "\" <<\n");
+
+            }
         }
 
         return new FallbackGDXFacebook();
