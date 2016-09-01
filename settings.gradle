@@ -3,4 +3,5 @@ include ':core'
 include ':desktop'
 include ':html'
 include ':ios'
+include ':ios-moe'
 
