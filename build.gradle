@@ -207,7 +207,7 @@ project(":ios-moe") {
         compile "com.badlogicgames.gdx:gdx-backend-moe:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
 
-//
+
 //        compile "com.mobidevelop.robovm:robovm-rt:${roboVMVersion}"
 //        compile "com.mobidevelop.robovm:robovm-cocoatouch:${roboVMVersion}"
 
