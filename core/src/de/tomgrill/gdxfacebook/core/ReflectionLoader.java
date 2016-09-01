@@ -41,7 +41,7 @@ public class ReflectionLoader {
                 try {
                     loaderCls = ClassReflection.forName("de.tomgrill.gdxfacebook.ios.IOSFacebookLoader");
                 } catch (ReflectionException e) {
-                    loaderCls = ClassReflection.forName("de.tomgrill.gdxfacebook.ios.IOSMOEFacebookLoader");
+                    loaderCls = ClassReflection.forName("de.tomgrill.gdxfacebook.iosmoe.IOSMOEFacebookLoader");
                 }
             }
 
