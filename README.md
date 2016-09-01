@@ -12,9 +12,9 @@ I will also stream sometimes when developing at https://www.twitch.tv/tomgrill a
 https://github.com/TomGrill/gdx-facebook/wiki
 
 ## Version
-Current stable: **1.2.2**
+Current stable: **1.2.4**
 
-Current snapshot: **1.2.3-SNAPSHOT**
+Current snapshot: **1.2.5-SNAPSHOT**
 
 ## Requirements
 Java 7+, JavaFX (Desktop only), Android API 15
