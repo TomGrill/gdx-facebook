@@ -160,7 +160,7 @@ public class AndroidGDXFacebook extends GDXFacebookBasic implements AndroidEvent
             for (int i = 0; i < recipients.size; i++) {
                 recipientsList.add(recipients.get(i));
             }
-            builder.setSuggestions(recipientsList);
+            builder.setRecipients(recipientsList);
         }
 
 
