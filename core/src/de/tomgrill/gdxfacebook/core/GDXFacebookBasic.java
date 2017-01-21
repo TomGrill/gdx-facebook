@@ -103,7 +103,7 @@ public abstract class GDXFacebookBasic implements GDXFacebook {
 
                         } else {
                             signOut();
-                            Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in error: " + value.toString());
+                            Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in parse error: " + value.toString());
                             callback.onError(new GDXFacebookError(value.toString()));
                             startGUISignIn();
                         }
@@ -125,7 +125,7 @@ public abstract class GDXFacebookBasic implements GDXFacebook {
                 @Override
                 public void onError(GDXFacebookError error) {
                     signOut();
-                    Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in error: " + error.getErrorMessage());
+                    Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Silent sign in request error: " + error.getErrorMessage());
                     callback.onError(error);
                     startGUISignIn();
                 }

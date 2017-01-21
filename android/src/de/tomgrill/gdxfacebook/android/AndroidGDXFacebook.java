@@ -66,7 +66,7 @@ public class AndroidGDXFacebook extends GDXFacebookBasic implements AndroidEvent
             public void onSuccess(LoginResult loginResult) {
                 accessToken = new GDXFacebookAccessToken(AccessToken.getCurrentAccessToken().getToken(), AccessToken.getCurrentAccessToken().getExpires().getTime());
                 storeNewToken(accessToken);
-                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign successful. User token: " + accessToken.getToken());
+                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign in successful. User token: " + accessToken.getToken());
                 callback.onSuccess(new SignInResult(accessToken, "Sign in successful."));
             }
 
