@@ -25,7 +25,7 @@ allprojects {
 
     ext {
         appName = 'gdx-facebook'
-        gdxVersion = '1.9.4'
+        gdxVersion = '1.9.5'
         roboVMVersion = '2.3.0'
         powerMockVersion = '1.6.4'
         jUnitVersion = '4.12'
