@@ -17,31 +17,51 @@
 
 package de.tomgrill.gdxfacebook.iosmoe;
 
+import apple.foundation.NSArray;
+import apple.foundation.NSDictionary;
+import apple.foundation.NSError;
+import apple.foundation.NSMutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import de.tomgrill.gdxfacebook.core.*;
-import org.robovm.apple.foundation.NSDictionary;
-import org.robovm.apple.foundation.NSError;
-import org.robovm.apple.foundation.NSObject;
-import org.robovm.objc.block.VoidBlock2;
-import org.robovm.pods.facebook.core.FBSDKAccessToken;
-import org.robovm.pods.facebook.login.FBSDKLoginManager;
-import org.robovm.pods.facebook.login.FBSDKLoginManagerLoginResult;
-import org.robovm.pods.facebook.share.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import apple.uikit.UIViewController;
+import de.kromzem.bindings.fb.sdk.core.fbsdkcorekit.FBSDKAccessToken;
+import de.kromzem.bindings.fb.sdk.login.fbsdkloginkit.FBSDKLoginManager;
+import de.kromzem.bindings.fb.sdk.login.fbsdkloginkit.FBSDKLoginManagerLoginResult;
+import de.kromzem.bindings.fb.sdk.share.fbsdksharekit.FBSDKGameRequestContent;
+import de.kromzem.bindings.fb.sdk.share.fbsdksharekit.FBSDKGameRequestDialog;
+import de.kromzem.bindings.fb.sdk.share.fbsdksharekit.enums.FBSDKGameRequestActionType;
+import de.kromzem.bindings.fb.sdk.share.fbsdksharekit.enums.FBSDKGameRequestFilter;
+import de.kromzem.bindings.fb.sdk.share.fbsdksharekit.protocol.FBSDKGameRequestDialogDelegate;
+import de.tomgrill.gdxfacebook.core.*;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 public class IOSMOEGDXFacebook extends GDXFacebookBasic {
 
     private FBSDKLoginManager loginManager;
     private SignInMode signInMode;
+    private UIViewController uiViewController;
 
     public IOSMOEGDXFacebook(GDXFacebookConfig config) {
         super(config);
 
-        loginManager = new FBSDKLoginManager();
+
+        loginManager = FBSDKLoginManager.alloc();
+
+        try {
+            Class cls = Class.forName("de.unikatmedia.ed.IOSMoeLauncher");
+            Field app = cls.getField("application");
+            Method getController = app.getClass().getMethod("getUIViewController");
+            uiViewController = (UIViewController) getController.invoke(getController);
+            //IOSMoeLauncher.application.getUIViewController()
+        } catch (ClassNotFoundException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -52,8 +72,8 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
 
         loadAccessToken();
 
-        if (accessToken == null && FBSDKAccessToken.getCurrentAccessToken() != null) {
-            accessToken = new GDXFacebookAccessToken(FBSDKAccessToken.getCurrentAccessToken().getTokenString(), FBSDKAccessToken.getCurrentAccessToken().getExpirationDate().toDate().getTime());
+        if (accessToken == null && FBSDKAccessToken.currentAccessToken() != null) {
+            accessToken = new GDXFacebookAccessToken(FBSDKAccessToken.currentAccessToken().tokenString(), (long) FBSDKAccessToken.currentAccessToken().expirationDate().timeIntervalSince1970());
         }
 
 
@@ -73,7 +93,7 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
     public void gameRequest(final GDXFacebookGameRequest request, final GDXFacebookCallback<GameRequestResult> gameRequestCallback) {
         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Starting Game Request dialog.");
 
-        FBSDKGameRequestContent gameRequestContent = new FBSDKGameRequestContent();
+        FBSDKGameRequestContent gameRequestContent = FBSDKGameRequestContent.alloc();
 
 
         if (request.getMessage() != null) gameRequestContent.setMessage(request.getMessage());
@@ -83,18 +103,20 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
 
         Array<String> suggestions = request.getSuggestions();
         if (suggestions != null && suggestions.size > 0) {
-            ArrayList<String> suggestionList = new ArrayList<String>();
+            NSMutableArray suggestionList = NSMutableArray.array();
+            //ArrayList<String> suggestionList = new ArrayList<String>();
             for (int i = 0; i < suggestions.size; i++) {
-                suggestionList.add(suggestions.get(i));
+                suggestionList.addObject(suggestions.get(i));
             }
             gameRequestContent.setRecipientSuggestions(suggestionList);
         }
 
         Array<String> recipients = request.getRecipients();
         if (recipients != null && recipients.size > 0) {
-            ArrayList<String> recipientsList = new ArrayList<String>();
+            NSMutableArray recipientsList = NSMutableArray.array ();
+            //ArrayList<String> recipientsList = new ArrayList<String>();
             for (int i = 0; i < recipients.size; i++) {
-                recipientsList.add(recipients.get(i));
+                recipientsList.addObject(recipients.get(i));
             }
             gameRequestContent.setRecipients(recipientsList);
         }
@@ -125,14 +147,14 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
             }
         }
 
-        FBSDKGameRequestDialog.show(gameRequestContent, new FBSDKGameRequestDialogDelegateAdapter() {
+        FBSDKGameRequestDialog.showWithContentDelegate(gameRequestContent, new FBSDKGameRequestDialogDelegate() {
             @Override
-            public void didComplete(FBSDKGameRequestDialog gameRequestDialog, NSDictionary<?, ?> results) {
+            public void gameRequestDialogDidCompleteWithResults(FBSDKGameRequestDialog gameRequestDialog, NSDictionary<?, ?> results) {
                 Array<String> recipients = new Array<String>();
 
                 String requestId = "";
 
-                for (Map.Entry<? extends NSObject, ? extends NSObject> entry : results.entrySet()) {
+                for (Map.Entry<?, ?> entry : results.entrySet()) {
                     String key = entry.getKey().toString();
                     String value = entry.getValue().toString();
 
@@ -148,13 +170,13 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
             }
 
             @Override
-            public void didFail(FBSDKGameRequestDialog gameRequestDialog, NSError error) {
-                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request finished with error: " + error.getLocalizedDescription());
-                gameRequestCallback.onError(new GDXFacebookError(error.getLocalizedDescription()));
+            public void gameRequestDialogDidFailWithError(FBSDKGameRequestDialog gameRequestDialog, NSError error) {
+                Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request finished with error: " + error.localizedDescription());
+                gameRequestCallback.onError(new GDXFacebookError(error.localizedDescription()));
             }
 
             @Override
-            public void didCancel(FBSDKGameRequestDialog gameRequestDialog) {
+            public void gameRequestDialogDidCancel(FBSDKGameRequestDialog gameRequestDialog) {
                 Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Game Request has been fail.");
                 gameRequestCallback.onCancel();
             }
@@ -182,42 +204,58 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
     protected void startGUISignIn() {
         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Starting GUI sign in.");
 
-        VoidBlock2<FBSDKLoginManagerLoginResult, NSError> result = new VoidBlock2<FBSDKLoginManagerLoginResult, NSError>() {
-
-            @Override
-            public void invoke(FBSDKLoginManagerLoginResult loginResult, NSError nsError) {
-                if (nsError != null) {
-                    signOut();
-                    Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + nsError.getLocalizedDescription());
-                    callback.onError(new GDXFacebookError(nsError.getLocalizedDescription()));
-                } else if (loginResult.isCancelled()) {
-                    Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign fail by user.");
-                    signOut();
-                    callback.onCancel();
-                } else {
-                    accessToken = new GDXFacebookAccessToken(FBSDKAccessToken.getCurrentAccessToken().getTokenString(), FBSDKAccessToken.getCurrentAccessToken().getExpirationDate().toDate().getTime());
-                    storeNewToken(accessToken);
-                    Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign successful. User token: " + accessToken.getToken());
-                    callback.onSuccess(new SignInResult(accessToken, "Sign in successful."));
-                }
-
-            }
-
-        };
-
-        List<String> listPermissions = new ArrayList<String>();
+        NSMutableArray listPermissions = NSMutableArray.array ();
+        //List<String> listPermissions = new ArrayList<String>();
 
         for (int i = 0; i < permissions.size; i++) {
-            listPermissions.add(permissions.get(i));
+            listPermissions.addObject(permissions.get(i));
         }
 
         if (this.signInMode == SignInMode.PUBLISH) {
-            loginManager.logInWithPublishPermissions(listPermissions, result);
+            FBSDKLoginManager.Block_logInWithPublishPermissionsFromViewControllerHandler result = new FBSDKLoginManager.Block_logInWithPublishPermissionsFromViewControllerHandler() {
+                @Override
+                public void call_logInWithPublishPermissionsFromViewControllerHandler(FBSDKLoginManagerLoginResult loginResult, NSError nsError) {
+                    if (nsError != null) {
+                        IOSMOEGDXFacebook.this.signOut();
+                        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + nsError.localizedDescription());
+                        callback.onError(new GDXFacebookError(nsError.localizedDescription()));
+                    } else if (loginResult.isCancelled()) {
+                        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign fail by user.");
+                        IOSMOEGDXFacebook.this.signOut();
+                        callback.onCancel();
+                    } else {
+                        accessToken = new GDXFacebookAccessToken(FBSDKAccessToken.currentAccessToken().tokenString(), (long) FBSDKAccessToken.currentAccessToken().expirationDate().timeIntervalSince1970());
+                        IOSMOEGDXFacebook.this.storeNewToken(accessToken);
+                        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign successful. User token: " + accessToken.getToken());
+                        callback.onSuccess(new SignInResult(accessToken, "Sign in successful."));
+                    }
+                }
+            };
+
+            loginManager.logInWithPublishPermissionsFromViewControllerHandler(listPermissions, uiViewController, result);
         } else {
-            loginManager.logInWithReadPermissions(listPermissions, result);
+            FBSDKLoginManager.Block_logInWithReadPermissionsFromViewControllerHandler result = new FBSDKLoginManager.Block_logInWithReadPermissionsFromViewControllerHandler() {
+                @Override
+                public void call_logInWithReadPermissionsFromViewControllerHandler(FBSDKLoginManagerLoginResult loginResult, NSError nsError) {
+                    if (nsError != null) {
+                        IOSMOEGDXFacebook.this.signOut();
+                        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + nsError.localizedDescription());
+                        callback.onError(new GDXFacebookError(nsError.localizedDescription()));
+                    } else if (loginResult.isCancelled()) {
+                        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign fail by user.");
+                        IOSMOEGDXFacebook.this.signOut();
+                        callback.onCancel();
+                    } else {
+                        accessToken = new GDXFacebookAccessToken(FBSDKAccessToken.currentAccessToken().tokenString(), (long) FBSDKAccessToken.currentAccessToken().expirationDate().timeIntervalSince1970());
+                        IOSMOEGDXFacebook.this.storeNewToken(accessToken);
+                        Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign successful. User token: " + accessToken.getToken());
+                        callback.onSuccess(new SignInResult(accessToken, "Sign in successful."));
+                    }
+                }
+            };
+
+            loginManager.logInWithReadPermissionsFromViewControllerHandler(listPermissions, uiViewController, result);
         }
-
-
     }
 
 }
