@@ -17,22 +17,22 @@
 
 package de.tomgrill.gdxfacebook.iosmoe;
 
-import apple.foundation.NSArray;
 import apple.foundation.NSDictionary;
 import apple.foundation.NSError;
 import apple.foundation.NSMutableArray;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.utils.Array;
 
 import apple.uikit.UIViewController;
-import de.kromzem.bindings.fb.sdk.core.fbsdkcorekit.FBSDKAccessToken;
-import de.kromzem.bindings.fb.sdk.login.fbsdkloginkit.FBSDKLoginManager;
-import de.kromzem.bindings.fb.sdk.login.fbsdkloginkit.FBSDKLoginManagerLoginResult;
-import de.kromzem.bindings.fb.sdk.share.fbsdksharekit.FBSDKGameRequestContent;
-import de.kromzem.bindings.fb.sdk.share.fbsdksharekit.FBSDKGameRequestDialog;
-import de.kromzem.bindings.fb.sdk.share.fbsdksharekit.enums.FBSDKGameRequestActionType;
-import de.kromzem.bindings.fb.sdk.share.fbsdksharekit.enums.FBSDKGameRequestFilter;
-import de.kromzem.bindings.fb.sdk.share.fbsdksharekit.protocol.FBSDKGameRequestDialogDelegate;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.core.fbsdkcorekit.FBSDKAccessToken;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.login.fbsdkloginkit.FBSDKLoginManager;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.login.fbsdkloginkit.FBSDKLoginManagerLoginResult;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.FBSDKGameRequestContent;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.FBSDKGameRequestDialog;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.enums.FBSDKGameRequestActionType;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.enums.FBSDKGameRequestFilter;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.protocol.FBSDKGameRequestDialogDelegate;
 import de.tomgrill.gdxfacebook.core.*;
 
 import java.lang.reflect.Field;
@@ -49,19 +49,9 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
     public IOSMOEGDXFacebook(GDXFacebookConfig config) {
         super(config);
 
-
         loginManager = FBSDKLoginManager.alloc();
 
-        try {
-            Class cls = Class.forName("de.unikatmedia.ed.IOSMoeLauncher");
-            Field app = cls.getField("application");
-            Method getController = app.getClass().getMethod("getUIViewController");
-            uiViewController = (UIViewController) getController.invoke(getController);
-            //IOSMoeLauncher.application.getUIViewController()
-        } catch (ClassNotFoundException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
+        uiViewController = ((IOSApplication)Gdx.app).getUIViewController();
     }
 
     @Override
@@ -104,7 +94,7 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
         Array<String> suggestions = request.getSuggestions();
         if (suggestions != null && suggestions.size > 0) {
             NSMutableArray suggestionList = NSMutableArray.array();
-            //ArrayList<String> suggestionList = new ArrayList<String>();
+
             for (int i = 0; i < suggestions.size; i++) {
                 suggestionList.addObject(suggestions.get(i));
             }
@@ -114,7 +104,7 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
         Array<String> recipients = request.getRecipients();
         if (recipients != null && recipients.size > 0) {
             NSMutableArray recipientsList = NSMutableArray.array ();
-            //ArrayList<String> recipientsList = new ArrayList<String>();
+
             for (int i = 0; i < recipients.size; i++) {
                 recipientsList.addObject(recipients.get(i));
             }
@@ -205,7 +195,6 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Starting GUI sign in.");
 
         NSMutableArray listPermissions = NSMutableArray.array ();
-        //List<String> listPermissions = new ArrayList<String>();
 
         for (int i = 0; i < permissions.size; i++) {
             listPermissions.addObject(permissions.get(i));
