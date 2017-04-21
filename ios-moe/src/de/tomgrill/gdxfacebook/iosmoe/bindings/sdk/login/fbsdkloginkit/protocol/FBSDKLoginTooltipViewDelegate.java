@@ -1,7 +1,6 @@
 package de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.login.fbsdkloginkit.protocol;
 
 
-import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.login.fbsdkloginkit.FBSDKLoginTooltipView;
 import org.moe.natj.general.ann.Generated;
 import org.moe.natj.general.ann.Library;
 import org.moe.natj.general.ann.Runtime;
@@ -9,6 +8,8 @@ import org.moe.natj.objc.ObjCRuntime;
 import org.moe.natj.objc.ann.IsOptional;
 import org.moe.natj.objc.ann.ObjCProtocolName;
 import org.moe.natj.objc.ann.Selector;
+
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.login.fbsdkloginkit.FBSDKLoginTooltipView;
 
 @Generated
 @Library("FBSDKLoginKit")

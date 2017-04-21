@@ -17,14 +17,27 @@
 
 package de.tomgrill.gdxfacebook.iosmoe;
 
-import apple.foundation.NSDictionary;
-import apple.foundation.NSError;
-import apple.foundation.NSMutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Map;
+
+import apple.foundation.NSDictionary;
+import apple.foundation.NSError;
+import apple.foundation.NSMutableArray;
 import apple.uikit.UIViewController;
+import de.tomgrill.gdxfacebook.core.GDXFacebookAccessToken;
+import de.tomgrill.gdxfacebook.core.GDXFacebookBasic;
+import de.tomgrill.gdxfacebook.core.GDXFacebookCallback;
+import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
+import de.tomgrill.gdxfacebook.core.GDXFacebookError;
+import de.tomgrill.gdxfacebook.core.GDXFacebookGameRequest;
+import de.tomgrill.gdxfacebook.core.GDXFacebookVars;
+import de.tomgrill.gdxfacebook.core.GameRequestResult;
+import de.tomgrill.gdxfacebook.core.SignInMode;
+import de.tomgrill.gdxfacebook.core.SignInResult;
+import de.tomgrill.gdxfacebook.core.SignOutMode;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.core.fbsdkcorekit.FBSDKAccessToken;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.login.fbsdkloginkit.FBSDKLoginManager;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.login.fbsdkloginkit.FBSDKLoginManagerLoginResult;
@@ -33,9 +46,6 @@ import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.FBSDKGame
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.enums.FBSDKGameRequestActionType;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.enums.FBSDKGameRequestFilter;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.protocol.FBSDKGameRequestDialogDelegate;
-import de.tomgrill.gdxfacebook.core.*;
-
-import java.util.Map;
 
 public class IOSMOEGDXFacebook extends GDXFacebookBasic {
 
@@ -243,5 +253,4 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
             loginManager.logInWithReadPermissionsFromViewControllerHandler(listPermissions, uiViewController, result);
         }
     }
-
 }
