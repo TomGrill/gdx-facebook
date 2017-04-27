@@ -245,7 +245,7 @@ public abstract class GDXFacebookBasic implements GDXFacebook {
         graph(request, callback);
     }
 
-    private boolean jsonHasCode200AndBody(JsonValue jsonValue) {
+    protected boolean jsonHasCode200AndBody(JsonValue jsonValue) {
         return jsonValue.has("code") && jsonValue.getInt("code") == 200 && jsonValue.has("body");
     }
 

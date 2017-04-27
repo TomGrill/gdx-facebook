@@ -118,4 +118,13 @@ public abstract class AbstractRequest implements Request {
         fields.putAll(fields);
         return this;
     }
+
+    /**
+     * Returns all fields added to the fields
+     *
+     * @return fields
+     */
+    public ArrayMap<String, String> getFields() {
+        return fields;
+    }
 }

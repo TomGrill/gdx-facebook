@@ -20,12 +20,16 @@ package de.tomgrill.gdxfacebook.iosmoe;
 import apple.foundation.NSDictionary;
 import apple.foundation.NSError;
 import apple.foundation.NSMutableArray;
+import apple.foundation.NSMutableDictionary;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.utils.Array;
-
-import apple.uikit.UIViewController;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.JsonWriter;
+import de.tomgrill.gdxfacebook.core.*;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.core.fbsdkcorekit.FBSDKAccessToken;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.core.fbsdkcorekit.FBSDKGraphRequest;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.core.fbsdkcorekit.FBSDKGraphRequestConnection;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.login.fbsdkloginkit.FBSDKLoginManager;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.login.fbsdkloginkit.FBSDKLoginManagerLoginResult;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.FBSDKGameRequestContent;
@@ -33,25 +37,22 @@ import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.FBSDKGame
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.enums.FBSDKGameRequestActionType;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.enums.FBSDKGameRequestFilter;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.protocol.FBSDKGameRequestDialogDelegate;
-import de.tomgrill.gdxfacebook.core.*;
+import org.moe.natj.general.ann.Mapped;
+import org.moe.natj.objc.map.ObjCObjectMapper;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Map;
 
 public class IOSMOEGDXFacebook extends GDXFacebookBasic {
 
     private FBSDKLoginManager loginManager;
     private SignInMode signInMode;
-    private UIViewController uiViewController;
 
     public IOSMOEGDXFacebook(GDXFacebookConfig config) {
         super(config);
 
-        loginManager = FBSDKLoginManager.alloc();
-
-        uiViewController = ((IOSApplication)Gdx.app).getUIViewController();
+        loginManager = FBSDKLoginManager.alloc().init();
     }
 
     @Override
@@ -103,7 +104,7 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
 
         Array<String> recipients = request.getRecipients();
         if (recipients != null && recipients.size > 0) {
-            NSMutableArray recipientsList = NSMutableArray.array ();
+            NSMutableArray recipientsList = NSMutableArray.array();
 
             for (int i = 0; i < recipients.size; i++) {
                 recipientsList.addObject(recipients.get(i));
@@ -194,16 +195,17 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
     protected void startGUISignIn() {
         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Starting GUI sign in.");
 
-        NSMutableArray listPermissions = NSMutableArray.array ();
+        NSMutableArray listPermissions = NSMutableArray.array();
 
         for (int i = 0; i < permissions.size; i++) {
             listPermissions.addObject(permissions.get(i));
         }
 
         if (this.signInMode == SignInMode.PUBLISH) {
-            FBSDKLoginManager.Block_logInWithPublishPermissionsFromViewControllerHandler result = new FBSDKLoginManager.Block_logInWithPublishPermissionsFromViewControllerHandler() {
+            loginManager.logInWithPublishPermissionsFromViewControllerHandler(listPermissions, ((IOSApplication) Gdx.app).getUIViewController(), new FBSDKLoginManager.Block_logInWithPublishPermissionsFromViewControllerHandler() {
                 @Override
                 public void call_logInWithPublishPermissionsFromViewControllerHandler(FBSDKLoginManagerLoginResult loginResult, NSError nsError) {
+                    Gdx.app.error("Response", "READ");
                     if (nsError != null) {
                         IOSMOEGDXFacebook.this.signOut();
                         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + nsError.localizedDescription());
@@ -214,18 +216,16 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
                         callback.onCancel();
                     } else {
                         accessToken = new GDXFacebookAccessToken(FBSDKAccessToken.currentAccessToken().tokenString(), (long) FBSDKAccessToken.currentAccessToken().expirationDate().timeIntervalSince1970());
-                        IOSMOEGDXFacebook.this.storeNewToken(accessToken);
                         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Sign successful. User token: " + accessToken.getToken());
                         callback.onSuccess(new SignInResult(accessToken, "Sign in successful."));
                     }
                 }
-            };
-
-            loginManager.logInWithPublishPermissionsFromViewControllerHandler(listPermissions, uiViewController, result);
+            });
         } else {
-            FBSDKLoginManager.Block_logInWithReadPermissionsFromViewControllerHandler result = new FBSDKLoginManager.Block_logInWithReadPermissionsFromViewControllerHandler() {
+            loginManager.logInWithReadPermissionsFromViewControllerHandler(listPermissions, ((IOSApplication) Gdx.app).getUIViewController(), new FBSDKLoginManager.Block_logInWithReadPermissionsFromViewControllerHandler() {
                 @Override
                 public void call_logInWithReadPermissionsFromViewControllerHandler(FBSDKLoginManagerLoginResult loginResult, NSError nsError) {
+                    Gdx.app.error("Response", "READ");
                     if (nsError != null) {
                         IOSMOEGDXFacebook.this.signOut();
                         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + nsError.localizedDescription());
@@ -241,10 +241,70 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
                         callback.onSuccess(new SignInResult(accessToken, "Sign in successful."));
                     }
                 }
-            };
-
-            loginManager.logInWithReadPermissionsFromViewControllerHandler(listPermissions, uiViewController, result);
+            });
         }
     }
 
+    @Override
+    protected void startSilentSignIn() {
+        if (accessToken != null) {
+            for(int i = 0, size = permissions.size; i < size; i++) {
+                if(!FBSDKAccessToken.currentAccessToken().hasGranted(permissions.get(i))) {
+                    signOut();
+                    Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Used access_token is valid but new permissions need to be granted. Need GUI sign in.");
+                    callback.onError(new GDXFacebookError("Used access_token is valid but new permissions need to be granted. Need GUI sign in."));
+                    startGUISignIn();
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void graph(Request request, GDXFacebookCallback<JsonResult> callback) {
+        if (!(request instanceof AbstractRequest)) {
+            callback.onError(new GDXFacebookError("Request is not an AbstractRequest!"));
+            return;
+        }
+
+        NSMutableDictionary converted = NSMutableDictionary.dictionary();
+        ArrayMap<String, String> fields = ((AbstractRequest) request).getFields();
+        for (int i = 0, size = fields.size; i < size; i++) {
+            converted.put(fields.getKeyAt(i), fields.getValueAt(i));
+        }
+
+        FBSDKGraphRequest graphRequest = FBSDKGraphRequest.alloc().initWithGraphPathParameters("me", converted);
+        graphRequest.startWithCompletionHandler(new FBSDKGraphRequest.Block_startWithCompletionHandler() {
+            @Override
+            public void call_startWithCompletionHandler(FBSDKGraphRequestConnection connection, @Mapped(ObjCObjectMapper.class) Object result, NSError error) {
+                if (error == null) {
+                    Gdx.app.debug("Success", result.toString());
+
+                    JsonWriter writer = new JsonWriter(new StringWriter());
+                    NSDictionary dict = (NSDictionary) result;
+                    try {
+                        writer.object();
+                        for (int i = 0; i < dict.size(); i++) {
+                            Object key = dict.allKeys().get(i);
+                            Object value = dict.allValues().get(i);
+
+                            Gdx.app.error("KeyType", key.getClass().getName());
+                            Gdx.app.error("ValueType", value.getClass().getName());
+
+                            writer.name(String.valueOf(key)).value(String.valueOf(value));
+                        }
+                        writer.close();
+
+                        callback.onSuccess(new JsonResult(writer.getWriter().toString()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        callback.onError(new GDXFacebookError(e.getMessage()));
+                    }
+                } else {
+                    Gdx.app.debug("Error graph", error.localizedDescription());
+                    callback.onError(new GDXFacebookError(error.localizedDescription()));
+                }
+            }
+        });
+    }
 }

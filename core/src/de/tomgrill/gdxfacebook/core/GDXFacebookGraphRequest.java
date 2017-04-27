@@ -46,7 +46,6 @@ public class GDXFacebookGraphRequest extends AbstractRequest {
         }
     }
 
-
     @Override
     public final ArrayMap<String, String> getHeaders() {
         return null;
