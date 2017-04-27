@@ -16,9 +16,9 @@
 
 package de.tomgrill.gdxfacebook.iosmoe;
 
-import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.GDXFacebook;
 import de.tomgrill.gdxfacebook.core.FacebookLoader;
+import de.tomgrill.gdxfacebook.core.GDXFacebook;
+import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
 
 public class IOSMOEFacebookLoader implements FacebookLoader {
     @Override

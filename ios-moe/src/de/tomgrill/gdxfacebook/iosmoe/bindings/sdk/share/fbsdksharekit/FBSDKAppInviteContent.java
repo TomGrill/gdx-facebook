@@ -1,7 +1,6 @@
 package de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit;
 
 
-import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.core.fbsdkcorekit.protocol.FBSDKCopying;
 import org.moe.natj.c.ann.FunctionPtr;
 import org.moe.natj.general.NatJ;
 import org.moe.natj.general.Pointer;
@@ -29,6 +28,7 @@ import apple.foundation.NSMethodSignature;
 import apple.foundation.NSSet;
 import apple.foundation.NSURL;
 import apple.foundation.protocol.NSSecureCoding;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.core.fbsdkcorekit.protocol.FBSDKCopying;
 
 @Generated
 @Library("FBSDKShareKit")

@@ -1,8 +1,6 @@
 package de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.protocol;
 
 
-import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.FBSDKShareOpenGraphObject;
-import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.FBSDKSharePhoto;
 import org.moe.natj.general.ann.Generated;
 import org.moe.natj.general.ann.Library;
 import org.moe.natj.general.ann.Mapped;
@@ -21,6 +19,8 @@ import apple.foundation.NSEnumerator;
 import apple.foundation.NSNumber;
 import apple.foundation.NSURL;
 import apple.foundation.protocol.NSSecureCoding;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.FBSDKShareOpenGraphObject;
+import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.FBSDKSharePhoto;
 
 @Generated
 @Library("FBSDKShareKit")
