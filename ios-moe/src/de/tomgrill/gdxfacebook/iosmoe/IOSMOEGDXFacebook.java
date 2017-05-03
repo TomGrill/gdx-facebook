@@ -205,7 +205,6 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
             loginManager.logInWithPublishPermissionsFromViewControllerHandler(listPermissions, ((IOSApplication) Gdx.app).getUIViewController(), new FBSDKLoginManager.Block_logInWithPublishPermissionsFromViewControllerHandler() {
                 @Override
                 public void call_logInWithPublishPermissionsFromViewControllerHandler(FBSDKLoginManagerLoginResult loginResult, NSError nsError) {
-                    Gdx.app.error("Response", "READ");
                     if (nsError != null) {
                         IOSMOEGDXFacebook.this.signOut();
                         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + nsError.localizedDescription());
@@ -225,7 +224,6 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
             loginManager.logInWithReadPermissionsFromViewControllerHandler(listPermissions, ((IOSApplication) Gdx.app).getUIViewController(), new FBSDKLoginManager.Block_logInWithReadPermissionsFromViewControllerHandler() {
                 @Override
                 public void call_logInWithReadPermissionsFromViewControllerHandler(FBSDKLoginManagerLoginResult loginResult, NSError nsError) {
-                    Gdx.app.error("Response", "READ");
                     if (nsError != null) {
                         IOSMOEGDXFacebook.this.signOut();
                         Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Error while trying to sign in: " + nsError.localizedDescription());
@@ -273,13 +271,12 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
             converted.put(fields.getKeyAt(i), fields.getValueAt(i));
         }
 
-        FBSDKGraphRequest graphRequest = FBSDKGraphRequest.alloc().initWithGraphPathParameters("me", converted);
+        FBSDKGraphRequest graphRequest = FBSDKGraphRequest.alloc().initWithGraphPathParameters(request.getNode(), converted);
         graphRequest.startWithCompletionHandler(new FBSDKGraphRequest.Block_startWithCompletionHandler() {
             @Override
             public void call_startWithCompletionHandler(FBSDKGraphRequestConnection connection, @Mapped(ObjCObjectMapper.class) Object result, NSError error) {
                 if (error == null) {
-                    Gdx.app.debug("Success", result.toString());
-
+                    Gdx.app.debug("Graph request ", "success!");
                     JsonWriter writer = new JsonWriter(new StringWriter());
                     NSDictionary dict = (NSDictionary) result;
                     try {
@@ -287,9 +284,6 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
                         for (int i = 0; i < dict.size(); i++) {
                             Object key = dict.allKeys().get(i);
                             Object value = dict.allValues().get(i);
-
-                            Gdx.app.error("KeyType", key.getClass().getName());
-                            Gdx.app.error("ValueType", value.getClass().getName());
 
                             writer.name(String.valueOf(key)).value(String.valueOf(value));
                         }
