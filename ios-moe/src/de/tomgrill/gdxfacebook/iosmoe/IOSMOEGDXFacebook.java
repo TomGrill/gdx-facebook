@@ -17,15 +17,20 @@
 
 package de.tomgrill.gdxfacebook.iosmoe;
 
+import apple.foundation.NSData;
 import apple.foundation.NSDictionary;
 import apple.foundation.NSError;
+import apple.foundation.NSJSONSerialization;
 import apple.foundation.NSMutableArray;
 import apple.foundation.NSMutableDictionary;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
-import com.badlogic.gdx.utils.JsonWriter;
+
+import apple.foundation.NSString;
+import apple.foundation.enums.Enums;
+import apple.foundation.enums.NSJSONReadingOptions;
 import de.tomgrill.gdxfacebook.core.*;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.core.fbsdkcorekit.FBSDKAccessToken;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.core.fbsdkcorekit.FBSDKGraphRequest;
@@ -38,10 +43,9 @@ import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.enums.FBS
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.enums.FBSDKGameRequestFilter;
 import de.tomgrill.gdxfacebook.iosmoe.bindings.sdk.share.fbsdksharekit.protocol.FBSDKGameRequestDialogDelegate;
 import org.moe.natj.general.ann.Mapped;
+import org.moe.natj.general.ptr.Ptr;
 import org.moe.natj.objc.map.ObjCObjectMapper;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Map;
 
 public class IOSMOEGDXFacebook extends GDXFacebookBasic {
@@ -277,23 +281,10 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
             public void call_startWithCompletionHandler(FBSDKGraphRequestConnection connection, @Mapped(ObjCObjectMapper.class) Object result, NSError error) {
                 if (error == null) {
                     Gdx.app.debug("Graph request ", "success!");
-                    JsonWriter writer = new JsonWriter(new StringWriter());
-                    NSDictionary dict = (NSDictionary) result;
-                    try {
-                        writer.object();
-                        for (int i = 0; i < dict.size(); i++) {
-                            Object key = dict.allKeys().get(i);
-                            Object value = dict.allValues().get(i);
-
-                            writer.name(String.valueOf(key)).value(String.valueOf(value));
-                        }
-                        writer.close();
-
-                        callback.onSuccess(new JsonResult(writer.getWriter().toString()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        callback.onError(new GDXFacebookError(e.getMessage()));
-                    }
+                    NSData nsData = NSJSONSerialization.dataWithJSONObjectOptionsError(result, NSJSONReadingOptions.MutableContainers, (Ptr<NSError>) error);
+                    NSString alloc = NSString.alloc();
+                    NSString nsString = alloc.initWithDataEncoding(nsData, Enums.NSUTF8StringEncoding);
+                    callback.onSuccess(new JsonResult(nsString.toString()));
                 } else {
                     Gdx.app.debug("Error graph", error.localizedDescription());
                     callback.onError(new GDXFacebookError(error.localizedDescription()));
