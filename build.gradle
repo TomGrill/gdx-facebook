@@ -210,7 +210,7 @@ project(":ios-moe") {
 //        compile "com.mobidevelop.robovm:robovm-rt:${roboVMVersion}"
 //        compile "com.mobidevelop.robovm:robovm-cocoatouch:${roboVMVersion}"
 
-        compile "com.mobidevelop.robovm:robopods-facebook-ios:$facebookRoboPodsVersion"
+        //compile "com.mobidevelop.robovm:robopods-facebook-ios:$facebookRoboPodsVersion"
     }
 }
 
