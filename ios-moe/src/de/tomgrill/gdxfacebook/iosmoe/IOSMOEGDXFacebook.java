@@ -71,7 +71,6 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
             accessToken = new GDXFacebookAccessToken(FBSDKAccessToken.currentAccessToken().tokenString(), (long) FBSDKAccessToken.currentAccessToken().expirationDate().timeIntervalSince1970());
         }
 
-
         if (accessToken != null) {
             startSilentSignIn();
         } else {
@@ -245,51 +244,5 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
                 }
             });
         }
-    }
-
-    @Override
-    protected void startSilentSignIn() {
-        if (accessToken != null) {
-            for(int i = 0, size = permissions.size; i < size; i++) {
-                if(!FBSDKAccessToken.currentAccessToken().hasGranted(permissions.get(i))) {
-                    signOut();
-                    Gdx.app.debug(GDXFacebookVars.LOG_TAG, "Used access_token is valid but new permissions need to be granted. Need GUI sign in.");
-                    callback.onError(new GDXFacebookError("Used access_token is valid but new permissions need to be granted. Need GUI sign in."));
-                    startGUISignIn();
-                    return;
-                }
-            }
-        }
-    }
-
-    @Override
-    public void graph(Request request, GDXFacebookCallback<JsonResult> callback) {
-        if (!(request instanceof AbstractRequest)) {
-            callback.onError(new GDXFacebookError("Request is not an AbstractRequest!"));
-            return;
-        }
-
-        NSMutableDictionary converted = NSMutableDictionary.dictionary();
-        ArrayMap<String, String> fields = ((AbstractRequest) request).getFields();
-        for (int i = 0, size = fields.size; i < size; i++) {
-            converted.put(fields.getKeyAt(i), fields.getValueAt(i));
-        }
-
-        FBSDKGraphRequest graphRequest = FBSDKGraphRequest.alloc().initWithGraphPathParameters(request.getNode(), converted);
-        graphRequest.startWithCompletionHandler(new FBSDKGraphRequest.Block_startWithCompletionHandler() {
-            @Override
-            public void call_startWithCompletionHandler(FBSDKGraphRequestConnection connection, @Mapped(ObjCObjectMapper.class) Object result, NSError error) {
-                if (error == null) {
-                    Gdx.app.debug("Graph request ", "success!");
-                    NSData nsData = NSJSONSerialization.dataWithJSONObjectOptionsError(result, NSJSONReadingOptions.MutableContainers, (Ptr<NSError>) error);
-                    NSString alloc = NSString.alloc();
-                    NSString nsString = alloc.initWithDataEncoding(nsData, Enums.NSUTF8StringEncoding);
-                    callback.onSuccess(new JsonResult(nsString.toString()));
-                } else {
-                    Gdx.app.debug("Error graph", error.localizedDescription());
-                    callback.onError(new GDXFacebookError(error.localizedDescription()));
-                }
-            }
-        });
     }
 }
