@@ -18,19 +18,30 @@ package de.tomgrill.gdxfacebook.android;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
-import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
-import de.tomgrill.gdxfacebook.core.GDXFacebook;
+import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import de.tomgrill.gdxfacebook.core.FacebookLoader;
+import de.tomgrill.gdxfacebook.core.GDXFacebook;
+import de.tomgrill.gdxfacebook.core.GDXFacebookConfig;
 
 public class AndroidFacebookLoader implements FacebookLoader {
 
     @Override
     public GDXFacebook load(GDXFacebookConfig config) {
 
-        AndroidApplication androidApplication = (AndroidApplication) Gdx.app;
-        AndroidGDXFacebook androidGDXFacebook = new AndroidGDXFacebook(androidApplication, config);
-        androidApplication.addAndroidEventListener(androidGDXFacebook);
+        if (Gdx.app instanceof AndroidApplication) {
+            AndroidApplication androidApplication = (AndroidApplication) Gdx.app;
+            AndroidGDXFacebook androidGDXFacebook = new AndroidGDXFacebook(androidApplication, config);
+            androidApplication.addAndroidEventListener(androidGDXFacebook);
+            return androidGDXFacebook;
+        }
 
-        return androidGDXFacebook;
+        if (Gdx.app instanceof AndroidFragmentApplication) {
+            AndroidFragmentApplication androidFragmentApplication = (AndroidFragmentApplication) Gdx.app;
+            AndroidGDXFacebook androidGDXFacebook = new AndroidGDXFacebook(androidFragmentApplication, config);
+            androidFragmentApplication.addAndroidEventListener(androidGDXFacebook);
+            return androidGDXFacebook;
+        }
+
+        throw new RuntimeException("gdx-facebook: No support for: " + Gdx.app.getClass().getSimpleName());
     }
 }

@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Intent;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
+import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.badlogic.gdx.utils.Array;
 import com.facebook.*;
 import com.facebook.appevents.AppEventsLogger;
@@ -48,6 +49,16 @@ public class AndroidGDXFacebook extends GDXFacebookBasic implements AndroidEvent
 
         FacebookSdk.sdkInitialize(activity.getApplicationContext());
         AppEventsLogger.activateApp(activity.getApplication());
+        callbackManager = CallbackManager.Factory.create();
+
+    }
+
+    public AndroidGDXFacebook(final AndroidFragmentApplication activity, final GDXFacebookConfig config) {
+        super(config);
+        this.activity = activity.getActivity();
+
+        FacebookSdk.sdkInitialize(this.activity.getApplicationContext());
+        AppEventsLogger.activateApp(this.activity.getApplication());
         callbackManager = CallbackManager.Factory.create();
 
     }
