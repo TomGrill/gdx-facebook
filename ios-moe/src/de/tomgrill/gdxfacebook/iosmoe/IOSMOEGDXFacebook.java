@@ -68,7 +68,7 @@ public class IOSMOEGDXFacebook extends GDXFacebookBasic {
         loadAccessToken();
 
         if (accessToken == null && FBSDKAccessToken.currentAccessToken() != null) {
-            accessToken = new GDXFacebookAccessToken(FBSDKAccessToken.currentAccessToken().tokenString(), (long) FBSDKAccessToken.currentAccessToken().expirationDate().timeIntervalSince1970());
+            accessToken = new GDXFacebookAccessToken(FBSDKAccessToken.currentAccessToken().tokenString(), (long) FBSDKAccessToken.currentAccessToken().expirationDate().timeIntervalSince1970() * 1000);
         }
 
         if (accessToken != null) {
