@@ -12,13 +12,13 @@ I will also stream sometimes when developing at https://www.twitch.tv/tomgrill a
 https://github.com/TomGrill/gdx-facebook/wiki
 
 ## Version
-Current stable: **1.4.1** (snapshot version are no longer supported)
+Current stable: **1.5.0** (snapshot version are no longer supported)
 
 ## Requirements
-Java 7+, JavaFX (Desktop only), Android API 15
+Java 7+, JavaFX (Desktop only), Android API 19
 
 ## Supported Platforms
-- Android (uses Facebook SDK 4.12.1)
+- Android (uses Facebook SDK 4.38.1)
 - iOS RoboVM (7+, Facebook iOS SDK 4.15.1)
 - iOS MOE (9+, Facebook iOS SDK 4.23.0) (experimental)
 - Desktop (for development only)
