@@ -28,6 +28,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -103,6 +104,15 @@ public class JXBrowser extends Application {
 
         webEngine = webView.getEngine();
 
+//        webEngine.getLoadWorker().stateProperty().addListener(
+//                new ChangeListener<Worker.State>() {
+//                    public void changed(ObservableValue ov, Worker.State oldState, Worker.State newState) {
+//                        if (webEngine.getLoadWorker().getException() != null && newState == Worker.State.FAILED){
+//                            System.out.println(webEngine.getLoadWorker().getException().toString());
+//                        }
+//                    }
+//                });
+
         webEngine.load(url);
         webEngine.locationProperty().addListener(new ChangeListener<String>() {
 
@@ -169,5 +179,6 @@ public class JXBrowser extends Application {
         stringBuffer.append(permissions);
         stringBuffer.append("&response_type=token");
         url = stringBuffer.toString();
+        System.out.println(url);
     }
 }
