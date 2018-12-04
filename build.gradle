@@ -1,20 +1,22 @@
 ext {
     GROUPID = 'de.tomgrill.gdxfacebook'
-    VERSION = '1.4.1-SNAPSHOT'
+    VERSION = '1.5.0-SNAPSHOT'
 
 }
 
 buildscript {
     repositories {
+        mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
+        google()
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:2.2.3'
-        classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.1'
-        classpath 'org.multi-os-engine:moe-gradle:1.3.6'
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.3'
+        classpath 'org.multi-os-engine:moe-gradle:1.4.4'
     }
 }
 
@@ -24,12 +26,11 @@ allprojects {
 
     ext {
         appName = 'gdx-facebook'
-        gdxVersion = '1.9.6'
+        gdxVersion = '1.9.8'
         roboVMVersion = '2.3.1'
         powerMockVersion = '1.6.4'
         jUnitVersion = '4.12'
         mockitoVersion = '1.10.19'
-        androidSDKVersion = '4.18.0'
         facebookRoboPodsVersion = '2.2.1'
     }
 
@@ -38,6 +39,8 @@ allprojects {
         mavenLocal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        jcenter()
+        google()
     }
 
     group = GROUPID
@@ -63,7 +66,7 @@ project(":android") {
 
         compile project(':core')
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-        compile "com.facebook.android:facebook-android-sdk:$androidSDKVersion"
+        compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 
 //        compile fileTree(dir: 'libs', include: '*.jar')
     }

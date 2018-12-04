@@ -4,12 +4,12 @@ project.group = 'de.tomgrill.gdxfacebook.android'
 
 android {
 
-	compileSdkVersion 23
-	buildToolsVersion "23.0.3"
+	compileSdkVersion 27
+	buildToolsVersion "28.0.3"
 
 	defaultConfig {
-		minSdkVersion 15
-		targetSdkVersion 23
+		minSdkVersion 19
+		targetSdkVersion 27
 		consumerProguardFiles 'proguard.txt'
 	}
 
